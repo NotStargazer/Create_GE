@@ -99,14 +99,37 @@ public class FanProcessing {
 	public static boolean applyProcessing(ItemEntity entity, Type type) {
 		if (decrementProcessingTime(entity, type) != 0)
 			return false;
-		List<ItemStack> stacks = process(entity.getItem(), type, entity.level);
+		ItemStack entityItem = entity.getItem();
+		ItemStack processItem = entityItem.copy();
+		processItem.setCount(1);
+		List<ItemStack> stacks = process(processItem, type, entity.level);
 		if (stacks == null)
 			return false;
 		if (stacks.isEmpty()) {
-			entity.discard();
+			if (entityItem.getCount() == 1)
+			{
+				entity.discard();
+			}
+			else
+			{
+				ItemStack newStack = entityItem.copy();
+				newStack.setCount(newStack.getCount() - 1);
+				entity.setItem(newStack);
+				resetProcessingTime(entity, type);
+			}
 			return false;
 		}
-		entity.setItem(stacks.remove(0));
+		if (entityItem.getCount() == 1)
+		{
+			entity.discard();
+		}
+		else
+		{
+			ItemStack newStack = entityItem.copy();
+			newStack.setCount(newStack.getCount() - 1);
+			entity.setItem(newStack);
+			resetProcessingTime(entity, type);
+		}
 		for (ItemStack additional : stacks) {
 			ItemEntity entityIn = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), additional);
 			entityIn.setDeltaMovement(entity.getDeltaMovement());
@@ -206,10 +229,8 @@ public class FanProcessing {
 
 		if (!processing.contains("Type") || Type.valueOf(processing.getString("Type")) != type) {
 			processing.putString("Type", type.name());
-			int timeModifierForStackSize = ((entity.getItem()
-				.getCount() - 1) / 16) + 1;
 			int processingTime =
-				(int) (AllConfigs.server().kinetics.fanProcessingTime.get() * timeModifierForStackSize) + 1;
+				(int) (AllConfigs.server().kinetics.fanProcessingTime.get()) + 1;
 			processing.putInt("Time", processingTime);
 		}
 
@@ -217,6 +238,26 @@ public class FanProcessing {
 		processing.putInt("Time", value);
 		return value;
 	}
+
+	private static void resetProcessingTime(ItemEntity entity, Type type) {
+		CompoundTag nbt = entity.getPersistentData();
+
+		if (!nbt.contains("CreateData"))
+			return;
+		CompoundTag createData = nbt.getCompound("CreateData");
+
+		if (!createData.contains("Processing"))
+			return;
+		CompoundTag processing = createData.getCompound("Processing");
+
+		if (!processing.contains("Type") || Type.valueOf(processing.getString("Type")) != type)
+			return;
+
+		int value = AllConfigs.server().kinetics.fanProcessingTime.get() + 1;
+		processing.putInt("Time", value);
+	}
+
+
 
 	public enum Type {
 		SPLASHING {

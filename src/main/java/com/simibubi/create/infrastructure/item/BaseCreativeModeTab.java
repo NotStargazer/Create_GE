@@ -11,6 +11,6 @@ public class BaseCreativeModeTab extends CreateCreativeModeTab {
 
 	@Override
 	public ItemStack makeIcon() {
-		return AllBlocks.COGWHEEL.asStack();
+		return AllBlocks.COGWHEELS[0].asStack();
 	}
 }

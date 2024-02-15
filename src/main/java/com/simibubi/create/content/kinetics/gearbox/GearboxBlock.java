@@ -26,8 +26,8 @@ import net.minecraft.world.phys.HitResult;
 
 public class GearboxBlock extends RotatedPillarKineticBlock implements IBE<GearboxBlockEntity> {
 
-	public GearboxBlock(Properties properties) {
-		super(properties);
+	public GearboxBlock(int tier, Properties properties) {
+		super(tier, properties);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class GearboxBlock extends RotatedPillarKineticBlock implements IBE<Gearb
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		super.fillItemCategory(group, items);
-		items.add(AllItems.VERTICAL_GEARBOX.asStack());
+		items.add(AllItems.VERTICAL_GEARBOXES[tier].asStack());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -46,15 +46,15 @@ public class GearboxBlock extends RotatedPillarKineticBlock implements IBE<Gearb
 	public List<ItemStack> getDrops(BlockState state, Builder builder) {
 		if (state.getValue(AXIS).isVertical())
 			return super.getDrops(state, builder);
-		return Arrays.asList(new ItemStack(AllItems.VERTICAL_GEARBOX.get()));
+		return Arrays.asList(new ItemStack(AllItems.VERTICAL_GEARBOXES[tier].get()));
 	}
-	
+
 	@Override
 	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos,
 			Player player) {
 		if (state.getValue(AXIS).isVertical())
 			return super.getCloneItemStack(state, target, world, pos, player);
-		return new ItemStack(AllItems.VERTICAL_GEARBOX.get());
+		return new ItemStack(AllItems.VERTICAL_GEARBOXES[tier].get());
 	}
 
 	@Override

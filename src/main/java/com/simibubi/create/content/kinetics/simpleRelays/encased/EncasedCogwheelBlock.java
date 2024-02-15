@@ -8,6 +8,7 @@ import com.simibubi.create.content.contraptions.ITransformableBlock;
 import com.simibubi.create.content.contraptions.StructureTransform;
 import com.simibubi.create.content.decoration.encasing.EncasedBlock;
 import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
@@ -54,8 +55,8 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock
 	protected final boolean isLarge;
 	private final Supplier<Block> casing;
 
-	public EncasedCogwheelBlock(Properties properties, boolean large, Supplier<Block> casing) {
-		super(properties);
+	public EncasedCogwheelBlock(int tier, Properties properties, boolean large, Supplier<Block> casing) {
+		super(tier, properties);
 		isLarge = large;
 		this.casing = casing;
 		registerDefaultState(defaultBlockState().setValue(TOP_SHAFT, false)
@@ -72,10 +73,11 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock
 
 	@Override
 	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+		KineticBlock block = (KineticBlock) state.getBlock();
 		if (target instanceof BlockHitResult)
 			return ((BlockHitResult) target).getDirection()
 				.getAxis() != getRotationAxis(state)
-					? isLarge ? AllBlocks.LARGE_COGWHEEL.asStack() : AllBlocks.COGWHEEL.asStack()
+					? isLarge ? AllBlocks.LARGE_COGWHEELS[block.tier].asStack() : AllBlocks.COGWHEELS[block.tier].asStack()
 					: getCasing().asItem().getDefaultInstance();
 		return super.getCloneItemStack(state, target, world, pos, player);
 	}
@@ -130,10 +132,12 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock
 	public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
 		if (context.getLevel().isClientSide)
 			return InteractionResult.SUCCESS;
+
+		KineticBlock block = (KineticBlock) state.getBlock();
 		context.getLevel()
 			.levelEvent(2001, context.getClickedPos(), Block.getId(state));
 		KineticBlockEntity.switchToBlockState(context.getLevel(), context.getClickedPos(),
-			(isLarge ? AllBlocks.LARGE_COGWHEEL : AllBlocks.COGWHEEL).getDefaultState()
+			(isLarge ? AllBlocks.LARGE_COGWHEELS[block.tier] : AllBlocks.COGWHEELS[block.tier]).getDefaultState()
 				.setValue(AXIS, state.getValue(AXIS)));
 		return InteractionResult.SUCCESS;
 	}
@@ -253,8 +257,9 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock
 
 	@Override
 	public ItemRequirement getRequiredItems(BlockState state, BlockEntity be) {
+		KineticBlock block = (KineticBlock) state.getBlock();
 		return ItemRequirement
-			.of(isLarge ? AllBlocks.LARGE_COGWHEEL.getDefaultState() : AllBlocks.COGWHEEL.getDefaultState(), be);
+			.of(isLarge ? AllBlocks.LARGE_COGWHEELS[block.tier].getDefaultState() : AllBlocks.COGWHEELS[block.tier].getDefaultState(), be);
 	}
 
 	@Override

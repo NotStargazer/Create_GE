@@ -32,6 +32,8 @@ import com.simibubi.create.content.logistics.tunnel.BrassTunnelBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.NBTHelper;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -199,7 +201,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 		if (isController())
 			getInventory().ejectAll();
 	}
-	
+
 	@Override
 	public void invalidate() {
 		super.invalidate();
@@ -286,7 +288,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 			return false;
 		if (level.isClientSide())
 			return true;
-		
+
 		for (BlockPos blockPos : BeltBlock.getBeltChain(level, getController())) {
 			BeltBlockEntity belt = BeltHelper.getSegmentBE(level, blockPos);
 			if (belt == null)
@@ -295,7 +297,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 			belt.setChanged();
 			belt.sendData();
 		}
-		
+
 		return true;
 	}
 
@@ -341,6 +343,12 @@ public class BeltBlockEntity extends KineticBlockEntity {
 		return getBlockState().getValue(BeltBlock.PART) != MIDDLE;
 	}
 
+	public int getShaftTier() {
+		if (!AllBlocks.BELT.has(getBlockState()))
+			return 0;
+		return BeltPart.getTier(getBlockState().getValue(BeltBlock.PART));
+	}
+
 	protected boolean isLastBelt() {
 		if (getSpeed() == 0)
 			return false;
@@ -355,7 +363,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 
 		boolean movingPositively = (getSpeed() > 0 == (direction.getAxisDirection()
 			.getStep() == 1)) ^ direction.getAxis() == Axis.X;
-		return part == BeltPart.START ^ movingPositively;
+		return BeltPart.anyStart(part) ^ movingPositively;
 	}
 
 	public Vec3i getMovementDirection(boolean firstHalf) {
@@ -382,7 +390,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 			movementFacing = movementFacing.getOpposite();
 		Vec3i movement = movementFacing.getNormal();
 
-		boolean slopeBeforeHalf = (part == BeltPart.END) == (beltFacing.getAxisDirection() == POSITIVE);
+		boolean slopeBeforeHalf = (BeltPart.anyEnd(part)) == (beltFacing.getAxisDirection() == POSITIVE);
 		boolean onSlope = notHorizontal && (part == MIDDLE || slopeBeforeHalf == firstHalf || ignoreHalves);
 		boolean movingUp = onSlope && slope == (movementFacing == beltFacing ? BeltSlope.UPWARD : BeltSlope.DOWNWARD);
 
@@ -434,7 +442,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 	public void setCasingType(CasingType type) {
 		if (casing == type)
 			return;
-		
+
 		BlockState blockState = getBlockState();
 		boolean shouldBlockHaveCasing = type != CasingType.NONE;
 
@@ -445,7 +453,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 16);
 			return;
 		}
-		
+
 		if (casing != CasingType.NONE)
 			level.levelEvent(2001, worldPosition,
 				Block.getId(casing == CasingType.ANDESITE ? AllBlocks.ANDESITE_CASING.getDefaultState()
@@ -563,7 +571,7 @@ public class BeltBlockEntity extends KineticBlockEntity {
 		if (level == null)
 			return isController();
 		BlockState state = getBlockState();
-		return state != null && state.hasProperty(BeltBlock.PART) && state.getValue(BeltBlock.PART) == BeltPart.START;
+		return state != null && state.hasProperty(BeltBlock.PART) && BeltPart.anyStart(state.getValue(BeltBlock.PART));
 	}
 
 	/**

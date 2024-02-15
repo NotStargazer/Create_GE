@@ -54,8 +54,8 @@ public class BeltInstance extends KineticBlockEntityInstance<BeltBlockEntity> {
         alongZ = facing.getAxis() == Direction.Axis.Z;
 
         BeltPart part = blockState.getValue(BeltBlock.PART);
-        boolean start = part == BeltPart.START;
-        boolean end = part == BeltPart.END;
+        boolean start = BeltPart.anyStart(part);
+        boolean end = BeltPart.anyEnd(part);
         DyeColor color = blockEntity.color.orElse(null);
 
         for (boolean bottom : Iterate.trueAndFalse) {

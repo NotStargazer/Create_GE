@@ -26,7 +26,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class SpeedGaugeBlockEntity extends GaugeBlockEntity {
 
 	public AbstractComputerBehaviour computerBehaviour;
-	
+
 	public SpeedGaugeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
@@ -55,7 +55,7 @@ public class SpeedGaugeBlockEntity extends GaugeBlockEntity {
 			.floatValue();
 		float fast = AllConfigs.server().kinetics.fastSpeed.get()
 			.floatValue();
-		float max = AllConfigs.server().kinetics.maxRotationSpeed.get()
+		float max = AllConfigs.server().kinetics.maxRotationSpeedT3.get()
 			.floatValue();
 		float target = 0;
 		if (speed == 0)

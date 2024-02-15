@@ -9,6 +9,8 @@ import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
@@ -30,7 +32,7 @@ public class BracketedKineticBlockEntityRenderer extends KineticBlockEntityRende
 		if (Backend.canUseInstancing(be.getLevel()))
 			return;
 
-		if (!AllBlocks.LARGE_COGWHEEL.has(be.getBlockState())) {
+		if (!CreateGrandExpanse.hasAnyOf(AllBlocks.LARGE_COGWHEELS, be.getBlockState())) {
 			super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
 			return;
 		}

@@ -196,10 +196,17 @@ public class AllItems {
 			.lang("Mechanical Belt")
 			.register();
 
-	public static final ItemEntry<VerticalGearboxItem> VERTICAL_GEARBOX =
-		REGISTRATE.item("vertical_gearbox", VerticalGearboxItem::new)
-			.model(AssetLookup.customBlockItemModel("gearbox", "item_vertical"))
-			.register();
+	public static final ItemEntry<VerticalGearboxItem>[] VERTICAL_GEARBOXES = new ItemEntry[4];
+
+	static
+	{
+		for (int tier = 0; tier < 4; tier++) {
+			int fTier = tier;
+			VERTICAL_GEARBOXES[tier] = REGISTRATE.item("vertical_gearbox_tier_" + tier, p -> new VerticalGearboxItem(fTier, p))
+				.model(AssetLookup.customBlockItemModel("gearbox_tier_" + tier, "item_vertical"))
+				.register();
+		}
+	}
 
 	public static final ItemEntry<BlazeBurnerBlockItem> EMPTY_BLAZE_BURNER =
 		REGISTRATE.item("empty_blaze_burner", BlazeBurnerBlockItem::empty)

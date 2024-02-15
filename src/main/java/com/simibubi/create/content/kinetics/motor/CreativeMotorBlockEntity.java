@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 public class CreativeMotorBlockEntity extends GeneratingKineticBlockEntity {
 
 	public static final int DEFAULT_SPEED = 16;
-	public static final int MAX_SPEED = 256;
+	public static final int MAX_SPEED = 512;
 
 	protected ScrollValueBehaviour generatedSpeed;
 

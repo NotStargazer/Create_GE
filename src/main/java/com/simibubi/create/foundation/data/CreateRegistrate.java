@@ -7,6 +7,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.simibubi.create.content.kinetics.base.KineticBlock;
+
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.Create;

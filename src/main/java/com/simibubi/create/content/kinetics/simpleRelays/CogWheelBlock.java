@@ -12,6 +12,8 @@ import com.simibubi.create.content.kinetics.speedController.SpeedControllerBlock
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.utility.Iterate;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,17 +44,9 @@ public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel
 
 	boolean isLarge;
 
-	protected CogWheelBlock(boolean large, Properties properties) {
-		super(properties);
+	public CogWheelBlock(int tier, boolean large, Properties properties) {
+		super(tier, properties);
 		isLarge = large;
-	}
-
-	public static CogWheelBlock small(Properties properties) {
-		return new CogWheelBlock(false, properties);
-	}
-
-	public static CogWheelBlock large(Properties properties) {
-		return new CogWheelBlock(true, properties);
 	}
 
 	@Override
@@ -69,7 +63,7 @@ public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel
 	public void fillItemCategory(CreativeModeTab pTab, NonNullList<ItemStack> pItems) {
 		super.fillItemCategory(pTab, pItems);
 		// Ensure the belt item is added after large cogwheels in the creative tab
-		if (AllBlocks.LARGE_COGWHEEL.is(this) && pTab == AllCreativeModeTabs.BASE_CREATIVE_TAB)
+		if (CreateGrandExpanse.isAnyOf(AllBlocks.LARGE_COGWHEELS, this) && pTab == AllCreativeModeTabs.BASE_CREATIVE_TAB)
 			pItems.add(AllItems.BELT_CONNECTOR.asStack());
 	}
 

@@ -78,15 +78,15 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 		}
 
 		static ItemLike shaft() {
-			return AllBlocks.SHAFT.get();
+			return AllBlocks.SHAFTS[0].get();
 		}
 
 		static ItemLike cog() {
-			return AllBlocks.COGWHEEL.get();
+			return AllBlocks.COGWHEELS[0].get();
 		}
 
 		static ItemLike largeCog() {
-			return AllBlocks.LARGE_COGWHEEL.get();
+			return AllBlocks.LARGE_COGWHEELS[0].get();
 		}
 
 		static ItemLike andesiteCasing() {
@@ -116,7 +116,7 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 		static TagKey<Item> ironSheet() {
 			return AllTags.forgeItemTag("plates/iron");
 		}
-		
+
 		static TagKey<Item> sturdySheet() {
 			return AllTags.forgeItemTag("plates/obsidian");
 		}
@@ -124,7 +124,7 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 		static ItemLike brassCasing() {
 			return AllBlocks.BRASS_CASING.get();
 		}
-		
+
 		static ItemLike railwayCasing() {
 			return AllBlocks.RAILWAY_CASING.get();
 		}
@@ -136,7 +136,7 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 		static ItemLike precisionMechanism() {
 			return AllItems.PRECISION_MECHANISM.get();
 		}
-		
+
 		static ItemLike copperBlock() {
 			return Items.COPPER_BLOCK;
 		}
@@ -148,7 +148,7 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 		static TagKey<Item> zincBlock() {
 			return AllTags.forgeItemTag("storage_blocks/zinc");
 		}
-		
+
 		static TagKey<Item> wheatFlour() {
 			return AllTags.forgeItemTag("flour/wheat");
 		}

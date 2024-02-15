@@ -181,35 +181,35 @@ public class BeltShapes {
 
 		//vertical
 		if (slope == BeltSlope.VERTICAL) {
-			if (part == BeltPart.MIDDLE || part == BeltPart.PULLEY)
+			if (part == BeltPart.MIDDLE || BeltPart.anyPulley(part))
 				return VERTICAL_FULL.get(axis);
 			//vertical ending
-			return (part == BeltPart.START ? VERTICAL_START : VERTICAL_END).get(facing);
+			return (BeltPart.anyStart(part) ? VERTICAL_START : VERTICAL_END).get(facing);
 		}
 
 		//flat part
 		if (slope == BeltSlope.HORIZONTAL) {
-			if (part == BeltPart.MIDDLE || part == BeltPart.PULLEY)
+			if (part == BeltPart.MIDDLE || BeltPart.anyPulley(part))
 				return FLAT_FULL.get(axis);
 			//flat ending
-			return (part == BeltPart.START ? FLAT_START : FLAT_END).get(facing);
+			return (BeltPart.anyStart(part) ? FLAT_START : FLAT_END).get(facing);
 		}
 
 		//sideways part
 		if (slope == BeltSlope.SIDEWAYS) {
-			if (part == BeltPart.MIDDLE || part == BeltPart.PULLEY)
+			if (part == BeltPart.MIDDLE || BeltPart.anyPulley(part))
 				return SIDE_FULL.get(axis);
 			//flat ending
-			return (part == BeltPart.START ? SIDE_START : SIDE_END).get(facing);
+			return (BeltPart.anyStart(part) ? SIDE_START : SIDE_END).get(facing);
 		}
 
 		//slope
-		if (part == BeltPart.MIDDLE || part == BeltPart.PULLEY)
+		if (part == BeltPart.MIDDLE || BeltPart.anyPulley(part))
 			return (slope == BeltSlope.DOWNWARD ? SLOPE_DESC : SLOPE_ASC).get(facing);
 		//sloped ending
-		if (part == BeltPart.START)
+		if (BeltPart.anyStart(part))
 			return (slope == BeltSlope.DOWNWARD ? SLOPE_DESC_START : SLOPE_ASC_START).get(facing);
-		if (part == BeltPart.END)
+		if (BeltPart.anyEnd(part))
 			return (slope == BeltSlope.DOWNWARD ? SLOPE_DESC_END : SLOPE_ASC_END).get(facing);
 
 		//bad state
@@ -233,12 +233,12 @@ public class BeltShapes {
 			return AllShapes.CASING_11PX.get(Direction.UP);
 		}
 
-		if (part == BeltPart.MIDDLE || part == BeltPart.PULLEY)
+		if (part == BeltPart.MIDDLE || BeltPart.anyPulley(part))
 			return PARTIAL_CASING.get(slope == BeltSlope.UPWARD ? facing : facing.getOpposite());
 
-		if (part == BeltPart.START)
+		if (BeltPart.anyStart(part))
 			return slope == BeltSlope.UPWARD ? AllShapes.CASING_11PX.get(Direction.UP) : PARTIAL_CASING.get(facing.getOpposite());
-		if (part == BeltPart.END)
+		if (BeltPart.anyEnd(part))
 			return slope == BeltSlope.DOWNWARD ? AllShapes.CASING_11PX.get(Direction.UP) : PARTIAL_CASING.get(facing);
 
 		//something went wrong

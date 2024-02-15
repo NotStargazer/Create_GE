@@ -22,8 +22,8 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 public abstract class AbstractShaftBlock extends RotatedPillarKineticBlock
 	implements IBE<KineticBlockEntity>, ProperWaterloggedBlock {
 
-	public AbstractShaftBlock(Properties properties) {
-		super(properties);
+	public AbstractShaftBlock(int tier, Properties properties) {
+		super(tier, properties);
 		registerDefaultState(super.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 	}
 

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "C": {
-      "item": "create:shaft"
+      "item": "create:shaft_tier_0"
     },
     "S": {
       "tag": "minecraft:planks"

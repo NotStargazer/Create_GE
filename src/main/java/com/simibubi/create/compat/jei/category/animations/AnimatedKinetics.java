@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public abstract class AnimatedKinetics implements IDrawable {
-	
+
 	public int offset = 0;
 
 	public static final ILightingSettings DEFAULT_LIGHTING = CustomLightingSettings.builder()
@@ -45,7 +45,7 @@ public abstract class AnimatedKinetics implements IDrawable {
 	}
 
 	protected BlockState shaft(Axis axis) {
-		return AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis);
+		return AllBlocks.SHAFTS[0].getDefaultState().setValue(BlockStateProperties.AXIS, axis);
 	}
 
 	protected PartialModel cogwheel() {

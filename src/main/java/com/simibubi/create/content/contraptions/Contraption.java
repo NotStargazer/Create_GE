@@ -21,6 +21,8 @@ import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -609,8 +611,8 @@ public abstract class Contraption {
 		BlockState blockstate = world.getBlockState(pos);
 		if (AllBlocks.REDSTONE_CONTACT.has(blockstate))
 			blockstate = blockstate.setValue(RedstoneContactBlock.POWERED, true);
-		if (AllBlocks.POWERED_SHAFT.has(blockstate))
-			blockstate = BlockHelper.copyProperties(blockstate, AllBlocks.SHAFT.getDefaultState());
+		if (CreateGrandExpanse.hasAnyOf(AllBlocks.POWERED_SHAFTS, blockstate))
+			blockstate = BlockHelper.copyProperties(blockstate, AllBlocks.SHAFTS[CreateGrandExpanse.getTier(blockstate.getBlock())].getDefaultState());
 		if (blockstate.getBlock() instanceof ControlsBlock && getType() == ContraptionType.CARRIAGE)
 			blockstate = blockstate.setValue(ControlsBlock.OPEN, true);
 		if (blockstate.hasProperty(SlidingDoorBlock.VISIBLE))
@@ -962,7 +964,7 @@ public abstract class Contraption {
 				BlockState oldState = world.getBlockState(add);
 				Block blockIn = oldState.getBlock();
 				boolean blockMismatch = block.state.getBlock() != blockIn;
-				blockMismatch &= !AllBlocks.POWERED_SHAFT.is(blockIn) || !AllBlocks.SHAFT.has(block.state);
+				blockMismatch &= !CreateGrandExpanse.isAnyOf(AllBlocks.POWERED_SHAFTS, blockIn) || !CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, block.state);
 				if (blockMismatch)
 					iterator.remove();
 				world.removeBlockEntity(add);
@@ -1057,7 +1059,7 @@ public abstract class Contraption {
 
 				world.destroyBlock(targetPos, true);
 
-				if (AllBlocks.SHAFT.has(state))
+				if (CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, state))
 					state = ShaftBlock.pickCorrectShaftType(state, world, targetPos);
 				if (state.hasProperty(SlidingDoorBlock.VISIBLE))
 					state = state.setValue(SlidingDoorBlock.VISIBLE, !state.getValue(SlidingDoorBlock.OPEN))
@@ -1153,14 +1155,14 @@ public abstract class Contraption {
 			if (behaviour != null)
 				behaviour.startMoving(context);
 			pair.setRight(context);
-			if (behaviour instanceof ContraptionControlsMovement) 
+			if (behaviour instanceof ContraptionControlsMovement)
 				disableActorOnStart(context);
 		}
 
 		for (ItemStack stack : disabledActors)
 			setActorsActive(stack, false);
 	}
-	
+
 	protected void disableActorOnStart(MovementContext context) {
 		if (!ContraptionControlsMovement.isDisabledInitially(context))
 			return;

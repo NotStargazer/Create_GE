@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "create:vertical_gearbox_tier_0"
+    }
+  ],
+  "result": {
+    "item": "create:gearbox_tier_0"
+  }
+}

@@ -7,12 +7,15 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.decoration.encasing.EncasableBlock;
 import com.simibubi.create.content.decoration.girder.GirderEncasedShaftBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlock;
 import com.simibubi.create.foundation.placement.IPlacementHelper;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
 import com.simibubi.create.foundation.placement.PlacementOffset;
 import com.simibubi.create.foundation.placement.PoleHelper;
+
+import com.simibubi.create.ge.CreateGrandExpanse;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -35,12 +38,12 @@ public class ShaftBlock extends AbstractSimpleShaftBlock implements EncasableBlo
 
 	public static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
 
-	public ShaftBlock(Properties properties) {
-		super(properties);
+	public ShaftBlock(int tier, Properties properties) {
+		super(tier, properties);
 	}
 
 	public static boolean isShaft(BlockState state) {
-		return AllBlocks.SHAFT.has(state);
+		return CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, state);
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public class ShaftBlock extends AbstractSimpleShaftBlock implements EncasableBlo
 			return result;
 
 		if (AllBlocks.METAL_GIRDER.isIn(heldItem) && state.getValue(AXIS) != Axis.Y) {
-			KineticBlockEntity.switchToBlockState(world, pos, AllBlocks.METAL_GIRDER_ENCASED_SHAFT.getDefaultState()
+			KineticBlockEntity.switchToBlockState(world, pos, AllBlocks.METAL_GIRDER_ENCASED_SHAFTS[tier].getDefaultState()
 				.setValue(WATERLOGGED, state.getValue(WATERLOGGED))
 				.setValue(GirderEncasedShaftBlock.HORIZONTAL_AXIS, state.getValue(AXIS) == Axis.Z ? Axis.Z : Axis.X));
 			if (!world.isClientSide && !player.isCreative()) {
@@ -119,7 +122,7 @@ public class ShaftBlock extends AbstractSimpleShaftBlock implements EncasableBlo
 
 		@Override
 		public Predicate<BlockState> getStatePredicate() {
-			return Predicates.or(AllBlocks.SHAFT::has, AllBlocks.POWERED_SHAFT::has);
+			return shaft -> CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, shaft);
 		}
 
 		@Override

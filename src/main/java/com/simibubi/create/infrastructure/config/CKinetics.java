@@ -9,7 +9,10 @@ public class CKinetics extends ConfigBase {
 	public final ConfigBool disableStress = b(false, "disableStress", Comments.disableStress);
 	public final ConfigInt maxBeltLength = i(20, 5, "maxBeltLength", Comments.maxBeltLength);
 	public final ConfigInt crushingDamage = i(4, 0, "crushingDamage", Comments.crushingDamage);
-	public final ConfigInt maxRotationSpeed = i(256, 64, "maxRotationSpeed", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeedT0 = i(256, 64, "maxRotationSpeedTier0", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeedT1 = i(256, 64, "maxRotationSpeedTier1", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeedT2 = i(256, 64, "maxRotationSpeedTier2", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeedT3 = i(256, 64, "maxRotationSpeedTier3", Comments.rpm, Comments.maxRotationSpeed);
 	public final ConfigEnum<DeployerAggroSetting> ignoreDeployerAttacks =
 		e(DeployerAggroSetting.CREEPERS, "ignoreDeployerAttacks", Comments.ignoreDeployerAttacks);
 	public final ConfigInt kineticValidationFrequency =

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.utility.Iterate;
 
 import net.minecraft.core.BlockPos;
@@ -22,17 +23,20 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class VerticalGearboxItem extends BlockItem {
 
-	public VerticalGearboxItem(Properties builder) {
-		super(AllBlocks.GEARBOX.get(), builder);
+	private int tier;
+
+	public VerticalGearboxItem(int tier, Properties builder) {
+		super(AllBlocks.GEARBOXES[tier].get(), builder);
+		this.tier = tier;
 	}
 
 	@Override
 	public void fillItemCategory(CreativeModeTab p_150895_1_, NonNullList<ItemStack> p_150895_2_) {
 	}
-	
+
 	@Override
 	public String getDescriptionId() {
-		return "item.create.vertical_gearbox";
+		return "item.create.vertical_gearbox_tier_" + tier;
 	}
 
 	@Override

@@ -131,7 +131,7 @@ public class KineticBlockEntityRenderer<T extends KineticBlockEntity> extends Sa
 	}
 
 	public static BlockState shaft(Axis axis) {
-		return AllBlocks.SHAFT.getDefaultState()
+		return AllBlocks.SHAFTS[0].getDefaultState()
 			.setValue(BlockStateProperties.AXIS, axis);
 	}
 

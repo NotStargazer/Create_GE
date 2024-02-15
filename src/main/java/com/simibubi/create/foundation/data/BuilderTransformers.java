@@ -82,9 +82,9 @@ import net.minecraftforge.client.model.generators.ModelFile;
 
 public class BuilderTransformers {
 
-	public static <B extends EncasedShaftBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> encasedShaft(String casing,
+	public static <B extends EncasedShaftBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> encasedShaft(int tier, String casing,
 		Supplier<CTSpriteShiftEntry> casingShift) {
-		return builder -> encasedBase(builder, () -> AllBlocks.SHAFT.get())
+		return builder -> encasedBase(builder, () -> AllBlocks.SHAFTS[tier].get())
 			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(casingShift.get())))
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, casingShift.get(),
 				(s, f) -> f.getAxis() != s.getValue(EncasedShaftBlock.AXIS))))
@@ -166,14 +166,14 @@ public class BuilderTransformers {
 			.build();
 	}
 
-	public static <B extends EncasedCogwheelBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> encasedCogwheel(
+	public static <B extends EncasedCogwheelBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> encasedCogwheel(int tier,
 		String casing, Supplier<CTSpriteShiftEntry> casingShift) {
-		return b -> encasedCogwheelBase(b, casing, casingShift, () -> AllBlocks.COGWHEEL.get(), false);
+		return b -> encasedCogwheelBase(b, casing, casingShift, () -> AllBlocks.COGWHEELS[tier].get(), false);
 	}
 
-	public static <B extends EncasedCogwheelBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> encasedLargeCogwheel(
+	public static <B extends EncasedCogwheelBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> encasedLargeCogwheel(int tier,
 		String casing, Supplier<CTSpriteShiftEntry> casingShift) {
-		return b -> encasedCogwheelBase(b, casing, casingShift, () -> AllBlocks.LARGE_COGWHEEL.get(), true)
+		return b -> encasedCogwheelBase(b, casing, casingShift, () -> AllBlocks.LARGE_COGWHEELS[tier].get(), true)
 			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCogCTBehaviour(casingShift.get())));
 	}
 

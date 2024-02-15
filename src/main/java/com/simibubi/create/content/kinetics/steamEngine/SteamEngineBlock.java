@@ -9,6 +9,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
 import com.simibubi.create.foundation.advancement.AdvancementBehaviour;
 import com.simibubi.create.foundation.block.IBE;
@@ -17,6 +18,8 @@ import com.simibubi.create.foundation.placement.PlacementHelpers;
 import com.simibubi.create.foundation.placement.PlacementOffset;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.Couple;
+
+import com.simibubi.create.ge.CreateGrandExpanse;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -67,7 +70,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 		super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
 		AdvancementBehaviour.setPlacedBy(pLevel, pPos, pPlacer);
 	}
-	
+
 	@Override
 	public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
 		return canAttach(pLevel, pPos, getConnectedDirection(pState).getOpposite());
@@ -120,7 +123,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 		FluidTankBlock.updateBoilerState(pState, pLevel, pPos.relative(getFacing(pState).getOpposite()));
 		BlockPos shaftPos = getShaftPos(pState, pPos);
 		BlockState shaftState = pLevel.getBlockState(shaftPos);
-		if (AllBlocks.POWERED_SHAFT.has(shaftState))
+		if (AllBlocks.POWERED_SHAFTS[0].has(shaftState))
 			pLevel.scheduleTick(shaftPos, shaftState.getBlock(), 1);
 	}
 
@@ -158,7 +161,8 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 	}
 
 	public static boolean isShaftValid(BlockState state, BlockState shaft) {
-		return (AllBlocks.SHAFT.has(shaft) || AllBlocks.POWERED_SHAFT.has(shaft))
+		int tier = ((KineticBlock) shaft.getBlock()).tier;
+		return (AllBlocks.SHAFTS[tier].has(shaft) || AllBlocks.POWERED_SHAFTS[tier].has(shaft))
 			&& shaft.getValue(ShaftBlock.AXIS) != getFacing(state).getAxis();
 	}
 
@@ -176,7 +180,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 	private static class PlacementHelper implements IPlacementHelper {
 		@Override
 		public Predicate<ItemStack> getItemPredicate() {
-			return AllBlocks.SHAFT::isIn;
+			return stack -> CreateGrandExpanse.isInAnyOf(AllBlocks.SHAFTS, stack);
 		}
 
 		@Override
@@ -187,25 +191,28 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 		@Override
 		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
 			BlockHitResult ray) {
+
+			int tier = ((KineticBlock) state.getBlock()).tier;
+
 			BlockPos shaftPos = SteamEngineBlock.getShaftPos(state, pos);
-			BlockState shaft = AllBlocks.SHAFT.getDefaultState();
+			BlockState shaft = AllBlocks.SHAFTS[tier].getDefaultState();
 			for (Direction direction : Direction.orderedByNearest(player)) {
 				shaft = shaft.setValue(ShaftBlock.AXIS, direction.getAxis());
 				if (isShaftValid(state, shaft))
 					break;
 			}
-			
+
 			BlockState newState = world.getBlockState(shaftPos);
 			if (!newState.getMaterial().isReplaceable())
 				return PlacementOffset.fail();
 
 			Axis axis = shaft.getValue(ShaftBlock.AXIS);
 			return PlacementOffset.success(shaftPos,
-				s -> BlockHelper.copyProperties(s, AllBlocks.POWERED_SHAFT.getDefaultState())
+				s -> BlockHelper.copyProperties(s, AllBlocks.POWERED_SHAFTS[tier].getDefaultState())
 					.setValue(PoweredShaftBlock.AXIS, axis));
 		}
 	}
-	
+
 	public static Couple<Integer> getSpeedRange() {
 		return Couple.create(16, 64);
 	}

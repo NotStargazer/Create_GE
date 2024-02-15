@@ -23,14 +23,14 @@ public class StandardBogeyRenderer {
 	public static class CommonStandardBogeyRenderer extends BogeyRenderer.CommonRenderer {
 		@Override
 		public void initialiseContraptionModelData(MaterialManager materialManager) {
-			createModelInstances(materialManager, AllBlocks.SHAFT.getDefaultState()
+			createModelInstances(materialManager, AllBlocks.SHAFTS[0].getDefaultState()
 					.setValue(ShaftBlock.AXIS, Direction.Axis.Z), 2);
 		}
 
 		@Override
 		public void render(CompoundTag bogeyData, float wheelAngle, PoseStack ms, int light, VertexConsumer vb, boolean inContraption) {
 			boolean inInstancedContraption = vb == null;
-			Transform<?>[] shafts = getTransformsFromBlockState(AllBlocks.SHAFT.getDefaultState()
+			Transform<?>[] shafts = getTransformsFromBlockState(AllBlocks.SHAFTS[0].getDefaultState()
 					.setValue(ShaftBlock.AXIS, Direction.Axis.Z), ms, inInstancedContraption, 2);
 			for (int i : Iterate.zeroAndOne) {
 				shafts[i].translate(-.5f, .25f, i * -1)
@@ -80,7 +80,7 @@ public class StandardBogeyRenderer {
 		@Override
 		public void initialiseContraptionModelData(MaterialManager materialManager) {
 			createModelInstances(materialManager, LARGE_BOGEY_WHEELS, BOGEY_DRIVE, BOGEY_PISTON, BOGEY_PIN);
-			createModelInstances(materialManager, AllBlocks.SHAFT.getDefaultState()
+			createModelInstances(materialManager, AllBlocks.SHAFTS[0].getDefaultState()
 					.setValue(ShaftBlock.AXIS, Direction.Axis.X), 2);
 		}
 
@@ -93,7 +93,7 @@ public class StandardBogeyRenderer {
 		public void render(CompoundTag bogeyData, float wheelAngle, PoseStack ms, int light, VertexConsumer vb, boolean inContraption) {
 			boolean inInstancedContraption = vb == null;
 
-			Transform<?>[] secondaryShafts = getTransformsFromBlockState(AllBlocks.SHAFT.getDefaultState()
+			Transform<?>[] secondaryShafts = getTransformsFromBlockState(AllBlocks.SHAFTS[0].getDefaultState()
 					.setValue(ShaftBlock.AXIS, Direction.Axis.X), ms, inInstancedContraption, 2);
 
 			for (int i : Iterate.zeroAndOne) {

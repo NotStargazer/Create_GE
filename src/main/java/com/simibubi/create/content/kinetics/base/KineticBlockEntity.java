@@ -55,6 +55,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	public boolean networkDirty;
 	public boolean updateSpeed;
 	public int preventSpeedUpdate;
+	public int blockTier;
 
 	protected KineticEffectHandler effects;
 	protected float speed;
@@ -68,13 +69,16 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	private int validationCountdown;
 	protected float lastStressApplied;
 	protected float lastCapacityProvided;
-	
+
 	public SequenceContext sequenceContext;
 
 	public KineticBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
 		super(typeIn, pos, state);
 		effects = new KineticEffectHandler(this);
 		updateSpeed = true;
+		if (state.getBlock() instanceof KineticBlock kineticBlock) {
+			blockTier = kineticBlock.tier;
+		}
 	}
 
 	@Override
@@ -603,7 +607,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	public int getRotationAngleOffset(Axis axis) {
 		return 0;
 	}
-	
+
 	protected boolean syncSequenceContext() {
 		return false;
 	}

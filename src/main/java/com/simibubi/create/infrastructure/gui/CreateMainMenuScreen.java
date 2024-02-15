@@ -99,11 +99,11 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 			ms.translate(-1.75 * ((alpha * alpha) / 2f + .5f), .25f, 0);
 			TransformStack.cast(ms)
 				.rotateX(45);
-			GuiGameElement.of(AllBlocks.LARGE_COGWHEEL.getDefaultState())
+			GuiGameElement.of(AllBlocks.LARGE_COGWHEELS[0].getDefaultState())
 				.rotateBlock(0, Util.getMillis() / 32f * side, 0)
 				.render(ms);
 			ms.translate(-1, 0, -1);
-			GuiGameElement.of(AllBlocks.COGWHEEL.getDefaultState())
+			GuiGameElement.of(AllBlocks.COGWHEELS[0].getDefaultState())
 				.rotateBlock(0, Util.getMillis() / -16f * side + 22.5f, 0)
 				.render(ms);
 			ms.popPose();

@@ -42,8 +42,8 @@ public class GirderEncasedShaftBlock extends HorizontalAxisKineticBlock
 	public static final BooleanProperty TOP = GirderBlock.TOP;
 	public static final BooleanProperty BOTTOM = GirderBlock.BOTTOM;
 
-	public GirderEncasedShaftBlock(Properties properties) {
-		super(properties);
+	public GirderEncasedShaftBlock(int tier, Properties properties) {
+		super(tier, properties);
 		registerDefaultState(super.defaultBlockState()
 				.setValue(WATERLOGGED, false)
 				.setValue(TOP, false)
@@ -83,7 +83,7 @@ public class GirderEncasedShaftBlock extends HorizontalAxisKineticBlock
 		Player player = context.getPlayer();
 		if (onWrenched == InteractionResult.SUCCESS && player != null && !player.isCreative())
 			player.getInventory()
-				.placeItemBackInInventory(AllBlocks.SHAFT.asStack());
+				.placeItemBackInInventory(AllBlocks.SHAFTS[tier].asStack());
 		return onWrenched;
 	}
 
@@ -132,7 +132,7 @@ public class GirderEncasedShaftBlock extends HorizontalAxisKineticBlock
 
 	@Override
 	public ItemRequirement getRequiredItems(BlockState state, BlockEntity be) {
-		return ItemRequirement.of(AllBlocks.SHAFT.getDefaultState(), be)
+		return ItemRequirement.of(AllBlocks.SHAFTS[tier].getDefaultState(), be)
 			.union(ItemRequirement.of(AllBlocks.METAL_GIRDER.getDefaultState(), be));
 	}
 

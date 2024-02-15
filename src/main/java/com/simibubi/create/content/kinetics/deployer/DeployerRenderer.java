@@ -166,7 +166,7 @@ public class DeployerRenderer extends SafeBlockEntityRenderer<DeployerBlockEntit
 		if (context.contraption.stalled)
 			speed = 0;
 
-		SuperByteBuffer shaft = CachedBufferer.block(AllBlocks.SHAFT.getDefaultState());
+		SuperByteBuffer shaft = CachedBufferer.block(AllBlocks.SHAFTS[0].getDefaultState());
 		SuperByteBuffer pole = CachedBufferer.partial(AllPartialModels.DEPLOYER_POLE, blockState);
 		SuperByteBuffer hand = CachedBufferer.partial(handPose, blockState);
 

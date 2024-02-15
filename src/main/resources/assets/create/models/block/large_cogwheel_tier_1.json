@@ -5,8 +5,8 @@
 	"textures": {
 		"0": "create:block/cogwheel_axis",
 		"3": "create:block/axis_top",
-		"4": "create:block/large_cogwheel",
-		"particle": "block/stripped_spruce_log"
+		"4": "create:block/large_copper_cogwheel",
+		"particle": "block/copper_block"
 	},
 	"elements": [
 		{

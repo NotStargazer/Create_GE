@@ -1,7 +1,7 @@
 {
-	"parent": "create:block/clutch/block",
+	"parent": "create:block/clutch_tier_3/block",
     "textures": {
-        "0": "create:block/clutch_on",
-		"particle": "create:block/clutch_on"
+        "0": "create:block/clutch_on_tier_3",
+		"particle": "create:block/clutch_on_tier_3"
     }
 }

@@ -59,7 +59,7 @@ public class EncasedCogRenderer extends KineticBlockEntityRenderer<SimpleKinetic
 		for (Direction d : Iterate.directionsInAxis(getRotationAxisOf(be))) {
 			if (!def.hasShaftTowards(be.getLevel(), be.getBlockPos(), blockState, d))
 				continue;
-			SuperByteBuffer shaft = CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, be.getBlockState(), d);
+			SuperByteBuffer shaft = CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALVES[be.getTier()], be.getBlockState(), d);
 			kineticRotationTransform(shaft, be, axis, angle, light);
 			shaft.renderInto(ms, buffer.getBuffer(RenderType.solid()));
 		}
@@ -68,7 +68,7 @@ public class EncasedCogRenderer extends KineticBlockEntityRenderer<SimpleKinetic
 	@Override
 	protected SuperByteBuffer getRotatedModel(SimpleKineticBlockEntity be, BlockState state) {
 		return CachedBufferer.partialFacingVertical(
-			large ? AllPartialModels.SHAFTLESS_LARGE_COGWHEEL : AllPartialModels.SHAFTLESS_COGWHEEL, state,
+			large ? AllPartialModels.SHAFTLESS_LARGE_COGWHEELS[be.blockTier] : AllPartialModels.SHAFTLESS_COGWHEELS[be.blockTier], state,
 			Direction.fromAxisAndDirection(state.getValue(EncasedCogwheelBlock.AXIS), AxisDirection.POSITIVE));
 	}
 

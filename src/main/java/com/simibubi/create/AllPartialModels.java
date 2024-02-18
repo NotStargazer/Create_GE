@@ -18,14 +18,32 @@ import net.minecraft.world.item.DyeColor;
 
 public class AllPartialModels {
 
+	//Tiered Models
+	public static final PartialModel[]
+			SHAFTLESS_LARGE_COGWHEELS = new PartialModel[4],
+			SHAFTLESS_COGWHEELS = new PartialModel[4],
+			SHAFT_HALVES = new PartialModel[4],
+			COGWHEEL_SHAFTS = new PartialModel[4],
+			BELT_PULLEYS = new PartialModel[4];
+
+
+
+	static
+	{
+		for (int tier = 0; tier < 4; tier++)
+		{
+			SHAFTLESS_LARGE_COGWHEELS[tier] = block("large_cogwheel_shaftless_tier_" + tier);
+			SHAFTLESS_COGWHEELS[tier] = block("cogwheel_shaftless_tier_" + tier);
+			SHAFT_HALVES[tier] = block("shaft_half_tier_" + tier);
+			COGWHEEL_SHAFTS[tier] = block("cogwheel_shaft_tier_" + tier);
+			BELT_PULLEYS[tier] = block("belt_pulley_tier_" + tier);
+		}
+	}
+
 	public static final PartialModel
 
 	SCHEMATICANNON_CONNECTOR = block("schematicannon/connector"), SCHEMATICANNON_PIPE = block("schematicannon/pipe"),
-
-		SHAFTLESS_COGWHEEL = block("cogwheel_shaftless"), SHAFTLESS_LARGE_COGWHEEL = block("large_cogwheel_shaftless"),
-		COGWHEEL_SHAFT = block("cogwheel_shaft"), SHAFT_HALF = block("shaft_half"),
-
-		BELT_PULLEY = block("belt_pulley"), BELT_START = block("belt/start"), BELT_MIDDLE = block("belt/middle"),
+		BELT_START = block("belt/start"), BELT_MIDDLE = block("belt/middle"),
 		BELT_END = block("belt/end"), BELT_START_BOTTOM = block("belt/start_bottom"),
 		BELT_MIDDLE_BOTTOM = block("belt/middle_bottom"), BELT_END_BOTTOM = block("belt/end_bottom"),
 		BELT_DIAGONAL_START = block("belt/diagonal_start"), BELT_DIAGONAL_MIDDLE = block("belt/diagonal_middle"),
@@ -58,7 +76,7 @@ public class AllPartialModels {
 		ANALOG_LEVER_INDICATOR = block("analog_lever/indicator"), FUNNEL_FLAP = block("funnel/flap"),
 		BELT_FUNNEL_FLAP = block("belt_funnel/flap"), BELT_TUNNEL_FLAP = block("belt_tunnel/flap"),
 		FLEXPEATER_INDICATOR = block("diodes/indicator"),
-		
+
 		ROLLER_WHEEL = block("mechanical_roller/wheel"),
 		ROLLER_FRAME = block("mechanical_roller/frame"),
 
@@ -67,7 +85,7 @@ public class AllPartialModels {
 		CUCKOO_PIG = block("cuckoo_clock/pig"), CUCKOO_CREEPER = block("cuckoo_clock/creeper"),
 
 		GANTRY_COGS = block("gantry_carriage/wheels"),
-		
+
 		ROPE_COIL = block("rope_pulley/rope_coil"), ROPE_HALF = block("rope_pulley/rope_half"),
 		ROPE_HALF_MAGNET = block("rope_pulley/rope_half_magnet"),
 
@@ -208,7 +226,7 @@ public class AllPartialModels {
 			METAL_GIRDER_BRACKETS.put(d, block("metal_girder/bracket_" + Lang.asId(d.name())));
 		for (int i = 0; i < 8; i++)
 			CONTRAPTION_CONTROLS_INDICATOR.add(block("contraption_controls/indicator_" + i));
-		
+
 		putFoldingDoor("andesite_door");
 		putFoldingDoor("copper_door");
 	}

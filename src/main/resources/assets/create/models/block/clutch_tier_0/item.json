@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"0": "create:block/clutch_off",
-		"1": "create:block/gearbox",
-		"4": "create:block/funnel/andesite_funnel_frame",
+		"0": "create:block/clutch_off_tier_0",
+		"1": "create:block/gearbox_tier_0",
+		"4": "create:block/frame_tier_0",
 		"particle": "create:block/axis",
 		"1_0": "create:block/axis",
 		"1_1": "create:block/axis_top"

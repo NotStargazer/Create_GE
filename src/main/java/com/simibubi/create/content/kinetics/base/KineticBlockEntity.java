@@ -93,6 +93,16 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 		super.initialize();
 	}
 
+	public int getTier()
+	{
+		if (blockTier == -1 || blockTier > 3)
+		{
+			return 0;
+		}
+
+		return blockTier;
+	}
+
 	@Override
 	public void tick() {
 		if (!level.isClientSide && needsSpeedUpdate())

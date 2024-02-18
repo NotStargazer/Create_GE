@@ -48,8 +48,8 @@ public abstract class AnimatedKinetics implements IDrawable {
 		return AllBlocks.SHAFTS[0].getDefaultState().setValue(BlockStateProperties.AXIS, axis);
 	}
 
-	protected PartialModel cogwheel() {
-		return AllPartialModels.SHAFTLESS_COGWHEEL;
+	protected PartialModel cogwheel(int tier) {
+		return AllPartialModels.SHAFTLESS_COGWHEELS[tier];
 	}
 
 	protected GuiGameElement.GuiRenderBuilder blockElement(BlockState state) {

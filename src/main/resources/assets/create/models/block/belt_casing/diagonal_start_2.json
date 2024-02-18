@@ -3,7 +3,7 @@
 	"parent": "block/block",
 	"textures": {
 		"7": "create:block/belt/brass_belt_casing",
-		"8": "create:block/gearbox",
+		"8": "create:block/gearbox_tier_2",
 		"particle": "create:block/brass_casing"
 	},
 	"elements": [

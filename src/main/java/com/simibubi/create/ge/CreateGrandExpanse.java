@@ -10,11 +10,16 @@ import com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlock;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.Map;
+import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 public class CreateGrandExpanse
@@ -96,5 +101,49 @@ public class CreateGrandExpanse
 		}
 
 		return BeltPart.PULLEY_0;
+	}
+
+	public static <T extends Comparable<T>> void copyProperty(BlockState from, BlockState to, Property<T> property)
+	{
+		to.setValue(property, from.getValue(property));
+	}
+
+	public static CompoundTag overrideNBT(CompoundTag nbt)
+	{
+		if (nbt.contains("palette"))
+		{
+			ListTag paletteList = nbt.getList("palette", 10);
+			for (int i = 0; i < paletteList.size(); i++)
+			{
+				CompoundTag tag = paletteList.getCompound(i);
+				String name = Objects.requireNonNull(tag.get("Name")).getAsString();
+				String override = switch (name)
+				{
+					case "create:shaft" -> "create:shaft_tier_0";
+					case "create:cogwheel" -> "create:cogwheel_tier_0";
+					case "create:large_cogwheel" -> "create:large_cogwheel_tier_0";
+					case "create:gearbox" -> "create:gearbox_tier_0";
+					case "create:clutch" -> "create:clutch_tier_0";
+					case "create:gearshift" -> "create:gearshift_tier_0";
+					case "create:encased_chain_drive" -> "create:encased_chain_drive_tier_0";
+					case "create:adjustable_chain_gearshift" -> "create:adjustable_chain_gearshift_tier_0";
+					default -> null;
+				};
+
+				if (override != null)
+				{
+					tag.putString("Name", override);
+				}
+
+				if (name.equals("create:belt"))
+				{
+					CompoundTag propTag = tag.getCompound("Properties");
+					String partName = Objects.requireNonNull(propTag.get("part")).getAsString();
+					String partOverride = partName.equals("middle") ? partName : partName + "_0";
+					propTag.putString("part", partOverride);
+				}
+			}
+		}
+		return nbt;
 	}
 }

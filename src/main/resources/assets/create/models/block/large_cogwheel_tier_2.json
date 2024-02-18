@@ -4,9 +4,9 @@
 	"texture_size": [48, 48],
 	"textures": {
 		"0": "create:block/cogwheel_axis",
-		"1": "create:block/steel_cogwheel",
+		"1": "create:block/brass_cogwheel",
 		"3": "create:block/axis_top",
-		"particle": "block/deepslate"
+		"particle": "create:block/brass_block"
 	},
 	"elements": [
 		{

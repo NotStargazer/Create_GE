@@ -90,6 +90,17 @@ public enum BeltPart implements StringRepresentable {
 		};
 	}
 
+	public static BeltPart fromOrdinal(int part)
+	{
+		return switch (part)
+		{
+            case 1 -> MIDDLE;
+			case 2 -> END_0;
+			case 3 -> PULLEY_0;
+			default -> START_0;
+		};
+	}
+
 	@Override
 	public String getSerializedName() {
 		return Lang.asId(name());

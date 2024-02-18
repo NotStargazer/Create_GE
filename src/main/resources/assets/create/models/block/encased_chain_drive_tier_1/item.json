@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"1": "create:block/gearbox",
-		"particle": "create:block/encased_chain_drive",
-		"side": "create:block/encased_chain_drive",
+		"1": "create:block/gearbox_tier_1",
+		"particle": "create:block/encased_chain_drive_tier_1",
+		"side": "create:block/encased_chain_drive_tier_1",
 		"1_0": "create:block/axis",
 		"1_1": "create:block/axis_top"
 	},

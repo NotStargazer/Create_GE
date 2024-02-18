@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"0": "create:block/axis",
+		"0": "create:block/axis_tier_0",
 		"1": "create:block/axis_top",
-		"particle": "create:block/axis"
+		"particle": "create:block/axis_tier_0"
 	},
 	"elements": [
 		{

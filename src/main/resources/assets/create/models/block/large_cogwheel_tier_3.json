@@ -5,8 +5,8 @@
 	"textures": {
 		"0": "create:block/cogwheel_axis",
 		"3": "create:block/axis_top",
-		"5": "create:block/titanium_cogwheel",
-		"particle": "block/iron_block"
+		"5": "create:block/steel_cogwheel",
+		"particle": "block/deepslate"
 	},
 	"elements": [
 		{

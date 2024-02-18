@@ -6,8 +6,8 @@
 		"stonecutter_saw": "block/stonecutter_saw",
 		"particle": "create:block/gearbox_top",
 		"gearbox_top": "create:block/gearbox_top",
-		"encased_belt": "create:block/encased_chain_drive",
-		"gearbox": "create:block/gearbox",
+		"encased_belt": "create:block/encased_chain_drive_tier_0",
+		"gearbox": "create:block/gearbox_tier_0",
 		"andesite_casing_short": "create:block/andesite_casing_short"
 	},
 	"elements": [

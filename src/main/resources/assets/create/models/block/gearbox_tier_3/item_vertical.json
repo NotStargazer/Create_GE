@@ -4,8 +4,8 @@
 	"textures": {
 		"0": "create:block/axis",
 		"1": "create:block/axis_top",
-		"gearbox_top": "create:block/andesite_casing",
-		"gearbox": "create:block/gearbox",
+		"gearbox_top": "create:block/gearbox_top_tier_3",
+		"gearbox": "create:block/gearbox_tier_3",
 		"particle": "create:block/axis"
 	},
 	"elements": [

@@ -25,7 +25,7 @@ public class FanInstance extends KineticBlockEntityInstance<EncasedFanBlockEntit
 		direction = blockState.getValue(FACING);
 
 		opposite = direction.getOpposite();
-		shaft = getRotatingMaterial().getModel(AllPartialModels.SHAFT_HALF, blockState, opposite).createInstance();
+		shaft = getRotatingMaterial().getModel(AllPartialModels.SHAFT_HALVES[blockEntity.getTier()], blockState, opposite).createInstance();
 		fan = materialManager.defaultCutout()
 				.material(AllMaterialSpecs.ROTATING)
 				.getModel(AllPartialModels.ENCASED_FAN_INNER, blockState, opposite)

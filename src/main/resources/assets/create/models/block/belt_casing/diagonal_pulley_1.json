@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"8": "create:block/gearbox",
+		"8": "create:block/gearbox_tier_1",
 		"10": "create:block/belt/brass_belt_casing",
 		"particle": "create:block/brass_casing"
 	},

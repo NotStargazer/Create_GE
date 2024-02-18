@@ -445,7 +445,7 @@ public class AllBlocks {
 					.register();
 
 			ANDESITE_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("andesite_encased_large_cogwheel_tier_" + tier,
-							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.ANDESITE_CASING::get))
+							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.ANDESITE_CASING::get))
 					.properties(p -> p.color(MaterialColor.PODZOL))
 					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"andesite", () -> AllSpriteShifts.ANDESITE_CASING))
 					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))
@@ -453,7 +453,7 @@ public class AllBlocks {
 					.register();
 
 			BRASS_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("brass_encased_large_cogwheel_tier_" + tier,
-							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.BRASS_CASING::get))
+							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.BRASS_CASING::get))
 					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
 					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"brass", () -> AllSpriteShifts.BRASS_CASING))
 					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))

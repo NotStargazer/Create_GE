@@ -143,7 +143,8 @@ public class BeltInstance extends KineticBlockEntityInstance<BeltBlockEntity> {
             return modelTransform;
         };
 
-        return getRotatingMaterial().getModel(AllPartialModels.BELT_PULLEY, blockState, dir, ms);
+		int tier = blockEntity.getShaftTier();
+        return getRotatingMaterial().getModel(AllPartialModels.BELT_PULLEYS[tier], blockState, dir, ms);
     }
 
     private Direction getOrientation() {

@@ -48,7 +48,7 @@ public class StabilizedBearingInstance extends ActorInstance {
 
 		shaft = materialManager.defaultSolid()
 				.material(AllMaterialSpecs.ROTATING)
-				.getModel(AllPartialModels.SHAFT_HALF, blockState, blockState.getValue(BlockStateProperties.FACING).getOpposite())
+				.getModel(AllPartialModels.SHAFT_HALVES[0], blockState, blockState.getValue(BlockStateProperties.FACING).getOpposite())
 				.createInstance();
 
 		// not rotating so no need to set speed, axis, etc.

@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "create:block/axis_top",
-		"1": "create:block/cogwheel_axis",
+		"1": "create:block/axis_tier_2",
 		"particle": "create:block/axis_top"
 	},
 	"elements": [

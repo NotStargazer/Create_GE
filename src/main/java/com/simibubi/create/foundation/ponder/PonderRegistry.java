@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 import com.simibubi.create.Create;
+import com.simibubi.create.ge.CreateGrandExpanse;
 import com.simibubi.create.infrastructure.ponder.PonderIndex;
 import com.simibubi.create.infrastructure.ponder.SharedText;
 
@@ -118,7 +119,8 @@ public class PonderRegistry {
 		DataInputStream stream =
 			new DataInputStream(new BufferedInputStream(new GZIPInputStream(resourceStream)));
 		CompoundTag nbt = NbtIo.read(stream, new NbtAccounter(0x20000000L));
-		t.load(nbt);
+        CreateGrandExpanse.overrideNBT(nbt);
+        t.load(nbt);
 		return t;
 	}
 

@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"2": "create:block/encased_chain_drive_end",
-		"particle": "create:block/encased_chain_drive",
-		"side": "create:block/encased_chain_drive"
+		"2": "create:block/encased_chain_drive_end_tier_0",
+		"particle": "create:block/encased_chain_drive_tier_0",
+		"side": "create:block/encased_chain_drive_tier_0"
 	},
 	"elements": [
 		{

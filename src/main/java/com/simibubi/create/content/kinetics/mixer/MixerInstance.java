@@ -44,7 +44,7 @@ public class MixerInstance extends EncasedCogInstance implements DynamicInstance
 	protected Instancer<RotatingData> getCogModel() {
 		return materialManager.defaultSolid()
 			.material(AllMaterialSpecs.ROTATING)
-			.getModel(AllPartialModels.SHAFTLESS_COGWHEEL, blockEntity.getBlockState());
+			.getModel(AllPartialModels.SHAFTLESS_COGWHEELS[0], blockEntity.getBlockState());
 	}
 
 	@Override

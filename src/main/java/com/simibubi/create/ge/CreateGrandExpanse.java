@@ -103,12 +103,7 @@ public class CreateGrandExpanse
 		return BeltPart.PULLEY_0;
 	}
 
-	public static <T extends Comparable<T>> void copyProperty(BlockState from, BlockState to, Property<T> property)
-	{
-		to.setValue(property, from.getValue(property));
-	}
-
-	public static CompoundTag overrideNBT(CompoundTag nbt)
+	public static void overrideNBT(CompoundTag nbt)
 	{
 		if (nbt.contains("palette"))
 		{
@@ -144,6 +139,5 @@ public class CreateGrandExpanse
 				}
 			}
 		}
-		return nbt;
 	}
 }

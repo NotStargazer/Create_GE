@@ -53,7 +53,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 	@Override
 	protected void init() {
-		int maxValue = board.maxValue();
+		int maxValue = board.width();
 		maxLabelWidth = 0;
 		int milestoneCount = maxValue / board.milestoneInterval() + 1;
 		int scale = maxValue > 128 ? 1 : 2;
@@ -108,12 +108,13 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		}
 		column -= 1;
 
-		return new ValueSettings(row,
-			milestonesOnly ? Math.min(column * board.milestoneInterval(), board.maxValue()) : column);
+		int outVal = Math.round(Math.min(milestonesOnly ? column * board.milestoneInterval() : column, board.width()));
+
+		return new ValueSettings(row, outVal);
 	}
 
 	public Vec2 getCoordinateOfValue(int row, int column) {
-		int scale = board.maxValue() > 128 ? 1 : 2;
+		int scale = board.width() > 128 ? 1 : 2;
 		float xOut =
 			guiLeft + ((Math.max(1, column) - 1) / board.milestoneInterval()) * milestoneSize + column * scale + 1.5f;
 		xOut += maxLabelWidth + 14 + 4;
@@ -131,9 +132,9 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 	protected void renderWindow(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
 		int x = guiLeft;
 		int y = guiTop;
-		int milestoneCount = board.maxValue() / board.milestoneInterval() + 1;
+		int milestoneCount = board.width() / board.milestoneInterval() + 1;
 		int blitOffset = getBlitOffset();
-		int scale = board.maxValue() > 128 ? 1 : 2;
+		int scale = board.width() > 128 ? 1 : 2;
 
 		Component title = board.title();
 		Component tip = Lang.translateDirect("gui.value_settings.release_to_confirm", Components.keybind("key.use"));
@@ -141,7 +142,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 		int fattestLabel = Math.max(font.width(tip), font.width(title));
 		if (iconMode)
-			for (int i = 0; i <= board.maxValue(); i++)
+			for (int i = 0; i <= board.width(); i++)
 				fattestLabel = Math.max(fattestLabel, font.width(board.formatter()
 					.format(new ValueSettings(0, i))));
 
@@ -203,11 +204,12 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 			return;
 
 		ValueSettings closest = getClosestCoordinate(mouseX, mouseY);
+		ValueSettings outValue = new ValueSettings(closest.row(), closest.value() * (int)((float) board.maxValue() / board.width()));
 
 		if (!closest.equals(lastHovered)) {
-			onHover.accept(closest);
+			onHover.accept(outValue);
 			if (soundCoolDown == 0) {
-				float pitch = (closest.value()) / (float) (board.maxValue());
+				float pitch = (outValue.value()) / (float) (board.maxValue());
 				pitch = Mth.lerp(pitch, 1.15f, 1.5f);
 				minecraft.getSoundManager()
 					.play(SimpleSoundInstance.forUI(AllSoundEvents.SCROLL_VALUE.getMainEvent(), pitch, 0.25F));
@@ -219,7 +221,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 		Vec2 coordinate = getCoordinateOfValue(closest.row(), closest.value());
 		Component cursorText = board.formatter()
-			.format(closest);
+			.format(outValue);
 
 		AllIcons cursorIcon = null;
 		if (board.formatter()instanceof ScrollOptionSettingsFormatter sosf)
@@ -286,7 +288,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 	public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
 		ValueSettings closest = getClosestCoordinate((int) pMouseX, (int) pMouseY);
 		int column = closest.value() + ((int) Math.signum(pDelta)) * (hasShiftDown() ? board.milestoneInterval() : 1);
-		column = Mth.clamp(column, 0, board.maxValue());
+		column = Mth.clamp(column, 0, board.width());
 		if (column == closest.value())
 			return false;
 		setCursor(getCoordinateOfValue(closest.row(), column));
@@ -297,9 +299,10 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 	public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
 		if (pButton == 1) {
 			ValueSettings closest = getClosestCoordinate((int) pMouseX, (int) pMouseY);
+			ValueSettings outValue = new ValueSettings(closest.row(), closest.value() * (int)((float) board.maxValue() / board.width()));
 			// FIXME: value settings may be face-sensitive on future components
 			AllPackets.getChannel()
-				.sendToServer(new ValueSettingsPacket(pos, closest.row(), closest.value(), null, Direction.UP,
+				.sendToServer(new ValueSettingsPacket(pos, closest.row(), outValue.value(), null, Direction.UP,
 					AllKeys.ctrlDown()));
 			onClose();
 			return true;

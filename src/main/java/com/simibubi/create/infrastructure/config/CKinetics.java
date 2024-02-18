@@ -13,6 +13,7 @@ public class CKinetics extends ConfigBase {
 	public final ConfigInt maxRotationSpeedT1 = i(256, 64, "maxRotationSpeedTier1", Comments.rpm, Comments.maxRotationSpeed);
 	public final ConfigInt maxRotationSpeedT2 = i(256, 64, "maxRotationSpeedTier2", Comments.rpm, Comments.maxRotationSpeed);
 	public final ConfigInt maxRotationSpeedT3 = i(256, 64, "maxRotationSpeedTier3", Comments.rpm, Comments.maxRotationSpeed);
+	public final ConfigInt maxRotationSpeed = i(256, 64, "maxRotationSpeedTier3", Comments.rpm, Comments.maxRotationSpeed);
 	public final ConfigEnum<DeployerAggroSetting> ignoreDeployerAttacks =
 		e(DeployerAggroSetting.CREEPERS, "ignoreDeployerAttacks", Comments.ignoreDeployerAttacks);
 	public final ConfigInt kineticValidationFrequency =

@@ -208,37 +208,14 @@ public class SchematicWorld extends WrappedWorld implements ServerLevelAccessor 
 
 	@Override
 	public boolean setBlock(BlockPos pos, BlockState state, int arg2) {
-		String stateName = state.getBlock().defaultBlockState().toString();
-		BlockState newState = switch (stateName)
-		{
-			case "Block{create:shaft}" -> AllBlocks.SHAFTS[0].getDefaultState();
-			case "Block{create:cogwheel}" -> AllBlocks.COGWHEELS[0].getDefaultState();
-			case "Block{create:large_cogwheel}" -> AllBlocks.LARGE_COGWHEELS[0].getDefaultState();
-			case "Block{create:gearbox}" -> AllBlocks.GEARBOXES[0].getDefaultState();
-			case "Block{create:clutch}" -> AllBlocks.CLUTCHES[0].getDefaultState();
-			case "Block{create:gearshift}" -> AllBlocks.GEARSHIFTS[0].getDefaultState();
-			case "Block{create:encased_chain_drive}" -> AllBlocks.ENCASED_CHAIN_DRIVES[0].getDefaultState();
-			case "Block{create:adjustable_chain_gearshift}" -> AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[0].getDefaultState();
-			default -> state;
-		};
-
-		for (Property<?> property : state.getProperties()) {
-			CreateGrandExpanse.copyProperty(state, newState, property);
-		}
-
-		if (stateName.contains("Block{create:belt}")) {
-			int part = state.getValue(BeltBlock.PART).ordinal();
-			newState.setValue(BeltBlock.PART, BeltPart.fromOrdinal(part));
-		}
-
 		pos = pos.immutable()
 			.subtract(anchor);
 		bounds = BBHelper.encapsulate(bounds, pos);
-		blocks.put(pos, newState);
+		blocks.put(pos, state);
 		if (blockEntities.containsKey(pos)) {
 			BlockEntity blockEntity = blockEntities.get(pos);
 			if (!blockEntity.getType()
-				.isValid(newState)) {
+				.isValid(state)) {
 				blockEntities.remove(pos);
 				renderedBlockEntities.remove(blockEntity);
 			}

@@ -22,7 +22,7 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class ValueSettingsClient implements IGuiOverlay {
-	
+
 	private Minecraft mc;
 
 	public int interactHeldTicks = -1;

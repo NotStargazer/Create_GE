@@ -13,6 +13,8 @@ import com.simibubi.create.foundation.utility.AngleHelper;
 import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.foundation.utility.VecHelper;
 
+import com.simibubi.create.infrastructure.config.AllConfigs;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -23,7 +25,6 @@ import net.minecraft.world.phys.Vec3;
 public class CreativeMotorBlockEntity extends GeneratingKineticBlockEntity {
 
 	public static final int DEFAULT_SPEED = 16;
-	public static final int MAX_SPEED = 512;
 
 	protected ScrollValueBehaviour generatedSpeed;
 
@@ -34,7 +35,7 @@ public class CreativeMotorBlockEntity extends GeneratingKineticBlockEntity {
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		super.addBehaviours(behaviours);
-		int max = MAX_SPEED;
+		int max = AllConfigs.server().kinetics.maxRotationSpeedT3.get();
 		generatedSpeed = new KineticScrollValueBehaviour(Lang.translateDirect("kinetics.creative_motor.rotation_speed"),
 			this, new MotorValueBox());
 		generatedSpeed.between(-max, max);

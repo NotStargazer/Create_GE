@@ -24,7 +24,7 @@ public class BrassDiodeScrollValueBehaviour extends ScrollValueBehaviour {
 
 	@Override
 	public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
-		return new ValueSettingsBoard(label, 60, 10,
+		return new ValueSettingsBoard(label, 60, 60, 10,
 			Lang.translatedOptions("generic.unit", "ticks", "seconds", "minutes"),
 			new ValueSettingsFormatter(this::formatSettings));
 	}
@@ -73,7 +73,7 @@ public class BrassDiodeScrollValueBehaviour extends ScrollValueBehaviour {
 		default -> value + ":00";
 		});
 	}
-	
+
 	@Override
 	public String getClipboardKey() {
 		return "Timings";

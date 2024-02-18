@@ -4,6 +4,6 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 
-public record ValueSettingsBoard(Component title, int maxValue, int milestoneInterval, List<Component> rows,
+public record ValueSettingsBoard(Component title, int maxValue, int width, int milestoneInterval, List<Component> rows,
 	ValueSettingsFormatter formatter) {
 }

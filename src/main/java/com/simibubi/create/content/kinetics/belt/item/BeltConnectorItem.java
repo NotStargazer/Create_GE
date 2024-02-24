@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllCreativeModeTabs;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltPart;
@@ -16,6 +17,7 @@ import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
 import com.simibubi.create.foundation.utility.VecHelper;
+import com.simibubi.create.ge.CreateGrandExpanse;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.minecraft.core.BlockPos;
@@ -48,14 +50,14 @@ public class BeltConnectorItem extends BlockItem {
 	public String getDescriptionId() {
 		return getOrCreateDescriptionId();
 	}
-	
+
 	@Override
 	public void fillItemCategory(CreativeModeTab pGroup, NonNullList<ItemStack> pItems) {
 		// See CogWheelBlock.fillItemCategory()
 		if (pGroup != AllCreativeModeTabs.BASE_CREATIVE_TAB)
 			super.fillItemCategory(pGroup, pItems);
 	}
-	
+
 	@Nonnull
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
@@ -128,6 +130,9 @@ public class BeltConnectorItem extends BlockItem {
 		BeltSlope slope = getSlopeBetween(start, end);
 		Direction facing = getFacingFromTo(start, end);
 
+		int startTier = CreateGrandExpanse.getTier(world.getBlockState(start).getBlock());
+		int endTier = CreateGrandExpanse.getTier(world.getBlockState(end).getBlock());
+
 		BlockPos diff = end.subtract(start);
 		if (diff.getX() == diff.getZ())
 			facing = Direction.get(facing.getAxisDirection(), world.getBlockState(start)
@@ -144,11 +149,13 @@ public class BeltConnectorItem extends BlockItem {
 				break;
 			}
 
-			BeltPart part = pos.equals(start) ? BeltPart.START : pos.equals(end) ? BeltPart.END : BeltPart.MIDDLE;
+			BeltPart part = pos.equals(start) ? BeltPart.getStart(startTier) : pos.equals(end) ? BeltPart.getEnd(endTier) : BeltPart.MIDDLE;
 			BlockState shaftState = world.getBlockState(pos);
 			boolean pulley = ShaftBlock.isShaft(shaftState);
-			if (part == BeltPart.MIDDLE && pulley)
-				part = BeltPart.PULLEY;
+			if (part == BeltPart.MIDDLE && pulley) {
+				int pulleyTier = ((KineticBlock) shaftState.getBlock()).tier;
+				part = BeltPart.getPulley(pulleyTier);
+			}
 			if (pulley && shaftState.getValue(AbstractSimpleShaftBlock.AXIS) == Axis.Y)
 				slope = BeltSlope.SIDEWAYS;
 

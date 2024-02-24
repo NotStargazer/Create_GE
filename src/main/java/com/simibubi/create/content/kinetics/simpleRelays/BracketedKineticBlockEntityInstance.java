@@ -37,7 +37,7 @@ public class BracketedKineticBlockEntityInstance extends SingleRotatingInstance<
 		BlockPos pos = blockEntity.getBlockPos();
 		float offset = BracketedKineticBlockEntityRenderer.getShaftAngleOffset(axis, pos);
 		Direction facing = Direction.fromAxisAndDirection(axis, AxisDirection.POSITIVE);
-		Instancer<RotatingData> half = getRotatingMaterial().getModel(AllPartialModels.COGWHEEL_SHAFT, blockState,
+		Instancer<RotatingData> half = getRotatingMaterial().getModel(AllPartialModels.COGWHEEL_SHAFTS[blockEntity.getTier()], blockState,
 			facing, () -> this.rotateToAxis(axis));
 
 		additionalShaft = setup(half.createInstance(), speed);
@@ -51,7 +51,7 @@ public class BracketedKineticBlockEntityInstance extends SingleRotatingInstance<
 
 		Axis axis = KineticBlockEntityRenderer.getRotationAxisOf(blockEntity);
 		Direction facing = Direction.fromAxisAndDirection(axis, AxisDirection.POSITIVE);
-		return getRotatingMaterial().getModel(AllPartialModels.SHAFTLESS_LARGE_COGWHEEL, blockState, facing,
+		return getRotatingMaterial().getModel(AllPartialModels.SHAFTLESS_LARGE_COGWHEELS[blockEntity.blockTier], blockState, facing,
 			() -> this.rotateToAxis(axis));
 	}
 

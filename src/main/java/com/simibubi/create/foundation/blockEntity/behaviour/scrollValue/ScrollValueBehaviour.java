@@ -157,7 +157,7 @@ public class ScrollValueBehaviour extends BlockEntityBehaviour implements ValueS
 
 	@Override
 	public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
-		return new ValueSettingsBoard(label, max, 10, ImmutableList.of(Components.literal("Value")),
+		return new ValueSettingsBoard(label, max, max, 10, ImmutableList.of(Components.literal("Value")),
 			new ValueSettingsFormatter(ValueSettings::format));
 	}
 

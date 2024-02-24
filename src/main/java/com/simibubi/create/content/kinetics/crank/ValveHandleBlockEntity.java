@@ -173,7 +173,7 @@ public class ValveHandleBlockEntity extends HandCrankBlockEntity {
 				.withStyle(ChatFormatting.BOLD),
 				Components.literal("\u27f2")
 					.withStyle(ChatFormatting.BOLD));
-			return new ValueSettingsBoard(label, 180, 45, rows, new ValueSettingsFormatter(this::formatValue));
+			return new ValueSettingsBoard(label, 180, 180, 45, rows, new ValueSettingsFormatter(this::formatValue));
 		}
 
 		@Override
@@ -215,7 +215,7 @@ public class ValveHandleBlockEntity extends HandCrankBlockEntity {
 		protected Vec3 getSouthLocation() {
 			return VecHelper.voxelSpace(8, 8, 4.5);
 		}
-		
+
 		@Override
 		public boolean testHit(BlockState state, Vec3 localHit) {
 			Vec3 offset = getLocalOffset(state);

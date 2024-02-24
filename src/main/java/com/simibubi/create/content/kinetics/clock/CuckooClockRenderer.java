@@ -89,7 +89,7 @@ public class CuckooClockRenderer extends KineticBlockEntityRenderer<CuckooClockB
 
 	@Override
 	protected SuperByteBuffer getRotatedModel(CuckooClockBlockEntity be, BlockState state) {
-		return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, state, state
+		return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALVES[be.getTier()], state, state
 				.getValue(CuckooClockBlock.HORIZONTAL_FACING)
 				.getOpposite());
 	}

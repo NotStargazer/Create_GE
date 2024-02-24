@@ -18,7 +18,7 @@ public class AnimatedMixer extends AnimatedKinetics {
 		matrixStack.mulPose(Vector3f.YP.rotationDegrees(22.5f));
 		int scale = 23;
 
-		blockElement(cogwheel())
+		blockElement(cogwheel(0))
 			.rotateBlock(0, getCurrentAngle() * 2, 0)
 			.atLocal(0, 0, 0)
 			.scale(scale)

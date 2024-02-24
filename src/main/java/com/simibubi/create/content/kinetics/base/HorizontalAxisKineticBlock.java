@@ -21,7 +21,11 @@ public abstract class HorizontalAxisKineticBlock extends KineticBlock {
 	public static final Property<Axis> HORIZONTAL_AXIS = BlockStateProperties.HORIZONTAL_AXIS;
 
 	public HorizontalAxisKineticBlock(Properties properties) {
-		super(properties);
+		super(-1, properties);
+	}
+
+	public HorizontalAxisKineticBlock(int tier, Properties properties) {
+		super(tier, properties);
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class MechanicalSawScenes {
 		scene.world.showSection(util.select.layer(0), Direction.UP);
 
 		BlockPos shaftPos = util.grid.at(2, 1, 3);
-		scene.world.setBlock(shaftPos, AllBlocks.SHAFT.getDefaultState()
+		scene.world.setBlock(shaftPos, AllBlocks.SHAFTS[0].getDefaultState()
 			.setValue(ShaftBlock.AXIS, Axis.Z), false);
 
 		BlockPos sawPos = util.grid.at(2, 1, 2);
@@ -104,13 +104,13 @@ public class MechanicalSawScenes {
 		scene.world.setKineticSpeed(belt, 0);
 		scene.world.modifyKineticSpeed(util.select.everywhere(), f -> -f);
 		scene.world.modifyEntity(logItem, Entity::discard);
-		scene.world.setBlock(shaftPos, AllBlocks.COGWHEEL.getDefaultState()
+		scene.world.setBlock(shaftPos, AllBlocks.COGWHEELS[0].getDefaultState()
 			.setValue(ShaftBlock.AXIS, Axis.Z), true);
 		scene.idle(3);
 		scene.addKeyframe();
 
 		scene.world.multiplyKineticSpeed(util.select.everywhere(), .5f);
-		
+
 		ElementLink<WorldSectionElement> beltSection = scene.world.showIndependentSection(belt, Direction.EAST);
 		scene.world.moveSection(beltSection, util.vector.of(0, 100, 0), 0);
 		scene.idle(1);

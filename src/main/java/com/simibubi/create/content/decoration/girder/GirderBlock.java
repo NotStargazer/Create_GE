@@ -11,6 +11,7 @@ import com.simibubi.create.content.decoration.bracket.BracketBlock;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.decoration.placard.PlacardBlock;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.logistics.chute.AbstractChuteBlock;
 import com.simibubi.create.content.redstone.nixieTube.NixieTubeBlock;
@@ -21,6 +22,8 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.placement.IPlacementHelper;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
 import com.simibubi.create.foundation.utility.Iterate;
+
+import com.simibubi.create.ge.CreateGrandExpanse;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -102,8 +105,9 @@ public class GirderBlock extends Block implements SimpleWaterloggedBlock, IWrenc
 			return InteractionResult.PASS;
 
 		ItemStack itemInHand = pPlayer.getItemInHand(pHand);
-		if (AllBlocks.SHAFT.isIn(itemInHand)) {
-			KineticBlockEntity.switchToBlockState(pLevel, pPos, AllBlocks.METAL_GIRDER_ENCASED_SHAFT.getDefaultState()
+		if (CreateGrandExpanse.isInAnyOf(AllBlocks.SHAFTS, itemInHand)) {
+			int tier = ((KineticBlock) ((BlockItem) (itemInHand).getItem()).getBlock()).tier;
+			KineticBlockEntity.switchToBlockState(pLevel, pPos, AllBlocks.METAL_GIRDER_ENCASED_SHAFTS[tier].getDefaultState()
 				.setValue(WATERLOGGED, pState.getValue(WATERLOGGED))
 				.setValue(TOP, pState.getValue(TOP))
 				.setValue(BOTTOM, pState.getValue(BOTTOM))

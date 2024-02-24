@@ -1,10 +1,10 @@
 package com.simibubi.create.foundation.utility;
 
-import static com.simibubi.create.AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFT;
-import static com.simibubi.create.AllBlocks.ANDESITE_ENCASED_SHAFT;
+import static com.simibubi.create.AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS;
+import static com.simibubi.create.AllBlocks.ANDESITE_ENCASED_SHAFTS;
 import static com.simibubi.create.AllBlocks.BRASS_BELT_FUNNEL;
 import static com.simibubi.create.AllBlocks.BRASS_TUNNEL;
-import static com.simibubi.create.AllBlocks.ENCASED_CHAIN_DRIVE;
+import static com.simibubi.create.AllBlocks.ENCASED_CHAIN_DRIVES;
 import static com.simibubi.create.AllBlocks.LINEAR_CHASSIS;
 import static com.simibubi.create.AllBlocks.MECHANICAL_DRILL;
 import static com.simibubi.create.AllBlocks.MECHANICAL_HARVESTER;
@@ -76,10 +76,14 @@ public class RemapHelper {
 	private static final Map<String, ResourceLocation> reMap = new HashMap<>();
 
 	static {
+		for (int tier = 0; tier < 4; tier++)
+		{
+			reMap.put("encased_shaft_tier_" + tier, ANDESITE_ENCASED_SHAFTS[tier].getId());
+			reMap.put("encased_belt_tier_" + tier, ENCASED_CHAIN_DRIVES[tier].getId());
+			reMap.put("adjustable_pulley_tier_" + tier, ADJUSTABLE_CHAIN_GEARSHIFTS[tier].getId());
+		}
+
 		reMap.put("toggle_latch", POWERED_TOGGLE_LATCH.getId());
-		reMap.put("encased_shaft", ANDESITE_ENCASED_SHAFT.getId());
-		reMap.put("encased_belt", ENCASED_CHAIN_DRIVE.getId());
-		reMap.put("adjustable_pulley", ADJUSTABLE_CHAIN_GEARSHIFT.getId());
 		reMap.put("stockswitch", THRESHOLD_SWITCH.getId());
 		reMap.put("redstone_latch", POWERED_LATCH.getId());
 		reMap.put("contact", REDSTONE_CONTACT.getId());
@@ -152,7 +156,7 @@ public class RemapHelper {
 		reMap.put("weathered_limestone_slab", asResource("polished_cut_tuff_slab"));
 		reMap.put("gabbro_stairs", asResource("polished_cut_dripstone_stairs"));
 		reMap.put("limestone_layers", asResource("layered_limestone"));
-		
+
 		reMap.put("gabbro", new ResourceLocation("minecraft:dripstone_block"));
 		reMap.put("dolomite", new ResourceLocation("minecraft:calcite"));
 		reMap.put("weathered_limestone", new ResourceLocation("minecraft:tuff"));
@@ -174,7 +178,7 @@ public class RemapHelper {
 		remapPaletteBlock("weathered_limestone", "tuff", false);
 
 		reMap.put("natural_scoria", asResource("scoria"));
-		
+
 		reMap.put("empty_blueprint", SCHEMATIC.getId());
 		reMap.put("gold_sheet", GOLDEN_SHEET.getId());
 		reMap.put("flour", WHEAT_FLOUR.getId());

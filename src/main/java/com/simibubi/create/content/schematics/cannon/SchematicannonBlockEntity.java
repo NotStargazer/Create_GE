@@ -724,8 +724,8 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 		Direction facing = blockState.getValue(BeltBlock.HORIZONTAL_FACING);
 		BeltSlope slope = blockState.getValue(BeltBlock.SLOPE);
 		boolean positive = facing.getAxisDirection() == AxisDirection.POSITIVE;
-		boolean start = part == BeltPart.START;
-		boolean end = part == BeltPart.END;
+		boolean start = BeltPart.anyStart(part);
+		boolean end = BeltPart.anyEnd(part);
 
 		switch (slope) {
 		case DOWNWARD:
@@ -740,7 +740,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 		if (isLastSegment)
 			return blockState;
 
-		return AllBlocks.SHAFT.getDefaultState()
+		return AllBlocks.SHAFTS[BeltPart.getTier(part)].getDefaultState()
 			.setValue(AbstractSimpleShaftBlock.AXIS, slope == BeltSlope.SIDEWAYS ? Axis.Y
 				: facing.getClockWise()
 					.getAxis());
@@ -763,7 +763,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 						break;
 					casings[i] = beltAtSegment.casing;
 					currentPos = BeltBlock.nextSegmentPosition(currentState, currentPos,
-						blockState.getValue(BeltBlock.PART) != BeltPart.END);
+						!BeltPart.anyEnd(blockState.getValue(BeltBlock.PART)));
 				}
 				launchBelt(target, blockState, bbe.beltLength, casings);
 			} else if (blockState != Blocks.AIR.defaultBlockState())

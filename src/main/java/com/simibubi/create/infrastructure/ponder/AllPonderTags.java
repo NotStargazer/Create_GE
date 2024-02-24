@@ -17,7 +17,7 @@ public class AllPonderTags {
 
 	public static final PonderTag
 
-	KINETIC_RELAYS = create("kinetic_relays").item(AllBlocks.COGWHEEL.get())
+	KINETIC_RELAYS = create("kinetic_relays").item(AllBlocks.COGWHEELS[0].get())
 		.defaultLang("Kinetic Blocks", "Components which help relaying Rotational Force elsewhere")
 		.addToIndex(),
 
@@ -110,15 +110,15 @@ public class AllPonderTags {
 			.add(AllBlocks.COPYCAT_STEP);
 
 		PonderRegistry.TAGS.forTag(KINETIC_RELAYS)
-			.add(AllBlocks.SHAFT)
-			.add(AllBlocks.COGWHEEL)
-			.add(AllBlocks.LARGE_COGWHEEL)
+			.add(AllBlocks.SHAFTS[0]).add(AllBlocks.SHAFTS[1]).add(AllBlocks.SHAFTS[2]).add(AllBlocks.SHAFTS[3])
+			.add(AllBlocks.COGWHEELS[0]).add(AllBlocks.COGWHEELS[1]).add(AllBlocks.COGWHEELS[2]).add(AllBlocks.COGWHEELS[3])
+			.add(AllBlocks.LARGE_COGWHEELS[0]).add(AllBlocks.LARGE_COGWHEELS[1]).add(AllBlocks.LARGE_COGWHEELS[2]).add(AllBlocks.LARGE_COGWHEELS[3])
 			.add(AllItems.BELT_CONNECTOR)
-			.add(AllBlocks.GEARBOX)
-			.add(AllBlocks.CLUTCH)
-			.add(AllBlocks.GEARSHIFT)
-			.add(AllBlocks.ENCASED_CHAIN_DRIVE)
-			.add(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFT)
+			.add(AllBlocks.GEARBOXES[0]).add(AllBlocks.GEARBOXES[1]).add(AllBlocks.GEARBOXES[2]).add(AllBlocks.GEARBOXES[3])
+			.add(AllBlocks.CLUTCHES[0]).add(AllBlocks.CLUTCHES[1]).add(AllBlocks.CLUTCHES[2]).add(AllBlocks.CLUTCHES[3])
+			.add(AllBlocks.GEARSHIFTS[0]).add(AllBlocks.GEARSHIFTS[1]).add(AllBlocks.GEARSHIFTS[2]).add(AllBlocks.GEARSHIFTS[3])
+			.add(AllBlocks.ENCASED_CHAIN_DRIVES[0]).add(AllBlocks.ENCASED_CHAIN_DRIVES[1]).add(AllBlocks.ENCASED_CHAIN_DRIVES[2]).add(AllBlocks.ENCASED_CHAIN_DRIVES[3])
+			.add(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[0]).add(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[1]).add(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[2]).add(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[3])
 			.add(AllBlocks.SEQUENCED_GEARSHIFT)
 			.add(AllBlocks.ROTATION_SPEED_CONTROLLER);
 

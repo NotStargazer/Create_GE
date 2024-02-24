@@ -126,7 +126,7 @@ public class AllAdvancements implements DataProvider {
 			.description("Assemble a windmill and use it to generate torque")
 			.after(WATER_WHEEL)),
 
-		COGS = create("shifting_gears", b -> b.icon(AllBlocks.COGWHEEL)
+		COGS = create("shifting_gears", b -> b.icon(AllBlocks.COGWHEELS[0])
 			.title("Shifting Gears")
 			.description(
 				"Connect a Large Cogwheel to a Small Cogwheel, allowing you to change the speed of your Contraption")

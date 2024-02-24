@@ -97,14 +97,14 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 		filter = FilterItemStack.of(nbt.getCompound("Filter"));
 		count = nbt.getInt("FilterAmount");
 		upTo = nbt.getBoolean("UpTo");
-		
+
 		// Migrate from previous behaviour
 		if (count == 0) {
 			upTo = true;
 			count = filter.item()
 				.getMaxStackSize();
 		}
-		
+
 		super.read(nbt, clientPacket);
 	}
 
@@ -261,7 +261,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 	public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
 		ItemStack filter = getFilter(hitResult.getDirection());
 		int maxAmount = (filter.getItem() instanceof FilterItem) ? 64 : filter.getMaxStackSize();
-		return new ValueSettingsBoard(Lang.translateDirect("logistics.filter.extracted_amount"), maxAmount, 16,
+		return new ValueSettingsBoard(Lang.translateDirect("logistics.filter.extracted_amount"), maxAmount, maxAmount, 16,
 			Lang.translatedOptions("logistics.filter", "up_to", "exactly"),
 			new ValueSettingsFormatter(this::formatValue));
 	}

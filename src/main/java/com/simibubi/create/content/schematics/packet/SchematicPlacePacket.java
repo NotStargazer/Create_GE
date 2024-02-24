@@ -1,5 +1,4 @@
 package com.simibubi.create.content.schematics.packet;
-
 import com.simibubi.create.content.schematics.SchematicPrinter;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.simibubi.create.foundation.utility.BlockHelper;
@@ -43,7 +42,7 @@ public class SchematicPlacePacket extends SimplePacketBase {
 			printer.loadSchematic(stack, world, !player.canUseGameMasterBlocks());
 			if (!printer.isLoaded() || printer.isErrored())
 				return;
-			
+
 			boolean includeAir = AllConfigs.server().schematics.creativePrintIncludesAir.get();
 
 			while (printer.advanceCurrentPos()) {
@@ -64,5 +63,4 @@ public class SchematicPlacePacket extends SimplePacketBase {
 		});
 		return true;
 	}
-
 }

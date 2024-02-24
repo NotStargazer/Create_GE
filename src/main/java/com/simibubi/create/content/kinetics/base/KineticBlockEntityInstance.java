@@ -91,7 +91,7 @@ public abstract class KineticBlockEntityInstance<T extends KineticBlockEntity> e
 	}
 
 	public static BlockState shaft(Direction.Axis axis) {
-		return AllBlocks.SHAFT.getDefaultState()
+		return AllBlocks.SHAFTS[0].getDefaultState()
 			.setValue(ShaftBlock.AXIS, axis);
 	}
 }

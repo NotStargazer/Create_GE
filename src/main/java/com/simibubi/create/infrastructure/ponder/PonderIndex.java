@@ -50,8 +50,11 @@ import com.simibubi.create.infrastructure.ponder.scenes.trains.TrainSignalScenes
 import com.simibubi.create.infrastructure.ponder.scenes.trains.TrainStationScenes;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.List;
 
 public class PonderIndex {
 
@@ -64,17 +67,21 @@ public class PonderIndex {
 		// (!) Added entries require re-launch
 		// (!) Modifications inside storyboard methods only require re-opening the ui
 
-		HELPER.forComponents(AllBlocks.SHAFT)
+		HELPER.forComponents(AllBlocks.SHAFTS)
 			.addStoryBoard("shaft/relay", KineticsScenes::shaftAsRelay, AllPonderTags.KINETIC_RELAYS);
-		HELPER.forComponents(AllBlocks.SHAFT, AllBlocks.ANDESITE_ENCASED_SHAFT, AllBlocks.BRASS_ENCASED_SHAFT)
+		HELPER.forComponents(AllBlocks.SHAFTS[0], AllBlocks.SHAFTS[1], AllBlocks.SHAFTS[2], AllBlocks.SHAFTS[3],
+						AllBlocks.ANDESITE_ENCASED_SHAFTS[0], AllBlocks.ANDESITE_ENCASED_SHAFTS[1],
+						AllBlocks.ANDESITE_ENCASED_SHAFTS[2], AllBlocks.ANDESITE_ENCASED_SHAFTS[3],
+						AllBlocks.BRASS_ENCASED_SHAFTS[0], AllBlocks.BRASS_ENCASED_SHAFTS[1],
+						AllBlocks.BRASS_ENCASED_SHAFTS[2], AllBlocks.BRASS_ENCASED_SHAFTS[3])
 			.addStoryBoard("shaft/encasing", KineticsScenes::shaftsCanBeEncased);
 
-		HELPER.forComponents(AllBlocks.COGWHEEL)
+		HELPER.forComponents(AllBlocks.COGWHEELS)
 			.addStoryBoard("cog/small", KineticsScenes::cogAsRelay, AllPonderTags.KINETIC_RELAYS)
 			.addStoryBoard("cog/speedup", KineticsScenes::cogsSpeedUp)
 			.addStoryBoard("cog/encasing", KineticsScenes::cogwheelsCanBeEncased);
 
-		HELPER.forComponents(AllBlocks.LARGE_COGWHEEL)
+		HELPER.forComponents(AllBlocks.LARGE_COGWHEELS)
 			.addStoryBoard("cog/speedup", KineticsScenes::cogsSpeedUp)
 			.addStoryBoard("cog/large", KineticsScenes::largeCogAsRelay, AllPonderTags.KINETIC_RELAYS)
 			.addStoryBoard("cog/encasing", KineticsScenes::cogwheelsCanBeEncased);
@@ -89,11 +96,17 @@ public class PonderIndex {
 			.addStoryBoard("shaft/encasing", KineticsScenes::shaftsCanBeEncased)
 			.addStoryBoard("belt/encasing", BeltScenes::beltsCanBeEncased);
 
-		HELPER.forComponents(AllBlocks.GEARBOX, AllItems.VERTICAL_GEARBOX)
+		HELPER.forComponents(
+						AllBlocks.GEARBOXES[0], AllBlocks.GEARBOXES[1],
+						AllBlocks.GEARBOXES[2], AllBlocks.GEARBOXES[3],
+						AllItems.VERTICAL_GEARBOXES[0], AllItems.VERTICAL_GEARBOXES[1],
+						AllItems.VERTICAL_GEARBOXES[2], AllItems.VERTICAL_GEARBOXES[3])
 			.addStoryBoard("gearbox", KineticsScenes::gearbox, AllPonderTags.KINETIC_RELAYS);
 
-		HELPER.addStoryBoard(AllBlocks.CLUTCH, "clutch", KineticsScenes::clutch, AllPonderTags.KINETIC_RELAYS);
-		HELPER.addStoryBoard(AllBlocks.GEARSHIFT, "gearshift", KineticsScenes::gearshift, AllPonderTags.KINETIC_RELAYS);
+		HELPER.forComponents(AllBlocks.CLUTCHES)
+				.addStoryBoard("clutch", KineticsScenes::clutch, AllPonderTags.KINETIC_RELAYS);
+		HELPER.forComponents(AllBlocks.GEARSHIFTS)
+				.addStoryBoard("gearshift", KineticsScenes::gearshift, AllPonderTags.KINETIC_RELAYS);
 
 		HELPER.forComponents(AllBlocks.SEQUENCED_GEARSHIFT)
 			.addStoryBoard("sequenced_gearshift", KineticsScenes::sequencedGearshift);
@@ -109,7 +122,7 @@ public class PonderIndex {
 			AllPonderTags.KINETIC_SOURCES);
 		HELPER.addStoryBoard(AllBlocks.LARGE_WATER_WHEEL, "large_water_wheel", KineticsScenes::largeWaterWheel,
 			AllPonderTags.KINETIC_SOURCES);
-		
+
 		HELPER.addStoryBoard(AllBlocks.HAND_CRANK, "hand_crank", KineticsScenes::handCrank, AllPonderTags.KINETIC_SOURCES);
 
 		HELPER.addStoryBoard(AllBlocks.COPPER_VALVE_HANDLE, "valve_handle", KineticsScenes::valveHandle,
@@ -117,9 +130,14 @@ public class PonderIndex {
 		HELPER.forComponents(AllBlocks.DYED_VALVE_HANDLES.toArray())
 			.addStoryBoard("valve_handle", KineticsScenes::valveHandle);
 
-		HELPER.addStoryBoard(AllBlocks.ENCASED_CHAIN_DRIVE, "chain_drive/relay", ChainDriveScenes::chainDriveAsRelay,
+		HELPER.forComponents(AllBlocks.ENCASED_CHAIN_DRIVES)
+				.addStoryBoard("chain_drive/relay", ChainDriveScenes::chainDriveAsRelay,
 			AllPonderTags.KINETIC_RELAYS);
-		HELPER.forComponents(AllBlocks.ENCASED_CHAIN_DRIVE, AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFT)
+		HELPER.forComponents(
+						AllBlocks.ENCASED_CHAIN_DRIVES[0], AllBlocks.ENCASED_CHAIN_DRIVES[1],
+						AllBlocks.ENCASED_CHAIN_DRIVES[2], AllBlocks.ENCASED_CHAIN_DRIVES[3],
+						AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[0], AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[1],
+						AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[2], AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[3])
 			.addStoryBoard("chain_drive/gearshift", ChainDriveScenes::adjustableChainGearshift);
 
 		HELPER.forComponents(AllBlocks.ROTATION_SPEED_CONTROLLER)

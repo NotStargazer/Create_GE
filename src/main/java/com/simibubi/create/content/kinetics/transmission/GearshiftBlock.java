@@ -24,8 +24,8 @@ public class GearshiftBlock extends AbstractEncasedShaftBlock implements IBE<Spl
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-	public GearshiftBlock(Properties properties) {
-		super(properties);
+	public GearshiftBlock(int tier, Properties properties) {
+		super(tier, properties);
 		registerDefaultState(defaultBlockState().setValue(POWERED, false));
 	}
 
@@ -58,7 +58,7 @@ public class GearshiftBlock extends AbstractEncasedShaftBlock implements IBE<Spl
 	public Class<SplitShaftBlockEntity> getBlockEntityClass() {
 		return SplitShaftBlockEntity.class;
 	}
-	
+
 	@Override
 	public BlockEntityType<? extends SplitShaftBlockEntity> getBlockEntityType() {
 		return AllBlockEntityTypes.GEARSHIFT.get();

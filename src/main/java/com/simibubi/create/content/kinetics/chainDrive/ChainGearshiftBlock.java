@@ -17,8 +17,8 @@ public class ChainGearshiftBlock extends ChainDriveBlock {
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-	public ChainGearshiftBlock(Properties properties) {
-		super(properties);
+	public ChainGearshiftBlock(int tier, Properties properties) {
+		super(tier, properties);
 		registerDefaultState(defaultBlockState().setValue(POWERED, false));
 	}
 

@@ -31,10 +31,10 @@ public class ScrollOptionBehaviour<E extends Enum<E> & INamedIconOptions> extend
 
 	@Override
 	public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
-		return new ValueSettingsBoard(label, max, 1, ImmutableList.of(Components.literal("Select")),
+		return new ValueSettingsBoard(label, max, max, 1, ImmutableList.of(Components.literal("Select")),
 			new ScrollOptionSettingsFormatter(options));
 	}
-	
+
 	@Override
 	public String getClipboardKey() {
 		return options[0].getClass().getSimpleName();

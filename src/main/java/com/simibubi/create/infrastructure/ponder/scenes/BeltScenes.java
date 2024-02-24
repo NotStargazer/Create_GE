@@ -61,7 +61,7 @@ public class BeltScenes {
 		ItemStack beltItem = AllItems.BELT_CONNECTOR.asStack();
 		Vec3 backEndCenter = util.vector.centerOf(backEnd);
 		AABB connectBB = new AABB(backEndCenter, backEndCenter);
-		AABB shaftBB = AllBlocks.SHAFT.getDefaultState()
+		AABB shaftBB = AllBlocks.SHAFTS[0].getDefaultState()
 			.setValue(ShaftBlock.AXIS, Axis.Z)
 			.getShape(null, null)
 			.bounds();
@@ -115,9 +115,9 @@ public class BeltScenes {
 
 		BlockPos shaftLocation = frontEnd.east();
 		scene.overlay.showControls(new InputWindowElement(util.vector.topOf(shaftLocation), Pointing.DOWN).rightClick()
-			.withItem(AllBlocks.SHAFT.asStack()), 50);
+			.withItem(AllBlocks.SHAFTS[0].asStack()), 50);
 		scene.idle(7);
-		scene.world.modifyBlock(shaftLocation, s -> s.setValue(BeltBlock.PART, BeltPart.PULLEY), true);
+		scene.world.modifyBlock(shaftLocation, s -> s.setValue(BeltBlock.PART, BeltPart.PULLEY_0), true);
 		scene.idle(10);
 
 		scene.overlay.showText(43)

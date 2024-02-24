@@ -16,8 +16,17 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class KineticBlock extends Block implements IRotate {
 
-	public KineticBlock(Properties properties) {
+	public int tier;
+
+	public KineticBlock(Properties properties)
+	{
+        super(properties);
+		tier = -1;
+	}
+
+    public KineticBlock(int tier, Properties properties) {
 		super(properties);
+		this.tier = tier;
 	}
 
 	@Override
@@ -42,7 +51,7 @@ public abstract class KineticBlock extends Block implements IRotate {
 			kineticBlockEntity.preventSpeedUpdate = 2;
 		}
 	}
-	
+
 	@Override
 	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);

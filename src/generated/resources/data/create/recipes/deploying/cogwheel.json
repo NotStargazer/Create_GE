@@ -2,7 +2,7 @@
   "type": "create:deploying",
   "ingredients": [
     {
-      "item": "create:shaft"
+      "item": "create:shaft_tier_0"
     },
     {
       "tag": "minecraft:planks"
@@ -10,7 +10,7 @@
   ],
   "results": [
     {
-      "item": "create:cogwheel"
+      "item": "create:cogwheel_tier_0"
     }
   ]
 }

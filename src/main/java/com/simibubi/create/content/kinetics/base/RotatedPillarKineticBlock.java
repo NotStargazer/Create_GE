@@ -16,8 +16,15 @@ public abstract class RotatedPillarKineticBlock extends KineticBlock {
 
 	public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
-	public RotatedPillarKineticBlock(Properties properties) {
-		super(properties);
+	public RotatedPillarKineticBlock(Properties properties)
+	{
+		super(-1, properties);
+		this.registerDefaultState(this.defaultBlockState()
+				.setValue(AXIS, Direction.Axis.Y));
+	}
+
+	public RotatedPillarKineticBlock(int tier, Properties properties) {
+		super(tier, properties);
 		this.registerDefaultState(this.defaultBlockState()
 			.setValue(AXIS, Direction.Axis.Y));
 	}

@@ -38,8 +38,8 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock
 	public static final BooleanProperty CONNECTED_ALONG_FIRST_COORDINATE =
 		DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE;
 
-	public ChainDriveBlock(Properties properties) {
-		super(properties);
+	public ChainDriveBlock(int tier, Properties properties) {
+		super(tier, properties);
 		registerDefaultState(defaultBlockState().setValue(PART, Part.NONE));
 	}
 

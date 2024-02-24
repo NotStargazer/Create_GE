@@ -16,7 +16,7 @@ public class CreativeMotorRenderer extends KineticBlockEntityRenderer<CreativeMo
 
 	@Override
 	protected SuperByteBuffer getRotatedModel(CreativeMotorBlockEntity be, BlockState state) {
-		return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, state);
+		return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALVES[be.getTier()], state);
 	}
 
 }

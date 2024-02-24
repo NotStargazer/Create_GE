@@ -169,7 +169,7 @@ public class DisplayScenes {
 		scene.idle(10);
 		scene.world.setDisplayBoardText(board, 1,
 			Components.literal(418 + " ").append(new ItemStack(Items.DEEPSLATE).getHoverName()));
-		scene.world.setDisplayBoardText(board, 2, Components.literal(14 + " ").append(AllBlocks.COGWHEEL.asStack()
+		scene.world.setDisplayBoardText(board, 2, Components.literal(14 + " ").append(AllBlocks.COGWHEELS[0].asStack()
 			.getHoverName()));
 		scene.world.flashDisplayLink(linkPos);
 		scene.idle(40);
@@ -295,7 +295,7 @@ public class DisplayScenes {
 			.attachKeyFrame()
 			.placeNearTarget();
 		scene.idle(80);
-		
+
 		scene.world.showSection(depot, Direction.DOWN);
 		scene.idle(10);
 		scene.world.showSection(link, Direction.EAST);

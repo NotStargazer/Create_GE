@@ -12,6 +12,8 @@ import java.util.zip.GZIPInputStream;
 
 import javax.annotation.Nonnull;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -140,6 +142,7 @@ public class SchematicItem extends Item {
 		try (DataInputStream stream = new DataInputStream(new BufferedInputStream(
 				new GZIPInputStream(Files.newInputStream(path, StandardOpenOption.READ))))) {
 			CompoundTag nbt = NbtIo.read(stream, new NbtAccounter(0x20000000L));
+			CreateGrandExpanse.overrideNBT(nbt);
 			t.load(nbt);
 		} catch (IOException e) {
 			LOGGER.warn("Failed to read schematic", e);

@@ -3,6 +3,7 @@ package com.simibubi.create.content.kinetics.steamEngine;
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllShapes;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.simpleRelays.AbstractShaftBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
@@ -31,8 +32,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class PoweredShaftBlock extends AbstractShaftBlock {
 
-	public PoweredShaftBlock(Properties properties) {
-		super(properties);
+	public PoweredShaftBlock(int tier, Properties properties) {
+		super(tier, properties);
 	}
 
 	@Override
@@ -56,10 +57,10 @@ public class PoweredShaftBlock extends AbstractShaftBlock {
 		if (helper.matchesItem(heldItem))
 			return helper.getOffset(pPlayer, pLevel, pState, pPos, pHit)
 				.placeInWorld(pLevel, (BlockItem) heldItem.getItem(), pPlayer, pHand, pHit);
-		
+
 		return InteractionResult.PASS;
 	}
-	
+
 	@Override
 	public RenderShape getRenderShape(BlockState pState) {
 		return RenderShape.ENTITYBLOCK_ANIMATED;
@@ -67,15 +68,17 @@ public class PoweredShaftBlock extends AbstractShaftBlock {
 
 	@Override
 	public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+		KineticBlock block = (KineticBlock) pState.getBlock();
 		if (!stillValid(pState, pLevel, pPos))
-			pLevel.setBlock(pPos, AllBlocks.SHAFT.getDefaultState()
+			pLevel.setBlock(pPos, AllBlocks.SHAFTS[block.tier].getDefaultState()
 				.setValue(ShaftBlock.AXIS, pState.getValue(AXIS))
 				.setValue(WATERLOGGED, pState.getValue(WATERLOGGED)), 3);
 	}
 
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter pLevel, BlockPos pPos, BlockState pState) {
-		return AllBlocks.SHAFT.asStack();
+		KineticBlock block = (KineticBlock) pState.getBlock();
+		return AllBlocks.SHAFTS[block.tier].asStack();
 	}
 
 	@Override
@@ -101,7 +104,8 @@ public class PoweredShaftBlock extends AbstractShaftBlock {
 	}
 
 	public static BlockState getEquivalent(BlockState stateForPlacement) {
-		return AllBlocks.POWERED_SHAFT.getDefaultState()
+		KineticBlock block = (KineticBlock) stateForPlacement.getBlock();
+		return AllBlocks.POWERED_SHAFTS[block.tier].getDefaultState()
 			.setValue(PoweredShaftBlock.AXIS, stateForPlacement.getValue(ShaftBlock.AXIS))
 			.setValue(WATERLOGGED, stateForPlacement.getValue(WATERLOGGED));
 	}

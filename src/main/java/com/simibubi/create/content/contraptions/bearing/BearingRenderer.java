@@ -50,7 +50,7 @@ public class BearingRenderer<T extends KineticBlockEntity & IBearingBlockEntity>
 
 	@Override
 	protected SuperByteBuffer getRotatedModel(KineticBlockEntity be, BlockState state) {
-		return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALF, state, state
+		return CachedBufferer.partialFacing(AllPartialModels.SHAFT_HALVES[be.getTier()], state, state
 				.getValue(BearingBlock.FACING)
 				.getOpposite());
 	}

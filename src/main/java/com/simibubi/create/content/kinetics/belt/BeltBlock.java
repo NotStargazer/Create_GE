@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import com.simibubi.create.AllBlockEntityTypes;
@@ -98,7 +100,7 @@ public class BeltBlock extends HorizontalKineticBlock
 	public BeltBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(defaultBlockState().setValue(SLOPE, BeltSlope.HORIZONTAL)
-			.setValue(PART, BeltPart.START)
+			.setValue(PART, BeltPart.START_0)
 			.setValue(CASING, false)
 			.setValue(WATERLOGGED, false));
 	}
@@ -143,9 +145,13 @@ public class BeltBlock extends HorizontalKineticBlock
 		net.minecraft.world.level.storage.loot.LootContext.Builder builder) {
 		List<ItemStack> drops = super.getDrops(state, builder);
 		BlockEntity blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-		if (blockEntity instanceof BeltBlockEntity && ((BeltBlockEntity) blockEntity).hasPulley())
-			drops.addAll(AllBlocks.SHAFT.getDefaultState()
-				.getDrops(builder));
+        if (blockEntity instanceof BeltBlockEntity) {
+			int tier = ((BeltBlockEntity) blockEntity).getShaftTier();
+            if (((BeltBlockEntity) blockEntity).hasPulley()) {
+                drops.addAll(AllBlocks.SHAFTS[tier].getDefaultState()
+                        .getDrops(builder));
+            }
+        }
 		return drops;
 	}
 
@@ -250,7 +256,7 @@ public class BeltBlock extends HorizontalKineticBlock
 
 		boolean isWrench = AllItems.WRENCH.isIn(heldItem);
 		boolean isConnector = AllItems.BELT_CONNECTOR.isIn(heldItem);
-		boolean isShaft = AllBlocks.SHAFT.isIn(heldItem);
+		boolean isShaft = CreateGrandExpanse.isInAnyOf(AllBlocks.SHAFTS, heldItem);
 		boolean isDye = heldItem.is(Tags.Items.DYES);
 		boolean hasWater = GenericItemEmptying.emptyItem(world, heldItem, true)
 			.getFirst()
@@ -291,13 +297,14 @@ public class BeltBlock extends HorizontalKineticBlock
 		}
 
 		if (isShaft) {
+			BeltPart pulleyTier = CreateGrandExpanse.getPulleyTierFromShaft(heldItem);
 			if (state.getValue(PART) != BeltPart.MIDDLE)
 				return InteractionResult.PASS;
 			if (world.isClientSide)
 				return InteractionResult.SUCCESS;
 			if (!player.isCreative())
 				heldItem.shrink(1);
-			KineticBlockEntity.switchToBlockState(world, pos, state.setValue(PART, BeltPart.PULLEY));
+			KineticBlockEntity.switchToBlockState(world, pos, state.setValue(PART, pulleyTier));
 			return InteractionResult.SUCCESS;
 		}
 
@@ -329,13 +336,14 @@ public class BeltBlock extends HorizontalKineticBlock
 			return InteractionResult.SUCCESS;
 		}
 
-		if (state.getValue(PART) == BeltPart.PULLEY) {
+		BeltPart beltPart = state.getValue(PART);
+		if (BeltPart.anyPulley(beltPart)) {
 			if (world.isClientSide)
 				return InteractionResult.SUCCESS;
 			KineticBlockEntity.switchToBlockState(world, pos, state.setValue(PART, BeltPart.MIDDLE));
 			if (player != null && !player.isCreative())
 				player.getInventory()
-					.placeItemBackInInventory(AllBlocks.SHAFT.asStack());
+					.placeItemBackInInventory(AllBlocks.SHAFTS[BeltPart.getTier(beltPart)].asStack());
 			return InteractionResult.SUCCESS;
 		}
 
@@ -429,6 +437,8 @@ public class BeltBlock extends HorizontalKineticBlock
 
 			if (blockEntity instanceof BeltBlockEntity && AllBlocks.BELT.has(currentState)) {
 				BeltBlockEntity be = (BeltBlockEntity) blockEntity;
+				BeltPart part = currentState.getValue(BeltBlock.PART);
+				be.blockTier = part == BeltPart.MIDDLE ? 3 : BeltPart.getTier(part);
 				be.setController(currentPos);
 				be.beltLength = beltChain.size();
 				be.index = index;
@@ -451,7 +461,7 @@ public class BeltBlock extends HorizontalKineticBlock
 	@Override
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		super.onRemove(state, world, pos, newState, isMoving);
-		
+
 		if (world.isClientSide)
 			return;
 		if (state.getBlock() == newState.getBlock())
@@ -469,6 +479,7 @@ public class BeltBlock extends HorizontalKineticBlock
 				continue;
 
 			boolean hasPulley = false;
+			int pulleyTier = 0;
 			BlockEntity blockEntity = world.getBlockEntity(currentPos);
 			if (blockEntity instanceof BeltBlockEntity) {
 				BeltBlockEntity belt = (BeltBlockEntity) blockEntity;
@@ -477,10 +488,11 @@ public class BeltBlock extends HorizontalKineticBlock
 						.ejectAll();
 
 				hasPulley = belt.hasPulley();
+				pulleyTier = belt.getShaftTier();
 			}
 
 			world.removeBlockEntity(currentPos);
-			BlockState shaftState = AllBlocks.SHAFT.getDefaultState()
+			BlockState shaftState = AllBlocks.SHAFTS[pulleyTier].getDefaultState()
 				.setValue(BlockStateProperties.AXIS, getRotationAxis(currentState));
 			world.setBlock(currentPos, ProperWaterloggedBlock.withWater(world,
 				hasPulley ? shaftState : Blocks.AIR.defaultBlockState(), currentPos), 3);
@@ -506,7 +518,7 @@ public class BeltBlock extends HorizontalKineticBlock
 		if (state.getValue(CASING) && state.getValue(SLOPE) == BeltSlope.HORIZONTAL)
 			withBlockEntityDo(world, pos, bbe -> bbe.setCovered(isBlockCoveringBelt(world, pos.above())));
 	}
-	
+
 	public static boolean isBlockCoveringBelt(LevelAccessor world, BlockPos pos) {
 		BlockState blockState = world.getBlockState(pos);
 		VoxelShape collisionShape = blockState.getCollisionShape(world, pos);
@@ -560,7 +572,7 @@ public class BeltBlock extends HorizontalKineticBlock
 
 		int offset = forward ? 1 : -1;
 
-		if (part == BeltPart.END && forward || part == BeltPart.START && !forward)
+		if (BeltPart.anyEnd(part) && forward || BeltPart.anyStart(part) && !forward)
 			return null;
 		if (slope == BeltSlope.VERTICAL)
 			return pos.above(direction.getAxisDirection() == AxisDirection.POSITIVE ? offset : -offset);
@@ -583,9 +595,11 @@ public class BeltBlock extends HorizontalKineticBlock
 	@Override
 	public ItemRequirement getRequiredItems(BlockState state, BlockEntity be) {
 		List<ItemStack> required = new ArrayList<>();
-		if (state.getValue(PART) != BeltPart.MIDDLE)
-			required.add(AllBlocks.SHAFT.asStack());
-		if (state.getValue(PART) == BeltPart.START)
+		BeltPart beltPart = state.getValue(PART);
+		int tier = BeltPart.getTier(beltPart);
+		if (beltPart != BeltPart.MIDDLE)
+			required.add(AllBlocks.SHAFTS[tier].asStack());
+		if (BeltPart.anyStart(beltPart))
 			required.add(AllItems.BELT_CONNECTOR.asStack());
 		if (required.isEmpty())
 			return ItemRequirement.NONE;
@@ -595,16 +609,16 @@ public class BeltBlock extends HorizontalKineticBlock
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
 		BlockState rotate = super.rotate(state, rot);
-
+		BeltPart beltPart = state.getValue(PART);
 		if (state.getValue(SLOPE) != BeltSlope.VERTICAL)
 			return rotate;
 		if (state.getValue(HORIZONTAL_FACING)
 			.getAxisDirection() != rotate.getValue(HORIZONTAL_FACING)
 				.getAxisDirection()) {
-			if (state.getValue(PART) == BeltPart.START)
-				return rotate.setValue(PART, BeltPart.END);
-			if (state.getValue(PART) == BeltPart.END)
-				return rotate.setValue(PART, BeltPart.START);
+			if (BeltPart.anyStart(beltPart))
+				return rotate.setValue(PART, BeltPart.getEndFromStart(beltPart));
+			if (BeltPart.anyEnd(beltPart))
+				return rotate.setValue(PART, BeltPart.getStartFromEnd(beltPart));
 		}
 
 		return rotate;
@@ -708,7 +722,7 @@ public class BeltBlock extends HorizontalKineticBlock
 	public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
 		return false;
 	}
-	
+
 	@Override
 	public FluidState getFluidState(BlockState pState) {
 		return fluidState(pState);

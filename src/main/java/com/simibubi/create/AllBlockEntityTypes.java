@@ -216,6 +216,8 @@ import com.simibubi.create.content.trains.track.TrackRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
+import java.util.List;
+
 public class AllBlockEntityTypes {
 
 	// Schematics
@@ -235,7 +237,10 @@ public class AllBlockEntityTypes {
 	public static final BlockEntityEntry<BracketedKineticBlockEntity> BRACKETED_KINETIC = REGISTRATE
 		.blockEntity("simple_kinetic", BracketedKineticBlockEntity::new)
 		.instance(() -> BracketedKineticBlockEntityInstance::new, false)
-		.validBlocks(AllBlocks.SHAFT, AllBlocks.COGWHEEL, AllBlocks.LARGE_COGWHEEL)
+		.validBlocks(
+				AllBlocks.SHAFTS[0], AllBlocks.SHAFTS[1], AllBlocks.SHAFTS[2], AllBlocks.SHAFTS[3],
+				AllBlocks.COGWHEELS[0], AllBlocks.COGWHEELS[1], AllBlocks.COGWHEELS[2], AllBlocks.COGWHEELS[3],
+				AllBlocks.LARGE_COGWHEELS[0], AllBlocks.LARGE_COGWHEELS[1], AllBlocks.LARGE_COGWHEELS[2], AllBlocks.LARGE_COGWHEELS[3])
 		.renderer(() -> BracketedKineticBlockEntityRenderer::new)
 		.register();
 
@@ -249,36 +254,53 @@ public class AllBlockEntityTypes {
 	public static final BlockEntityEntry<GearboxBlockEntity> GEARBOX = REGISTRATE
 		.blockEntity("gearbox", GearboxBlockEntity::new)
 		.instance(() -> GearboxInstance::new, false)
-		.validBlocks(AllBlocks.GEARBOX)
+		.validBlocks(AllBlocks.GEARBOXES[0], AllBlocks.GEARBOXES[1], AllBlocks.GEARBOXES[2], AllBlocks.GEARBOXES[3])
 		.renderer(() -> GearboxRenderer::new)
 		.register();
 
 	public static final BlockEntityEntry<KineticBlockEntity> ENCASED_SHAFT = REGISTRATE
 		.blockEntity("encased_shaft", KineticBlockEntity::new)
 		.instance(() -> ShaftInstance::new, false)
-		.validBlocks(AllBlocks.ANDESITE_ENCASED_SHAFT, AllBlocks.BRASS_ENCASED_SHAFT, AllBlocks.ENCASED_CHAIN_DRIVE,
-			AllBlocks.METAL_GIRDER_ENCASED_SHAFT)
+		.validBlocks(
+				AllBlocks.ANDESITE_ENCASED_SHAFTS[0], AllBlocks.ANDESITE_ENCASED_SHAFTS[1],
+				AllBlocks.ANDESITE_ENCASED_SHAFTS[2], AllBlocks.ANDESITE_ENCASED_SHAFTS[3],
+				AllBlocks.BRASS_ENCASED_SHAFTS[0], AllBlocks.BRASS_ENCASED_SHAFTS[1],
+				AllBlocks.BRASS_ENCASED_SHAFTS[2], AllBlocks.BRASS_ENCASED_SHAFTS[3],
+				AllBlocks.ENCASED_CHAIN_DRIVES[0], AllBlocks.ENCASED_CHAIN_DRIVES[1],
+				AllBlocks.ENCASED_CHAIN_DRIVES[2], AllBlocks.ENCASED_CHAIN_DRIVES[3],
+				AllBlocks.METAL_GIRDER_ENCASED_SHAFTS[0], AllBlocks.METAL_GIRDER_ENCASED_SHAFTS[1],
+				AllBlocks.METAL_GIRDER_ENCASED_SHAFTS[2], AllBlocks.METAL_GIRDER_ENCASED_SHAFTS[3])
 		.renderer(() -> ShaftRenderer::new)
 		.register();
 
 	public static final BlockEntityEntry<SimpleKineticBlockEntity> ENCASED_COGWHEEL = REGISTRATE
 		.blockEntity("encased_cogwheel", SimpleKineticBlockEntity::new)
 		.instance(() -> EncasedCogInstance::small, false)
-		.validBlocks(AllBlocks.ANDESITE_ENCASED_COGWHEEL, AllBlocks.BRASS_ENCASED_COGWHEEL)
+		.validBlocks(
+				AllBlocks.ANDESITE_ENCASED_COGWHEELS[0], AllBlocks.ANDESITE_ENCASED_COGWHEELS[1],
+				AllBlocks.ANDESITE_ENCASED_COGWHEELS[2], AllBlocks.ANDESITE_ENCASED_COGWHEELS[3],
+				AllBlocks.BRASS_ENCASED_COGWHEELS[0], AllBlocks.BRASS_ENCASED_COGWHEELS[1],
+				AllBlocks.BRASS_ENCASED_COGWHEELS[2], AllBlocks.BRASS_ENCASED_COGWHEELS[3])
 		.renderer(() -> EncasedCogRenderer::small)
 		.register();
 
 	public static final BlockEntityEntry<SimpleKineticBlockEntity> ENCASED_LARGE_COGWHEEL = REGISTRATE
 		.blockEntity("encased_large_cogwheel", SimpleKineticBlockEntity::new)
 		.instance(() -> EncasedCogInstance::large, false)
-		.validBlocks(AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEEL, AllBlocks.BRASS_ENCASED_LARGE_COGWHEEL)
+		.validBlocks(
+				AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[0], AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[1],
+				AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[2], AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[3],
+				AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[0], AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[1],
+				AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[2], AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[3])
 		.renderer(() -> EncasedCogRenderer::large)
 		.register();
 
 	public static final BlockEntityEntry<ChainGearshiftBlockEntity> ADJUSTABLE_CHAIN_GEARSHIFT = REGISTRATE
 		.blockEntity("adjustable_chain_gearshift", ChainGearshiftBlockEntity::new)
 		.instance(() -> ShaftInstance::new, false)
-		.validBlocks(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFT)
+		.validBlocks(
+				AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[0], AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[1],
+				AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[2], AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[3])
 		.renderer(() -> ShaftRenderer::new)
 		.register();
 
@@ -298,14 +320,14 @@ public class AllBlockEntityTypes {
 	public static final BlockEntityEntry<ClutchBlockEntity> CLUTCH = REGISTRATE
 		.blockEntity("clutch", ClutchBlockEntity::new)
 		.instance(() -> SplitShaftInstance::new, false)
-		.validBlocks(AllBlocks.CLUTCH)
+		.validBlocks(AllBlocks.CLUTCHES[0], AllBlocks.CLUTCHES[1], AllBlocks.CLUTCHES[2], AllBlocks.CLUTCHES[3])
 		.renderer(() -> SplitShaftRenderer::new)
 		.register();
 
 	public static final BlockEntityEntry<GearshiftBlockEntity> GEARSHIFT = REGISTRATE
 		.blockEntity("gearshift", GearshiftBlockEntity::new)
 		.instance(() -> SplitShaftInstance::new, false)
-		.validBlocks(AllBlocks.GEARSHIFT)
+		.validBlocks(AllBlocks.GEARSHIFTS[0], AllBlocks.GEARSHIFTS[1], AllBlocks.GEARSHIFTS[2], AllBlocks.GEARSHIFTS[3])
 		.renderer(() -> SplitShaftRenderer::new)
 		.register();
 
@@ -322,7 +344,7 @@ public class AllBlockEntityTypes {
 		.validBlocks(AllBlocks.HAND_CRANK)
 		.renderer(() -> HandCrankRenderer::new)
 		.register();
-	
+
 	public static final BlockEntityEntry<ValveHandleBlockEntity> VALVE_HANDLE = REGISTRATE
 		.blockEntity("valve_handle", ValveHandleBlockEntity::new)
 		.instance(() -> HandCrankInstance::new)
@@ -588,7 +610,7 @@ public class AllBlockEntityTypes {
 	public static final BlockEntityEntry<PoweredShaftBlockEntity> POWERED_SHAFT = REGISTRATE
 		.blockEntity("powered_shaft", PoweredShaftBlockEntity::new)
 		.instance(() -> SingleRotatingInstance::new, false)
-		.validBlocks(AllBlocks.POWERED_SHAFT)
+		.validBlocks(AllBlocks.POWERED_SHAFTS[0], AllBlocks.POWERED_SHAFTS[1], AllBlocks.POWERED_SHAFTS[2], AllBlocks.POWERED_SHAFTS[3])
 		.renderer(() -> KineticBlockEntityRenderer::new)
 		.register();
 
@@ -708,7 +730,7 @@ public class AllBlockEntityTypes {
 		.validBlocks(AllBlocks.ANALOG_LEVER)
 		.renderer(() -> AnalogLeverRenderer::new)
 		.register();
-	
+
 	public static final BlockEntityEntry<PlacardBlockEntity> PLACARD = REGISTRATE
 		.blockEntity("placard", PlacardBlockEntity::new)
 		.validBlocks(AllBlocks.PLACARD)
@@ -835,7 +857,7 @@ public class AllBlockEntityTypes {
 		.validBlocksDeferred(TrackMaterial::allBlocks)
 		.renderer(() -> TrackRenderer::new)
 		.register();
-	
+
 	public static final BlockEntityEntry<FakeTrackBlockEntity> FAKE_TRACK = REGISTRATE
 		.blockEntity("fake_track", FakeTrackBlockEntity::new)
 		.validBlocks(AllBlocks.FAKE_TRACK)
@@ -883,7 +905,7 @@ public class AllBlockEntityTypes {
 		.renderer(() -> TrackObserverRenderer::new)
 		.validBlocks(AllBlocks.TRACK_OBSERVER)
 		.register();
-	
+
 	public static final BlockEntityEntry<ClipboardBlockEntity> CLIPBOARD = REGISTRATE
 		.blockEntity("clipboard", ClipboardBlockEntity::new)
 		.validBlocks(AllBlocks.CLIPBOARD)

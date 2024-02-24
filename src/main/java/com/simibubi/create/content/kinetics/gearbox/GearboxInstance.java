@@ -40,7 +40,7 @@ public class GearboxInstance extends KineticBlockEntityInstance<GearboxBlockEnti
 			if (boxAxis == axis)
 				continue;
 
-			Instancer<RotatingData> shaft = rotatingMaterial.getModel(AllPartialModels.SHAFT_HALF, blockState, direction);
+			Instancer<RotatingData> shaft = rotatingMaterial.getModel(AllPartialModels.SHAFT_HALVES[blockEntity.getTier()], blockState, direction);
 
 			RotatingData key = shaft.createInstance();
 

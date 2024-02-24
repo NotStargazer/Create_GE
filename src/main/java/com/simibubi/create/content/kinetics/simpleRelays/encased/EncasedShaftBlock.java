@@ -6,6 +6,7 @@ import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.decoration.encasing.EncasedBlock;
 import com.simibubi.create.content.kinetics.base.AbstractEncasedShaftBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
@@ -34,8 +35,8 @@ public class EncasedShaftBlock extends AbstractEncasedShaftBlock
 
 	private final Supplier<Block> casing;
 
-	public EncasedShaftBlock(Properties properties, Supplier<Block> casing) {
-		super(properties);
+	public EncasedShaftBlock(int tier, Properties properties, Supplier<Block> casing) {
+		super(tier, properties);
 		this.casing = casing;
 	}
 
@@ -46,25 +47,29 @@ public class EncasedShaftBlock extends AbstractEncasedShaftBlock
 	public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
 		if (context.getLevel().isClientSide)
 			return InteractionResult.SUCCESS;
+
+		KineticBlock block = (KineticBlock) state.getBlock();
 		context.getLevel()
 			.levelEvent(2001, context.getClickedPos(), Block.getId(state));
 		KineticBlockEntity.switchToBlockState(context.getLevel(), context.getClickedPos(),
-			AllBlocks.SHAFT.getDefaultState()
+			AllBlocks.SHAFTS[block.tier].getDefaultState()
 				.setValue(AXIS, state.getValue(AXIS)));
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+		KineticBlock block = (KineticBlock) state.getBlock();
 		if (target instanceof BlockHitResult)
 			return ((BlockHitResult) target).getDirection()
-				.getAxis() == getRotationAxis(state) ? AllBlocks.SHAFT.asStack() : getCasing().asItem().getDefaultInstance();
+				.getAxis() == getRotationAxis(state) ? AllBlocks.SHAFTS[block.tier].asStack() : getCasing().asItem().getDefaultInstance();
 		return super.getCloneItemStack(state, target, world, pos, player);
 	}
 
 	@Override
 	public ItemRequirement getRequiredItems(BlockState state, BlockEntity be) {
-		return ItemRequirement.of(AllBlocks.SHAFT.getDefaultState(), be);
+		KineticBlock block = (KineticBlock) state.getBlock();
+		return ItemRequirement.of(AllBlocks.SHAFTS[block.tier].getDefaultState(), be);
 	}
 
 	@Override

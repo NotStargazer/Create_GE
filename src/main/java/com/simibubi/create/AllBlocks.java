@@ -257,7 +257,6 @@ import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.BuilderTransformers;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.MetalBarsGen;
-import com.simibubi.create.foundation.data.ModelGen;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.UncontainableBlockItem;
@@ -349,159 +348,212 @@ public class AllBlocks {
 
 	// Kinetics
 
-	public static final BlockEntry<ShaftBlock> SHAFT = REGISTRATE.block("shaft", ShaftBlock::new)
-		.initialProperties(SharedProperties::stone)
-		.properties(p -> p.color(MaterialColor.METAL))
-		.transform(BlockStressDefaults.setNoImpact())
-		.transform(pickaxeOnly())
-		.blockstate(BlockStateGen.axisBlockProvider(false))
-		.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
-		.simpleItem()
-		.register();
+	public static final BlockEntry<ShaftBlock>[] SHAFTS = new BlockEntry[4];
+	public static final BlockEntry<CogWheelBlock>[] COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<CogWheelBlock>[] LARGE_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedShaftBlock>[] ANDESITE_ENCASED_SHAFTS = new BlockEntry[4];
+	public static final BlockEntry<EncasedShaftBlock>[] BRASS_ENCASED_SHAFTS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] ANDESITE_ENCASED_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] BRASS_ENCASED_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] ANDESITE_ENCASED_LARGE_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] BRASS_ENCASED_LARGE_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<GearboxBlock>[] GEARBOXES = new BlockEntry[4];
+	public static final BlockEntry<ClutchBlock>[] CLUTCHES = new BlockEntry[4];
+	public static final BlockEntry<GearshiftBlock>[] GEARSHIFTS = new BlockEntry[4];
+	public static final BlockEntry<ChainDriveBlock>[] ENCASED_CHAIN_DRIVES = new BlockEntry[4];
+	public static final BlockEntry<ChainGearshiftBlock>[] ADJUSTABLE_CHAIN_GEARSHIFTS = new BlockEntry[4];
+	public static final BlockEntry<GirderEncasedShaftBlock>[] METAL_GIRDER_ENCASED_SHAFTS = new BlockEntry[4];
 
-	public static final BlockEntry<CogWheelBlock> COGWHEEL = REGISTRATE.block("cogwheel", CogWheelBlock::small)
-		.initialProperties(SharedProperties::stone)
-		.properties(p -> p.sound(SoundType.WOOD).color(MaterialColor.DIRT))
-		.transform(BlockStressDefaults.setNoImpact())
-		.transform(axeOrPickaxe())
-		.blockstate(BlockStateGen.axisBlockProvider(false))
-		.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
-		.item(CogwheelBlockItem::new)
-		.build()
-		.register();
+	//So dependents don't crash
+	public static final BlockEntry<ShaftBlock> SHAFT;
 
-	public static final BlockEntry<CogWheelBlock> LARGE_COGWHEEL =
-		REGISTRATE.block("large_cogwheel", CogWheelBlock::large)
-			.initialProperties(SharedProperties::stone)
-			.properties(p -> p.sound(SoundType.WOOD).color(MaterialColor.DIRT))
-			.transform(axeOrPickaxe())
-			.transform(BlockStressDefaults.setNoImpact())
-			.blockstate(BlockStateGen.axisBlockProvider(false))
-			.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
-			.item(CogwheelBlockItem::new)
-			.build()
-			.register();
+	static
+	{
+		for (int tier = 0; tier < 4; tier++)
+		{
+			int fTier = tier;
+			SHAFTS[tier] = REGISTRATE.block("shaft_tier_" + tier,
+							p -> new ShaftBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(p -> p.color(MaterialColor.METAL))
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(pickaxeOnly())
+					.blockstate(BlockStateGen.axisBlockProvider(false))
+					.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+					.simpleItem()
+					.register();
 
-	public static final BlockEntry<EncasedShaftBlock> ANDESITE_ENCASED_SHAFT =
-		REGISTRATE.block("andesite_encased_shaft", p -> new EncasedShaftBlock(p, AllBlocks.ANDESITE_CASING::get))
-			.properties(p -> p.color(MaterialColor.PODZOL))
-			.transform(BuilderTransformers.encasedShaft("andesite", () -> AllSpriteShifts.ANDESITE_CASING))
-			.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFT))
-			.transform(axeOrPickaxe())
-			.register();
+			COGWHEELS[tier] = REGISTRATE.block("cogwheel_tier_" + tier,
+							p -> new CogWheelBlock(fTier, false, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.properties(p -> p.color(MaterialColor.DIRT))
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.blockstate(BlockStateGen.axisBlockProvider(false))
+					.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+					.item(CogwheelBlockItem::new)
+					.build()
+					.register();
 
-	public static final BlockEntry<EncasedShaftBlock> BRASS_ENCASED_SHAFT =
-		REGISTRATE.block("brass_encased_shaft", p -> new EncasedShaftBlock(p, AllBlocks.BRASS_CASING::get))
-			.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
-			.transform(BuilderTransformers.encasedShaft("brass", () -> AllSpriteShifts.BRASS_CASING))
-			.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFT))
-			.transform(axeOrPickaxe())
-			.register();
+			LARGE_COGWHEELS[tier] = REGISTRATE.block("large_cogwheel_tier_" + tier,
+							p -> new CogWheelBlock(fTier, true, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.properties(p -> p.color(MaterialColor.DIRT))
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.blockstate(BlockStateGen.axisBlockProvider(false))
+					.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+					.item(CogwheelBlockItem::new)
+					.build()
+					.register();
 
-	public static final BlockEntry<EncasedCogwheelBlock> ANDESITE_ENCASED_COGWHEEL = REGISTRATE
-		.block("andesite_encased_cogwheel", p -> new EncasedCogwheelBlock(p, false, AllBlocks.ANDESITE_CASING::get))
-		.properties(p -> p.color(MaterialColor.PODZOL))
-		.transform(BuilderTransformers.encasedCogwheel("andesite", () -> AllSpriteShifts.ANDESITE_CASING))
-		.transform(EncasingRegistry.addVariantTo(AllBlocks.COGWHEEL))
-		.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCogCTBehaviour(AllSpriteShifts.ANDESITE_CASING,
-			Couple.create(AllSpriteShifts.ANDESITE_ENCASED_COGWHEEL_SIDE,
-				AllSpriteShifts.ANDESITE_ENCASED_COGWHEEL_OTHERSIDE))))
-		.transform(axeOrPickaxe())
-		.register();
+			ANDESITE_ENCASED_SHAFTS[tier] = REGISTRATE.block("andesite_encased_shaft_tier_" + tier,
+							p -> new EncasedShaftBlock(fTier, p, AllBlocks.ANDESITE_CASING::get))
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.transform(BuilderTransformers.encasedShaft(tier, "andesite", () -> AllSpriteShifts.ANDESITE_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFTS[tier]))
+					.transform(axeOrPickaxe())
+					.register();
 
-	public static final BlockEntry<EncasedCogwheelBlock> BRASS_ENCASED_COGWHEEL =
-		REGISTRATE.block("brass_encased_cogwheel", p -> new EncasedCogwheelBlock(p, false, AllBlocks.BRASS_CASING::get))
-			.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
-			.transform(BuilderTransformers.encasedCogwheel("brass", () -> AllSpriteShifts.BRASS_CASING))
-			.transform(EncasingRegistry.addVariantTo(AllBlocks.COGWHEEL))
-			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCogCTBehaviour(AllSpriteShifts.BRASS_CASING,
-				Couple.create(AllSpriteShifts.BRASS_ENCASED_COGWHEEL_SIDE,
-					AllSpriteShifts.BRASS_ENCASED_COGWHEEL_OTHERSIDE))))
-			.transform(axeOrPickaxe())
-			.register();
+			BRASS_ENCASED_SHAFTS[tier] = REGISTRATE.block("brass_encased_shaft_tier_" + tier,
+							p -> new EncasedShaftBlock(fTier, p, AllBlocks.BRASS_CASING::get))
+							.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+							.transform(BuilderTransformers.encasedShaft(tier, "brass", () -> AllSpriteShifts.BRASS_CASING))
+							.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFTS[tier]))
+							.transform(axeOrPickaxe())
+							.register();
 
-	public static final BlockEntry<EncasedCogwheelBlock> ANDESITE_ENCASED_LARGE_COGWHEEL = REGISTRATE
-		.block("andesite_encased_large_cogwheel",
-			p -> new EncasedCogwheelBlock(p, true, AllBlocks.ANDESITE_CASING::get))
-		.properties(p -> p.color(MaterialColor.PODZOL))
-		.transform(BuilderTransformers.encasedLargeCogwheel("andesite", () -> AllSpriteShifts.ANDESITE_CASING))
-		.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEEL))
-		.transform(axeOrPickaxe())
-		.register();
+			ANDESITE_ENCASED_COGWHEELS[tier] = REGISTRATE.block("andesite_encased_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.ANDESITE_CASING::get))
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.transform(BuilderTransformers.encasedCogwheel(tier, "andesite", () -> AllSpriteShifts.ANDESITE_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.COGWHEELS[tier]))
+					.onRegister(connectedTextures(() -> new EncasedCogCTBehaviour(AllSpriteShifts.ANDESITE_CASING,
+							Couple.create(AllSpriteShifts.ANDESITE_ENCASED_COGWHEEL_SIDE,
+									AllSpriteShifts.ANDESITE_ENCASED_COGWHEEL_OTHERSIDE))))
+					.transform(axeOrPickaxe())
+					.register();
 
-	public static final BlockEntry<EncasedCogwheelBlock> BRASS_ENCASED_LARGE_COGWHEEL = REGISTRATE
-		.block("brass_encased_large_cogwheel", p -> new EncasedCogwheelBlock(p, true, AllBlocks.BRASS_CASING::get))
-		.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
-		.transform(BuilderTransformers.encasedLargeCogwheel("brass", () -> AllSpriteShifts.BRASS_CASING))
-		.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEEL))
-		.transform(axeOrPickaxe())
-		.register();
+			BRASS_ENCASED_COGWHEELS[tier] = REGISTRATE.block("brass_encased_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.BRASS_CASING::get))
+					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+					.transform(BuilderTransformers.encasedCogwheel(tier,"brass", () -> AllSpriteShifts.BRASS_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.COGWHEELS[tier]))
+					.onRegister(connectedTextures(() -> new EncasedCogCTBehaviour(AllSpriteShifts.BRASS_CASING,
+							Couple.create(AllSpriteShifts.BRASS_ENCASED_COGWHEEL_SIDE,
+									AllSpriteShifts.BRASS_ENCASED_COGWHEEL_OTHERSIDE))))
+					.transform(axeOrPickaxe())
+					.register();
 
-	public static final BlockEntry<GearboxBlock> GEARBOX = REGISTRATE.block("gearbox", GearboxBlock::new)
-		.initialProperties(SharedProperties::stone)
-		.properties(p -> p.noOcclusion().color(MaterialColor.PODZOL))
-		.transform(BlockStressDefaults.setNoImpact())
-		.transform(axeOrPickaxe())
-		.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.ANDESITE_CASING)))
-		.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.ANDESITE_CASING,
-			(s, f) -> f.getAxis() == s.getValue(GearboxBlock.AXIS))))
-		.blockstate((c, p) -> axisBlock(c, p, $ -> AssetLookup.partialBaseModel(c, p), true))
-		.item()
-		.transform(customItemModel())
-		.register();
+			ANDESITE_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("andesite_encased_large_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.ANDESITE_CASING::get))
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"andesite", () -> AllSpriteShifts.ANDESITE_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))
+					.transform(axeOrPickaxe())
+					.register();
 
-	public static final BlockEntry<ClutchBlock> CLUTCH = REGISTRATE.block("clutch", ClutchBlock::new)
-		.initialProperties(SharedProperties::stone)
-		.properties(p -> p.noOcclusion().color(MaterialColor.PODZOL))
-		.addLayer(() -> RenderType::cutoutMipped)
-		.transform(BlockStressDefaults.setNoImpact())
-		.transform(axeOrPickaxe())
-		.blockstate((c, p) -> BlockStateGen.axisBlock(c, p, AssetLookup.forPowered(c, p)))
-		.item()
-		.transform(customItemModel())
-		.register();
+			BRASS_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("brass_encased_large_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.BRASS_CASING::get))
+					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"brass", () -> AllSpriteShifts.BRASS_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))
+					.transform(axeOrPickaxe())
+					.register();
 
-	public static final BlockEntry<GearshiftBlock> GEARSHIFT = REGISTRATE.block("gearshift", GearshiftBlock::new)
-		.initialProperties(SharedProperties::stone)
-		.properties(p -> p.noOcclusion().color(MaterialColor.PODZOL))
-		.addLayer(() -> RenderType::cutoutMipped)
-		.transform(BlockStressDefaults.setNoImpact())
-		.transform(axeOrPickaxe())
-		.blockstate((c, p) -> BlockStateGen.axisBlock(c, p, AssetLookup.forPowered(c, p)))
-		.item()
-		.transform(customItemModel())
-		.register();
+			GEARBOXES[tier] = REGISTRATE.block("gearbox_tier_" + tier,
+							p -> new GearboxBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(BlockBehaviour.Properties::noOcclusion)
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.onRegister(connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.ANDESITE_CASING)))
+					.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.ANDESITE_CASING,
+							(s, f) -> f.getAxis() == s.getValue(GearboxBlock.AXIS))))
+					.blockstate((c, p) -> axisBlock(c, p, $ -> AssetLookup.partialBaseModel(c, p), true))
+					.item()
+					.transform(customItemModel())
+					.register();
 
-	public static final BlockEntry<ChainDriveBlock> ENCASED_CHAIN_DRIVE =
-		REGISTRATE.block("encased_chain_drive", ChainDriveBlock::new)
-			.initialProperties(SharedProperties::stone)
-			.properties(p -> p.noOcclusion().color(MaterialColor.PODZOL))
-			.transform(BlockStressDefaults.setNoImpact())
-			.transform(axeOrPickaxe())
-			.blockstate((c, p) -> new ChainDriveGenerator((state, suffix) -> p.models()
-				.getExistingFile(p.modLoc("block/" + c.getName() + "/" + suffix))).generate(c, p))
-			.item()
-			.transform(customItemModel())
-			.register();
+			CLUTCHES[tier] = REGISTRATE.block("clutch_tier_" + tier,
+							p -> new ClutchBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(BlockBehaviour.Properties::noOcclusion)
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.addLayer(() -> RenderType::cutoutMipped)
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.blockstate((c, p) -> axisBlock(c, p, AssetLookup.forPowered(c, p)))
+					.item()
+					.transform(customItemModel())
+					.register();
 
-	public static final BlockEntry<ChainGearshiftBlock> ADJUSTABLE_CHAIN_GEARSHIFT =
-		REGISTRATE.block("adjustable_chain_gearshift", ChainGearshiftBlock::new)
-			.initialProperties(SharedProperties::stone)
-			.properties(p -> p.noOcclusion().color(MaterialColor.NETHER))
-			.transform(BlockStressDefaults.setNoImpact())
-			.transform(axeOrPickaxe())
-			.blockstate((c, p) -> new ChainDriveGenerator((state, suffix) -> {
-				String powered = state.getValue(ChainGearshiftBlock.POWERED) ? "_powered" : "";
-				return p.models()
-					.withExistingParent(c.getName() + "_" + suffix + powered,
-						p.modLoc("block/encased_chain_drive/" + suffix))
-					.texture("side", p.modLoc("block/" + c.getName() + powered));
-			}).generate(c, p))
-			.item()
-			.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/encased_chain_drive/item"))
-				.texture("side", p.modLoc("block/" + c.getName())))
-			.build()
-			.register();
+			GEARSHIFTS[tier] = REGISTRATE.block("gearshift_tier_" + tier,
+							p -> new GearshiftBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(BlockBehaviour.Properties::noOcclusion)
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.addLayer(() -> RenderType::cutoutMipped)
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.blockstate((c, p) -> axisBlock(c, p, AssetLookup.forPowered(c, p)))
+					.item()
+					.transform(customItemModel())
+					.register();
+
+			ENCASED_CHAIN_DRIVES[tier] = REGISTRATE.block("encased_chain_drive_tier_" + tier,
+							p -> new ChainDriveBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(BlockBehaviour.Properties::noOcclusion)
+					.properties(p -> p.color(MaterialColor.PODZOL))
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.blockstate((c, p) -> new ChainDriveGenerator((state, suffix) -> p.models()
+							.getExistingFile(p.modLoc("block/" + c.getName() + "/" + suffix))).generate(c, p))
+					.item()
+					.transform(customItemModel())
+					.register();
+
+			ADJUSTABLE_CHAIN_GEARSHIFTS[tier] = REGISTRATE.block("adjustable_chain_gearshift_tier_" + tier,
+							p -> new ChainGearshiftBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(BlockBehaviour.Properties::noOcclusion)
+					.properties(p -> p.color(MaterialColor.NETHER))
+					.transform(BlockStressDefaults.setNoImpact())
+					.transform(axeOrPickaxe())
+					.blockstate((c, p) -> new ChainDriveGenerator((state, suffix) -> {
+						String powered = state.getValue(ChainGearshiftBlock.POWERED) ? "_powered" : "";
+						return p.models()
+								.withExistingParent(c.getName() + "_" + suffix + powered,
+										p.modLoc("block/encased_chain_drive_tier_" + fTier + "/" + suffix))
+								.texture("side", p.modLoc("block/" + c.getName() + powered));
+					}).generate(c, p))
+					.item()
+					.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/encased_chain_drive_tier_" + fTier + "/item"))
+							.texture("side", p.modLoc("block/" + c.getName())))
+					.build()
+					.register();
+
+			METAL_GIRDER_ENCASED_SHAFTS[tier] = REGISTRATE.block("metal_girder_encased_shaft_tier_" + tier,
+							p -> new GirderEncasedShaftBlock(fTier, p))
+					.initialProperties(SharedProperties::softMetal)
+					.blockstate(GirderBlockStateGenerator::blockStateWithShaft)
+					.properties(p -> p.color(MaterialColor.COLOR_GRAY))
+					.properties(p -> p.sound(SoundType.NETHERITE_BLOCK))
+					.transform(pickaxeOnly())
+					.loot((p, b) -> p.add(b, RegistrateBlockLootTables.createSingleItemTable(AllBlocks.METAL_GIRDER.get())
+							.withPool(RegistrateBlockLootTables.applyExplosionCondition(SHAFTS[0].get(), LootPool.lootPool()
+									.setRolls(ConstantValue.exactly(1.0F))
+									.add(LootItem.lootTableItem(SHAFTS[0].get()))))))
+					.onRegister(CreateRegistrate.blockModel(() -> ConnectedGirderModel::new))
+					.register();
+		}
+
+		SHAFT = SHAFTS[0];
+	}
 
 	public static final BlockEntry<BeltBlock> BELT = REGISTRATE.block("belt", BeltBlock::new)
 		.initialProperties(SharedProperties.BELT_MATERIAL, MaterialColor.COLOR_GRAY)
@@ -524,7 +576,7 @@ public class AllBlocks {
 			.transform(pickaxeOnly())
 			.blockstate(new CreativeMotorGenerator()::generate)
 			.transform(BlockStressDefaults.setCapacity(16384.0))
-			.transform(BlockStressDefaults.setGeneratorSpeed(() -> Couple.create(0, 256)))
+			.transform(BlockStressDefaults.setGeneratorSpeed(() -> Couple.create(0, 512)))
 			.item()
 			.properties(p -> p.rarity(Rarity.EPIC))
 			.transform(customItemModel())
@@ -645,7 +697,7 @@ public class AllBlocks {
 			.initialProperties(SharedProperties::stone)
 			.properties(BlockBehaviour.Properties::noOcclusion)
 			.transform(pickaxeOnly())
-			.blockstate((c, p) -> BlockStateGen.axisBlock(c, p, s -> AssetLookup.partialBaseModel(c, p)))
+			.blockstate((c, p) -> axisBlock(c, p, s -> AssetLookup.partialBaseModel(c, p)))
 			.addLayer(() -> RenderType::cutoutMipped)
 			.transform(BlockStressDefaults.setImpact(8.0))
 			.item()
@@ -784,7 +836,7 @@ public class AllBlocks {
 		.blockstate(new GaugeGenerator()::generate)
 		.onRegister(assignDataBehaviour(new KineticSpeedDisplaySource(), "kinetic_speed"))
 		.item()
-		.transform(ModelGen.customItemModel("gauge", "_", "item"))
+		.transform(customItemModel("gauge", "_", "item"))
 		.register();
 
 	public static final BlockEntry<GaugeBlock> STRESSOMETER = REGISTRATE.block("stressometer", GaugeBlock::stress)
@@ -795,7 +847,7 @@ public class AllBlocks {
 		.blockstate(new GaugeGenerator()::generate)
 		.onRegister(assignDataBehaviour(new KineticStressDisplaySource(), "kinetic_stress"))
 		.item()
-		.transform(ModelGen.customItemModel("gauge", "_", "item"))
+		.transform(customItemModel("gauge", "_", "item"))
 		.register();
 
 	public static final BlockEntry<BracketBlock> WOODEN_BRACKET = REGISTRATE.block("wooden_bracket", BracketBlock::new)
@@ -831,7 +883,7 @@ public class AllBlocks {
 			.properties(p -> p.noOcclusion().color(MaterialColor.TERRACOTTA_LIGHT_GRAY))
 			.transform(axeOrPickaxe())
 			.blockstate(BlockStateGen.encasedPipe())
-			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
+			.onRegister(connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
 				(s, f) -> !s.getValue(EncasedPipeBlock.FACING_TO_PROPERTY_MAP.get(f)))))
 			.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::new))
@@ -1015,14 +1067,22 @@ public class AllBlocks {
 			.blockstate(BlockStateGen.whistleExtender())
 			.register();
 
-	public static final BlockEntry<PoweredShaftBlock> POWERED_SHAFT =
-		REGISTRATE.block("powered_shaft", PoweredShaftBlock::new)
-			.initialProperties(SharedProperties::stone)
-			.properties(p -> p.color(MaterialColor.METAL))
-			.transform(pickaxeOnly())
-			.blockstate(BlockStateGen.axisBlockProvider(false))
-			.loot((lt, block) -> lt.dropOther(block, AllBlocks.SHAFT.get()))
-			.register();
+	public static final BlockEntry<PoweredShaftBlock>[] POWERED_SHAFTS = new BlockEntry[4];
+
+	static
+	{
+		for (int tier = 0; tier < 4; tier++)
+		{
+			int fTier = tier;
+			POWERED_SHAFTS[tier] = REGISTRATE.block("powered_shaft_tier_" + tier, p -> new PoweredShaftBlock(fTier, p))
+					.initialProperties(SharedProperties::stone)
+					.properties(p -> p.color(MaterialColor.METAL))
+					.transform(pickaxeOnly())
+					.blockstate(BlockStateGen.axisBlockProvider(false))
+					.loot((lt, block) -> lt.dropOther(block, AllBlocks.SHAFTS[fTier].get()))
+					.register();
+		}
+	}
 
 	// Contraptions
 
@@ -1462,7 +1522,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.blockstate(BlockStateGen.horizontalBlockProvider(true))
 			.transform(BlockStressDefaults.setImpact(2.0))
-			.onRegister(CreateRegistrate.connectedTextures(CrafterCTBehaviour::new))
+			.onRegister(connectedTextures(CrafterCTBehaviour::new))
 			.addLayer(() -> RenderType::cutoutMipped)
 			.item()
 			.transform(customItemModel())
@@ -2021,19 +2081,6 @@ public class AllBlocks {
 		.item()
 		.transform(customItemModel())
 		.register();
-
-	public static final BlockEntry<GirderEncasedShaftBlock> METAL_GIRDER_ENCASED_SHAFT =
-		REGISTRATE.block("metal_girder_encased_shaft", GirderEncasedShaftBlock::new)
-			.initialProperties(SharedProperties::softMetal)
-			.properties(p -> p.color(MaterialColor.COLOR_GRAY).sound(SoundType.NETHERITE_BLOCK))
-			.transform(pickaxeOnly())
-			.blockstate(GirderBlockStateGenerator::blockStateWithShaft)
-			.loot((p, b) -> p.add(b, RegistrateBlockLootTables.createSingleItemTable(METAL_GIRDER.get())
-				.withPool(RegistrateBlockLootTables.applyExplosionCondition(SHAFT.get(), LootPool.lootPool()
-					.setRolls(ConstantValue.exactly(1.0F))
-					.add(LootItem.lootTableItem(SHAFT.get()))))))
-			.onRegister(CreateRegistrate.blockModel(() -> ConnectedGirderModel::new))
-			.register();
 
 	public static final BlockEntry<Block> COPYCAT_BASE = REGISTRATE.block("copycat_base", Block::new)
 		.initialProperties(SharedProperties::softMetal)

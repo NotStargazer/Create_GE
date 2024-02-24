@@ -9,10 +9,15 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
+import com.simibubi.create.content.kinetics.belt.BeltBlock;
+import com.simibubi.create.content.kinetics.belt.BeltPart;
 import com.simibubi.create.foundation.utility.BBHelper;
 import com.simibubi.create.foundation.utility.NBTProcessors;
 import com.simibubi.create.foundation.utility.worldWrappers.WrappedWorld;
+
+import com.simibubi.create.ge.CreateGrandExpanse;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,6 +40,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -201,23 +207,24 @@ public class SchematicWorld extends WrappedWorld implements ServerLevelAccessor 
 	}
 
 	@Override
-	public boolean setBlock(BlockPos pos, BlockState arg1, int arg2) {
+	public boolean setBlock(BlockPos pos, BlockState state, int arg2) {
 		pos = pos.immutable()
 			.subtract(anchor);
 		bounds = BBHelper.encapsulate(bounds, pos);
-		blocks.put(pos, arg1);
+		blocks.put(pos, state);
 		if (blockEntities.containsKey(pos)) {
 			BlockEntity blockEntity = blockEntities.get(pos);
 			if (!blockEntity.getType()
-				.isValid(arg1)) {
+				.isValid(state)) {
 				blockEntities.remove(pos);
 				renderedBlockEntities.remove(blockEntity);
 			}
 		}
 
 		BlockEntity blockEntity = getBlockEntity(pos);
-		if (blockEntity != null)
+		if (blockEntity != null) {
 			blockEntities.put(pos, blockEntity);
+		}
 
 		return true;
 	}
@@ -228,7 +235,7 @@ public class SchematicWorld extends WrappedWorld implements ServerLevelAccessor 
 	public BoundingBox getBounds() {
 		return bounds;
 	}
-	
+
 	public Iterable<BlockEntity> getBlockEntities() {
 		return blockEntities.values();
 	}

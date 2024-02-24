@@ -21,8 +21,8 @@ import net.minecraft.world.level.material.PushReaction;
 
 public abstract class AbstractSimpleShaftBlock extends AbstractShaftBlock implements IWrenchableWithBracket {
 
-	public AbstractSimpleShaftBlock(Properties properties) {
-		super(properties);
+	public AbstractSimpleShaftBlock(int tier, Properties properties) {
+		super(tier, properties);
 	}
 
 	@Override

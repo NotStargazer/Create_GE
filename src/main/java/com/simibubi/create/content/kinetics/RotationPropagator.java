@@ -223,10 +223,14 @@ public class RotationPropagator {
 		Level world = currentTE.getLevel();
 
 		for (KineticBlockEntity neighbourTE : getConnectedNeighbours(currentTE)) {
+			BlockPos neighborPos = neighbourTE.getBlockPos();
 			float speedOfCurrent = currentTE.getTheoreticalSpeed();
 			float speedOfNeighbour = neighbourTE.getTheoreticalSpeed();
 			float newSpeed = getConveyedSpeed(currentTE, neighbourTE);
 			float oppositeSpeed = getConveyedSpeed(neighbourTE, currentTE);
+
+			boolean propagatingToSelf = speedOfCurrent == 0;
+			boolean propagatingToNeighbour = speedOfNeighbour == 0;
 
 			if (newSpeed == 0 && oppositeSpeed == 0)
 				continue;
@@ -234,15 +238,35 @@ public class RotationPropagator {
 			boolean incompatible =
 				Math.signum(newSpeed) != Math.signum(speedOfNeighbour) && (newSpeed != 0 && speedOfNeighbour != 0);
 
-			boolean tooFast = Math.abs(newSpeed) > AllConfigs.server().kinetics.maxRotationSpeed.get()
-					|| Math.abs(oppositeSpeed) > AllConfigs.server().kinetics.maxRotationSpeed.get();
-			// Check for both the new speed and the opposite speed, just in case
+			float maxSpeed = switch (currentTE.blockTier) {
+                case 0 -> AllConfigs.server().kinetics.maxRotationSpeedT0.get();
+                case 1 -> AllConfigs.server().kinetics.maxRotationSpeedT1.get();
+				case 2 -> AllConfigs.server().kinetics.maxRotationSpeedT2.get();
+				default -> AllConfigs.server().kinetics.maxRotationSpeedT3.get();
+			};
 
+			float neighborMaxSpeed = switch (neighbourTE.blockTier) {
+				case 0 -> AllConfigs.server().kinetics.maxRotationSpeedT0.get();
+				case 1 -> AllConfigs.server().kinetics.maxRotationSpeedT1.get();
+				case 2 -> AllConfigs.server().kinetics.maxRotationSpeedT2.get();
+				default -> AllConfigs.server().kinetics.maxRotationSpeedT3.get();
+			};
+
+			float highestSpeed = Math.max(Math.abs(oppositeSpeed), Math.abs(newSpeed));
+			// Check for both the new speed and the opposite speed, just in case
+			boolean selfTooFast = highestSpeed  > maxSpeed;
+			boolean neighbourTooFast =  highestSpeed > neighborMaxSpeed;
 			boolean speedChangedTooOften = currentTE.getFlickerScore() > MAX_FLICKER_SCORE;
-			if (tooFast || speedChangedTooOften) {
+
+			if (propagatingToSelf && (selfTooFast || speedChangedTooOften)) {
 				world.destroyBlock(pos, true);
 				return;
 			}
+			else if (propagatingToNeighbour && neighbourTooFast) {
+				world.destroyBlock(neighborPos, true);
+				return;
+			}
+
 
 			// Opposite directions
 			if (incompatible) {

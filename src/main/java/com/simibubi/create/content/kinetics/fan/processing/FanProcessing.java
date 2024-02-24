@@ -35,14 +35,37 @@ public class FanProcessing {
 	public static boolean applyProcessing(ItemEntity entity, FanProcessingType type) {
 		if (decrementProcessingTime(entity, type) != 0)
 			return false;
-		List<ItemStack> stacks = type.process(entity.getItem(), entity.level);
+		ItemStack entityItem = entity.getItem();
+		ItemStack processItem = entityItem.copy();
+		processItem.setCount(1);
+		List<ItemStack> stacks = type.process(processItem, entity.level);
 		if (stacks == null)
 			return false;
 		if (stacks.isEmpty()) {
-			entity.discard();
+			if (entityItem.getCount() == 1)
+			{
+				entity.discard();
+			}
+			else
+			{
+				ItemStack newStack = entityItem.copy();
+				newStack.setCount(newStack.getCount() - 1);
+				entity.setItem(newStack);
+				resetProcessingTime(entity, type);
+			}
 			return false;
 		}
-		entity.setItem(stacks.remove(0));
+		if (entityItem.getCount() == 1)
+		{
+			entity.discard();
+		}
+		else
+		{
+			ItemStack newStack = entityItem.copy();
+			newStack.setCount(newStack.getCount() - 1);
+			entity.setItem(newStack);
+			resetProcessingTime(entity, type);
+		}
 		for (ItemStack additional : stacks) {
 			ItemEntity entityIn = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), additional);
 			entityIn.setDeltaMovement(entity.getDeltaMovement());
@@ -81,6 +104,24 @@ public class FanProcessing {
 		return TransportedResult.convertTo(transportedStacks);
 	}
 
+	private static void resetProcessingTime(ItemEntity entity, FanProcessingType type) {
+		CompoundTag nbt = entity.getPersistentData();
+
+		if (!nbt.contains("CreateData"))
+			return;
+		CompoundTag createData = nbt.getCompound("CreateData");
+
+		if (!createData.contains("Processing"))
+			return;
+		CompoundTag processing = createData.getCompound("Processing");
+
+		if (!processing.contains("Type") || AllFanProcessingTypes.parseLegacy(processing.getString("Type")) != type)
+			return;
+
+		int value = AllConfigs.server().kinetics.fanProcessingTime.get() + 1;
+		processing.putInt("Time", value);
+	}
+
 	private static int decrementProcessingTime(ItemEntity entity, FanProcessingType type) {
 		CompoundTag nbt = entity.getPersistentData();
 
@@ -94,10 +135,8 @@ public class FanProcessing {
 
 		if (!processing.contains("Type") || AllFanProcessingTypes.parseLegacy(processing.getString("Type")) != type) {
 			processing.putString("Type", FanProcessingTypeRegistry.getIdOrThrow(type).toString());
-			int timeModifierForStackSize = ((entity.getItem()
-				.getCount() - 1) / 16) + 1;
 			int processingTime =
-				(int) (AllConfigs.server().kinetics.fanProcessingTime.get() * timeModifierForStackSize) + 1;
+				(int) (AllConfigs.server().kinetics.fanProcessingTime.get()) + 1;
 			processing.putInt("Time", processingTime);
 		}
 

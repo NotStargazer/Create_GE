@@ -134,6 +134,10 @@ public class CreateGrandExpanse
 				{
 					CompoundTag propTag = tag.getCompound("Properties");
 					String partName = Objects.requireNonNull(propTag.get("part")).getAsString();
+					if (partName.endsWith("_0"))
+					{
+						continue;
+					}
 					String partOverride = partName.equals("middle") ? partName : partName + "_0";
 					propTag.putString("part", partOverride);
 				}

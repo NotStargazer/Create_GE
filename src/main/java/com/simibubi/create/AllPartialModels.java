@@ -26,6 +26,13 @@ public class AllPartialModels {
 			COGWHEEL_SHAFTS = new PartialModel[4],
 			BELT_PULLEYS = new PartialModel[4];
 
+	//So dependent mods don't crash
+	public static final PartialModel
+			SHAFTLESS_LARGE_COGWHEEL = block("large_cogwheel_shaftless_tier_0"),
+			SHAFTLESS_COGWHEEL = block("cogwheel_shaftless_tier_0"),
+			SHAFT_HALF = block("shaft_half_tier_0"),
+			COGWHEEL_SHAFT = block("cogwheel_shaft_tier_0"),
+			BELT_PULLEY = block("belt_pulley_tier_0");
 
 
 	static

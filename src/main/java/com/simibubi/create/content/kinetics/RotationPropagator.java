@@ -264,6 +264,7 @@ public class RotationPropagator {
 			}
 			else if (propagatingToNeighbour && neighbourTooFast) {
 				world.destroyBlock(neighborPos, true);
+				return;
 			}
 
 

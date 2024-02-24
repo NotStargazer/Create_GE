@@ -364,6 +364,9 @@ public class AllBlocks {
 	public static final BlockEntry<ChainGearshiftBlock>[] ADJUSTABLE_CHAIN_GEARSHIFTS = new BlockEntry[4];
 	public static final BlockEntry<GirderEncasedShaftBlock>[] METAL_GIRDER_ENCASED_SHAFTS = new BlockEntry[4];
 
+	//So dependents don't crash
+	public static final BlockEntry<ShaftBlock> SHAFT;
+
 	static
 	{
 		for (int tier = 0; tier < 4; tier++)
@@ -548,6 +551,8 @@ public class AllBlocks {
 					.onRegister(CreateRegistrate.blockModel(() -> ConnectedGirderModel::new))
 					.register();
 		}
+
+		SHAFT = SHAFTS[0];
 	}
 
 	public static final BlockEntry<BeltBlock> BELT = REGISTRATE.block("belt", BeltBlock::new)

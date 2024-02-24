@@ -437,6 +437,8 @@ public class BeltBlock extends HorizontalKineticBlock
 
 			if (blockEntity instanceof BeltBlockEntity && AllBlocks.BELT.has(currentState)) {
 				BeltBlockEntity be = (BeltBlockEntity) blockEntity;
+				BeltPart part = currentState.getValue(BeltBlock.PART);
+				be.blockTier = part == BeltPart.MIDDLE ? 3 : BeltPart.getTier(part);
 				be.setController(currentPos);
 				be.beltLength = beltChain.size();
 				be.index = index;

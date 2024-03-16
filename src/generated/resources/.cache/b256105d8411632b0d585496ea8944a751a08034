@@ -1,4 +1,4 @@
-// 1.19.2	2023-09-20T18:40:42.8238372	Create's Processing Recipes
+// 1.19.2	2024-03-16T14:58:20.61401	Create's Processing Recipes
 3c94326fb730f68c1e44fe1e2ef09c9db6ffd92b data/create/recipes/compacting/andesite_from_flint.json
 8d3d5b31f3601b9f681ff710e0545a483a1494c6 data/create/recipes/compacting/blaze_cake.json
 8bd7f4e3a686ab520b2d55594d2018d0e9a50c91 data/create/recipes/compacting/chocolate.json
@@ -88,7 +88,7 @@ b135e3faf6afef4b6a5f00197997b47ff8e90568 data/create/recipes/crushing/wool.json
 931a66992ccb5accdb435dca6fe6532e86250c0d data/create/recipes/crushing/zinc_ore.json
 b5c33d039e3c9771b3ffc322aadae7e75a823635 data/create/recipes/cutting/acacia_log.json
 b45b88bf2ac614b2518437656746f8e8a465d693 data/create/recipes/cutting/acacia_wood.json
-cdb26cd91feeda5901f31f57c16517dda5287810 data/create/recipes/cutting/andesite_alloy.json
+8cf9bae9a3edf1c5376ac1cd43b27f2de781116a data/create/recipes/cutting/andesite_alloy.json
 1a3dd0e51603a3e47da4465da210004c78028faf data/create/recipes/cutting/birch_log.json
 71c3a093c849a99fbaef8772114ac9305627f2c1 data/create/recipes/cutting/birch_wood.json
 4f756e256a7814e2b9a6632d38633bb78c5046cd data/create/recipes/cutting/compat/architects_palette/stripped_twisted_log.json
@@ -425,8 +425,8 @@ d9f2558fd566bc362c8330b26d201b2774a530ea data/create/recipes/cutting/stripped_sp
 39060c0293e8681bbce3444f702c1ec5cae967fb data/create/recipes/cutting/stripped_warped_stem.json
 ddb27a32c1b01812db7cc317c962e35d794dae88 data/create/recipes/cutting/warped_hyphae.json
 688e5c5719ce1c6a331cd9ac05ba21fdb2da96a9 data/create/recipes/cutting/warped_stem.json
-7a01147d3c7d8fb9acb870b33e5a792328f88c3c data/create/recipes/deploying/cogwheel.json
-1230f449873262e79585752d3430e5f7f383bcb2 data/create/recipes/deploying/large_cogwheel.json
+886795fc5c3cf7c9bf53bfb878d64a918c832068 data/create/recipes/deploying/cogwheel.json
+dd70b7402d6618f4b7c53dca02f599009b490c6e data/create/recipes/deploying/large_cogwheel.json
 dc35369da8514a5650704fd39e84861cce084b5d data/create/recipes/deploying/waxed_copper_block_from_adding_wax.json
 7b7d596cdaa4000222177b405c04c6e8906561b4 data/create/recipes/deploying/waxed_copper_shingles_from_adding_wax.json
 afbe0c612651ee90651ee7b39683c8baac2a115e data/create/recipes/deploying/waxed_copper_shingle_slab_from_adding_wax.json

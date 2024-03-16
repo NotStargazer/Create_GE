@@ -352,11 +352,17 @@ public class AllBlocks {
 	public static final BlockEntry<CogWheelBlock>[] COGWHEELS = new BlockEntry[4];
 	public static final BlockEntry<CogWheelBlock>[] LARGE_COGWHEELS = new BlockEntry[4];
 	public static final BlockEntry<EncasedShaftBlock>[] ANDESITE_ENCASED_SHAFTS = new BlockEntry[4];
+	public static final BlockEntry<EncasedShaftBlock>[] COPPER_ENCASED_SHAFTS = new BlockEntry[4];
 	public static final BlockEntry<EncasedShaftBlock>[] BRASS_ENCASED_SHAFTS = new BlockEntry[4];
+	public static final BlockEntry<EncasedShaftBlock>[] STEEL_ENCASED_SHAFTS = new BlockEntry[4];
 	public static final BlockEntry<EncasedCogwheelBlock>[] ANDESITE_ENCASED_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] COPPER_ENCASED_COGWHEELS = new BlockEntry[4];
 	public static final BlockEntry<EncasedCogwheelBlock>[] BRASS_ENCASED_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] STEEL_ENCASED_COGWHEELS = new BlockEntry[4];
 	public static final BlockEntry<EncasedCogwheelBlock>[] ANDESITE_ENCASED_LARGE_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] COPPER_ENCASED_LARGE_COGWHEELS = new BlockEntry[4];
 	public static final BlockEntry<EncasedCogwheelBlock>[] BRASS_ENCASED_LARGE_COGWHEELS = new BlockEntry[4];
+	public static final BlockEntry<EncasedCogwheelBlock>[] STEEL_ENCASED_LARGE_COGWHEELS = new BlockEntry[4];
 	public static final BlockEntry<GearboxBlock>[] GEARBOXES = new BlockEntry[4];
 	public static final BlockEntry<ClutchBlock>[] CLUTCHES = new BlockEntry[4];
 	public static final BlockEntry<GearshiftBlock>[] GEARSHIFTS = new BlockEntry[4];
@@ -417,10 +423,26 @@ public class AllBlocks {
 					.transform(axeOrPickaxe())
 					.register();
 
+			COPPER_ENCASED_SHAFTS[tier] = REGISTRATE.block("copper_encased_shaft_tier_" + tier,
+							p -> new EncasedShaftBlock(fTier, p, AllBlocks.COPPER_CASING::get))
+							.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+							.transform(BuilderTransformers.encasedShaft(tier, "copper", () -> AllSpriteShifts.COPPER_CASING))
+							.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFTS[tier]))
+							.transform(axeOrPickaxe())
+							.register();
+
 			BRASS_ENCASED_SHAFTS[tier] = REGISTRATE.block("brass_encased_shaft_tier_" + tier,
 							p -> new EncasedShaftBlock(fTier, p, AllBlocks.BRASS_CASING::get))
 							.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
 							.transform(BuilderTransformers.encasedShaft(tier, "brass", () -> AllSpriteShifts.BRASS_CASING))
+							.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFTS[tier]))
+							.transform(axeOrPickaxe())
+							.register();
+
+			STEEL_ENCASED_SHAFTS[tier] = REGISTRATE.block("steel_encased_shaft_tier_" + tier,
+							p -> new EncasedShaftBlock(fTier, p, AllBlocks.STEEL_CASING::get))
+							.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+							.transform(BuilderTransformers.encasedShaft(tier, "steel", () -> AllSpriteShifts.STEEL_CASING))
 							.transform(EncasingRegistry.addVariantTo(AllBlocks.SHAFTS[tier]))
 							.transform(axeOrPickaxe())
 							.register();
@@ -436,6 +458,17 @@ public class AllBlocks {
 					.transform(axeOrPickaxe())
 					.register();
 
+			COPPER_ENCASED_COGWHEELS[tier] = REGISTRATE.block("copper_encased_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.COPPER_CASING::get))
+					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+					.transform(BuilderTransformers.encasedCogwheel(tier,"copper", () -> AllSpriteShifts.COPPER_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.COGWHEELS[tier]))
+					.onRegister(connectedTextures(() -> new EncasedCogCTBehaviour(AllSpriteShifts.COPPER_CASING,
+							Couple.create(AllSpriteShifts.COPPER_ENCASED_COGWHEEL_SIDE,
+									AllSpriteShifts.COPPER_ENCASED_COGWHEEL_OTHERSIDE))))
+					.transform(axeOrPickaxe())
+					.register();
+
 			BRASS_ENCASED_COGWHEELS[tier] = REGISTRATE.block("brass_encased_cogwheel_tier_" + tier,
 							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.BRASS_CASING::get))
 					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
@@ -447,6 +480,17 @@ public class AllBlocks {
 					.transform(axeOrPickaxe())
 					.register();
 
+			STEEL_ENCASED_COGWHEELS[tier] = REGISTRATE.block("steel_encased_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, false, AllBlocks.STEEL_CASING::get))
+					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+					.transform(BuilderTransformers.encasedCogwheel(tier,"steel", () -> AllSpriteShifts.STEEL_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.COGWHEELS[tier]))
+					.onRegister(connectedTextures(() -> new EncasedCogCTBehaviour(AllSpriteShifts.STEEL_CASING,
+							Couple.create(AllSpriteShifts.STEEL_ENCASED_COGWHEEL_SIDE,
+									AllSpriteShifts.STEEL_ENCASED_COGWHEEL_OTHERSIDE))))
+					.transform(axeOrPickaxe())
+					.register();
+
 			ANDESITE_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("andesite_encased_large_cogwheel_tier_" + tier,
 							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.ANDESITE_CASING::get))
 					.properties(p -> p.color(MaterialColor.PODZOL))
@@ -455,10 +499,26 @@ public class AllBlocks {
 					.transform(axeOrPickaxe())
 					.register();
 
+			COPPER_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("copper_encased_large_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.COPPER_CASING::get))
+					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"copper", () -> AllSpriteShifts.COPPER_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))
+					.transform(axeOrPickaxe())
+					.register();
+
 			BRASS_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("brass_encased_large_cogwheel_tier_" + tier,
 							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.BRASS_CASING::get))
 					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
 					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"brass", () -> AllSpriteShifts.BRASS_CASING))
+					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))
+					.transform(axeOrPickaxe())
+					.register();
+
+			STEEL_ENCASED_LARGE_COGWHEELS[tier] = REGISTRATE.block("steel_encased_large_cogwheel_tier_" + tier,
+							p -> new EncasedCogwheelBlock(fTier, p, true, AllBlocks.STEEL_CASING::get))
+					.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+					.transform(BuilderTransformers.encasedLargeCogwheel(tier,"steel", () -> AllSpriteShifts.STEEL_CASING))
 					.transform(EncasingRegistry.addVariantTo(AllBlocks.LARGE_COGWHEELS[tier]))
 					.transform(axeOrPickaxe())
 					.register();
@@ -1499,6 +1559,11 @@ public class AllBlocks {
 		.properties(p -> p.color(MaterialColor.TERRACOTTA_LIGHT_GRAY).sound(SoundType.COPPER))
 		.transform(BuilderTransformers.casing(() -> AllSpriteShifts.COPPER_CASING))
 		.register();
+
+	public static final BlockEntry<CasingBlock> STEEL_CASING = REGISTRATE.block("steel_casing", CasingBlock::new)
+			.properties(p -> p.color(MaterialColor.TERRACOTTA_BROWN))
+			.transform(BuilderTransformers.casing(() -> AllSpriteShifts.STEEL_CASING))
+			.register();
 
 	public static final BlockEntry<CasingBlock> SHADOW_STEEL_CASING =
 		REGISTRATE.block("shadow_steel_casing", CasingBlock::deprecated)

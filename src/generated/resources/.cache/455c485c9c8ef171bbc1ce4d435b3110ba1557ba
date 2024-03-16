@@ -1,4 +1,4 @@
-// 1.19.2	2023-09-20T18:40:42.8358053	Create's Advancements
+// 1.19.2	2024-03-16T14:58:20.6190112	Create's Advancements
 2079ae09cf699108a8035ced7ca712fed4ab1577 data/create/advancements/andesite_alloy.json
 082d3987c5e074ed50be4a94a6fdc17120af241b data/create/advancements/andesite_casing.json
 4618109cfb4550fd8e19dc9d794ef24398b10a61 data/create/advancements/anvil_plough.json
@@ -67,7 +67,7 @@ ce6f407629718a08046895b9f388912598eb54f0 data/create/advancements/pulley_maxed.j
 948bd2f2c98c7e42e62cf00b6ac17aeb83b665a3 data/create/advancements/rose_quartz.json
 caee573f0fc6c297b12a7e96b90f7fb8fce787de data/create/advancements/saw_processing.json
 16f463cda4842cfa69d484899a5e3a5ebc7c6531 data/create/advancements/self_deploying.json
-a6893c0d8e123346eb74d4f98053a7bd7d45a5f3 data/create/advancements/shifting_gears.json
+1494aa6a9612b96f179985381e714ce115c6e985 data/create/advancements/shifting_gears.json
 c213cfe4b14239b6a8d572ea4beb9cdee83543ba data/create/advancements/speed_controller.json
 1664bfda74ce4830f8c6eef3e395da593c3d3615 data/create/advancements/spout.json
 064d23021711418a2647b1127a3feaa9983147a7 data/create/advancements/steam_engine.json

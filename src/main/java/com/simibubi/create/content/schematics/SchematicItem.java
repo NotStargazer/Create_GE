@@ -140,7 +140,7 @@ public class SchematicItem extends Item {
 				new GZIPInputStream(Files.newInputStream(path, StandardOpenOption.READ))))) {
 			CompoundTag nbt = NbtIo.read(stream, new NbtAccounter(0x20000000L));
 			CreateGrandExpanse.overrideNBT(nbt);
-			t.load(nbt);
+			t.load(lookup, nbt);
 		} catch (IOException e) {
 			LOGGER.warn("Failed to read schematic", e);
 		}

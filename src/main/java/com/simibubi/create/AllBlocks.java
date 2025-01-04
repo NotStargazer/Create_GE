@@ -372,6 +372,7 @@ public class AllBlocks {
 
 	//So dependents don't crash
 	public static final BlockEntry<ShaftBlock> SHAFT;
+	public static final BlockEntry<GirderEncasedShaftBlock> METAL_GIRDER_ENCASED_SHAFT;
 
 	static
 	{
@@ -613,6 +614,7 @@ public class AllBlocks {
 		}
 
 		SHAFT = SHAFTS[0];
+		METAL_GIRDER_ENCASED_SHAFT = METAL_GIRDER_ENCASED_SHAFTS[0];
 	}
 
 	public static final BlockEntry<BeltBlock> BELT = REGISTRATE.block("belt", BeltBlock::new)

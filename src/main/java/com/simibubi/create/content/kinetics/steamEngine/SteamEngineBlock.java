@@ -161,9 +161,8 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 	}
 
 	public static boolean isShaftValid(BlockState state, BlockState shaft) {
-		int tier = ((KineticBlock) shaft.getBlock()).tier;
-		return (AllBlocks.SHAFTS[tier].has(shaft) || AllBlocks.POWERED_SHAFTS[tier].has(shaft))
-			&& shaft.getValue(ShaftBlock.AXIS) != getFacing(state).getAxis();
+		return (AllBlocks.SHAFTS[0].has(shaft) || AllBlocks.POWERED_SHAFTS[0].has(shaft))
+				&& shaft.getValue(ShaftBlock.AXIS) != getFacing(state).getAxis();
 	}
 
 	@Override
@@ -192,10 +191,8 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
 			BlockHitResult ray) {
 
-			int tier = ((KineticBlock) state.getBlock()).tier;
-
 			BlockPos shaftPos = SteamEngineBlock.getShaftPos(state, pos);
-			BlockState shaft = AllBlocks.SHAFTS[tier].getDefaultState();
+			BlockState shaft = AllBlocks.SHAFTS[0].getDefaultState();
 			for (Direction direction : Direction.orderedByNearest(player)) {
 				shaft = shaft.setValue(ShaftBlock.AXIS, direction.getAxis());
 				if (isShaftValid(state, shaft))
@@ -208,7 +205,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 
 			Axis axis = shaft.getValue(ShaftBlock.AXIS);
 			return PlacementOffset.success(shaftPos,
-				s -> BlockHelper.copyProperties(s, AllBlocks.POWERED_SHAFTS[tier].getDefaultState())
+				s -> BlockHelper.copyProperties(s, AllBlocks.POWERED_SHAFTS[0].getDefaultState())
 					.setValue(PoweredShaftBlock.AXIS, axis));
 		}
 	}

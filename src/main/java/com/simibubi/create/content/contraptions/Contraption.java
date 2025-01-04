@@ -966,8 +966,8 @@ public abstract class Contraption {
 					continue;
 				BlockState oldState = world.getBlockState(add);
 				Block blockIn = oldState.getBlock();
-				boolean blockMismatch = block.state.getBlock() != blockIn;
-				blockMismatch &= !CreateGrandExpanse.isAnyOf(AllBlocks.POWERED_SHAFTS, blockIn) || !CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, block.state);
+				boolean blockMismatch = block.state().getBlock() != blockIn;
+				blockMismatch &= !CreateGrandExpanse.isAnyOf(AllBlocks.POWERED_SHAFTS, blockIn) || !CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, block.state());
 				if (blockMismatch)
 					iterator.remove();
 				world.removeBlockEntity(add);

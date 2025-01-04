@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltPart;
@@ -45,7 +46,7 @@ public class BeltConnectorItem extends BlockItem {
 	public String getDescriptionId() {
 		return getOrCreateDescriptionId();
 	}
-	
+
 	@Nonnull
 	@Override
 	public InteractionResult useOn(UseOnContext context) {

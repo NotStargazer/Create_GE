@@ -1,5 +1,6 @@
 package com.simibubi.create;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class AllCreativeModeTabs {
 		() -> CreativeModeTab.builder()
 			.title(Components.translatable("itemGroup.create.base"))
 			.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-			.icon(() -> AllBlocks.COGWHEEL.asStack())
+			.icon(() -> AllBlocks.COGWHEELS[0].asStack())
 			.displayItems(new RegistrateDisplayItemsGenerator(true, AllCreativeModeTabs.BASE_CREATIVE_TAB))
 			.build());
 
@@ -127,12 +128,30 @@ public class AllCreativeModeTabs {
 					AllItems.FURNACE_MINECART_CONTRAPTION,
 					AllItems.CHEST_MINECART_CONTRAPTION,
 					AllItems.SCHEMATIC,
-					AllBlocks.ANDESITE_ENCASED_SHAFT,
-					AllBlocks.BRASS_ENCASED_SHAFT,
-					AllBlocks.ANDESITE_ENCASED_COGWHEEL,
-					AllBlocks.BRASS_ENCASED_COGWHEEL,
-					AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEEL,
-					AllBlocks.BRASS_ENCASED_LARGE_COGWHEEL,
+					AllBlocks.ANDESITE_ENCASED_SHAFTS[0],
+					AllBlocks.BRASS_ENCASED_SHAFTS[0],
+					AllBlocks.ANDESITE_ENCASED_COGWHEELS[0],
+					AllBlocks.BRASS_ENCASED_COGWHEELS[0],
+					AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[0],
+					AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[0],
+					AllBlocks.ANDESITE_ENCASED_SHAFTS[1],
+					AllBlocks.BRASS_ENCASED_SHAFTS[1],
+					AllBlocks.ANDESITE_ENCASED_COGWHEELS[1],
+					AllBlocks.BRASS_ENCASED_COGWHEELS[1],
+					AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[1],
+					AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[1],
+					AllBlocks.ANDESITE_ENCASED_SHAFTS[2],
+					AllBlocks.BRASS_ENCASED_SHAFTS[2],
+					AllBlocks.ANDESITE_ENCASED_COGWHEELS[2],
+					AllBlocks.BRASS_ENCASED_COGWHEELS[2],
+					AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[2],
+					AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[2],
+					AllBlocks.ANDESITE_ENCASED_SHAFTS[3],
+					AllBlocks.BRASS_ENCASED_SHAFTS[3],
+					AllBlocks.ANDESITE_ENCASED_COGWHEELS[3],
+					AllBlocks.BRASS_ENCASED_COGWHEELS[3],
+					AllBlocks.ANDESITE_ENCASED_LARGE_COGWHEELS[3],
+					AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[3],
 					AllBlocks.MYSTERIOUS_CUCKOO_CLOCK,
 					AllBlocks.ELEVATOR_CONTACT,
 					AllBlocks.SHADOW_STEEL_CASING,
@@ -174,7 +193,10 @@ public class AllCreativeModeTabs {
 			);
 
 			Map<ItemProviderEntry<?>, ItemProviderEntry<?>> simpleAfterOrderings = Map.of(
-					AllItems.VERTICAL_GEARBOX, AllBlocks.GEARBOX
+					AllItems.VERTICAL_GEARBOXES[0], AllBlocks.GEARBOXES[0],
+					AllItems.VERTICAL_GEARBOXES[1], AllBlocks.GEARBOXES[1],
+					AllItems.VERTICAL_GEARBOXES[2], AllBlocks.GEARBOXES[2],
+					AllItems.VERTICAL_GEARBOXES[3], AllBlocks.GEARBOXES[3]
 			);
 
 			simpleBeforeOrderings.forEach((entry, otherEntry) -> {

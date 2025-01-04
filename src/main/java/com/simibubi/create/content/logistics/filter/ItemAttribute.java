@@ -36,7 +36,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -47,7 +46,7 @@ import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.IModInfo;
@@ -60,8 +59,7 @@ public interface ItemAttribute {
 
 	static ItemAttribute standard = register(StandardTraits.DUMMY);
 	static ItemAttribute inTag = register(new InTag(ItemTags.LOGS));
-	static ItemAttribute inItemGroup = register(new InItemGroup(CreativeModeTab.TAB_MISC));
-	static ItemAttribute addedBy = register(new InItemGroup.AddedBy("dummy"));
+	static ItemAttribute addedBy = register(new AddedBy("dummy"));
 	static ItemAttribute hasEnchant = register(EnchantAttribute.EMPTY);
 	static ItemAttribute shulkerFillLevel = register(ShulkerFillLevelAttribute.EMPTY);
 	static ItemAttribute hasColor = register(ColorAttribute.EMPTY);
@@ -134,7 +132,7 @@ public interface ItemAttribute {
 		DUMMY(s -> false),
 		PLACEABLE(s -> s.getItem() instanceof BlockItem),
 		CONSUMABLE(ItemStack::isEdible),
-		FLUID_CONTAINER(s -> s.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+		FLUID_CONTAINER(s -> s.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
 			.isPresent()),
 		ENCHANTED(ItemStack::isEnchanted),
 		MAX_ENCHANTED(StandardTraits::maxEnchanted),
@@ -271,56 +269,6 @@ public interface ItemAttribute {
 		@Override
 		public ItemAttribute readNBT(CompoundTag nbt) {
 			return new InTag(ItemTags.create(new ResourceLocation(nbt.getString("space"), nbt.getString("path"))));
-		}
-
-	}
-
-	public static class InItemGroup implements ItemAttribute {
-
-		private CreativeModeTab group;
-
-		public InItemGroup(CreativeModeTab group) {
-			this.group = group;
-		}
-
-		@Override
-		public boolean appliesTo(ItemStack stack) {
-			Item item = stack.getItem();
-			return item.getItemCategory() == group;
-		}
-
-		@Override
-		public List<ItemAttribute> listAttributesOf(ItemStack stack) {
-			CreativeModeTab group = stack.getItem()
-				.getItemCategory();
-			return group == null ? Collections.emptyList() : Arrays.asList(new InItemGroup(group));
-		}
-
-		@Override
-		public String getTranslationKey() {
-			return "in_item_group";
-		}
-
-		@Override
-		@OnlyIn(value = Dist.CLIENT)
-		public MutableComponent format(boolean inverted) {
-			return Lang.translateDirect("item_attributes." + getTranslationKey() + (inverted ? ".inverted" : ""),
-				group.getDisplayName());
-		}
-
-		@Override
-		public void writeNBT(CompoundTag nbt) {
-			nbt.putString("path", group.getRecipeFolderName());
-		}
-
-		@Override
-		public ItemAttribute readNBT(CompoundTag nbt) {
-			String readPath = nbt.getString("path");
-			for (CreativeModeTab group : CreativeModeTab.TABS)
-				if (group.getRecipeFolderName()
-					.equals(readPath))
-					return new InItemGroup(group);
-			return null;
 		}
 
 	}

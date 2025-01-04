@@ -1,22 +1,24 @@
 package com.simibubi.create;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -312,7 +314,7 @@ public class AllSoundEvents {
 	}
 
 	public static void register(RegisterEvent event) {
-		event.register(Registry.SOUND_EVENT_REGISTRY, helper -> {
+		event.register(Registries.SOUND_EVENT, helper -> {
 			for (SoundEntry entry : ALL.values())
 				entry.register(helper);
 		});
@@ -329,7 +331,7 @@ public class AllSoundEvents {
 	}
 
 	public static void playItemPickup(Player player) {
-		player.level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, .2f,
+		player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, .2f,
 			1f + Create.RANDOM.nextFloat());
 	}
 
@@ -345,15 +347,15 @@ public class AllSoundEvents {
 
 	private static class SoundEntryProvider implements DataProvider {
 
-		private DataGenerator generator;
+		private PackOutput output;
 
 		public SoundEntryProvider(DataGenerator generator) {
-			this.generator = generator;
+			output = generator.getPackOutput();
 		}
 
 		@Override
-		public void run(CachedOutput cache) throws IOException {
-			generate(generator.getOutputFolder(), cache);
+		public CompletableFuture<?> run(CachedOutput cache) {
+			return generate(output.getOutputFolder(), cache);
 		}
 
 		@Override
@@ -361,23 +363,17 @@ public class AllSoundEvents {
 			return "Create's Custom Sounds";
 		}
 
-		public void generate(Path path, CachedOutput cache) {
+		public CompletableFuture<?> generate(Path path, CachedOutput cache) {
 			path = path.resolve("assets/create");
-
-			try {
-				JsonObject json = new JsonObject();
-				ALL.entrySet()
-					.stream()
-					.sorted(Map.Entry.comparingByKey())
-					.forEach(entry -> {
-						entry.getValue()
-							.write(json);
-					});
-				DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			JsonObject json = new JsonObject();
+			ALL.entrySet()
+				.stream()
+				.sorted(Map.Entry.comparingByKey())
+				.forEach(entry -> {
+					entry.getValue()
+						.write(json);
+				});
+			return DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
 		}
 
 	}
@@ -440,6 +436,10 @@ public class AllSoundEvents {
 
 		public SoundEntryBuilder playExisting(SoundEvent event) {
 			return playExisting(event, 1, 1);
+		}
+		
+		public SoundEntryBuilder playExisting(Holder<SoundEvent> event) {
+			return playExisting(event::get, 1, 1);
 		}
 
 		public SoundEntry build() {
@@ -508,7 +508,7 @@ public class AllSoundEvents {
 
 		public void playFrom(Entity entity, float volume, float pitch) {
 			if (!entity.isSilent())
-				play(entity.level, null, entity.blockPosition(), volume, pitch);
+				play(entity.level(), null, entity.blockPosition(), volume, pitch);
 		}
 
 		public void play(Level world, Player entity, Vec3i pos, float volume, float pitch) {
@@ -559,7 +559,7 @@ public class AllSoundEvents {
 		public void register(RegisterEvent.RegisterHelper<SoundEvent> helper) {
 			for (CompiledSoundEvent compiledEvent : compiledEvents) {
 				ResourceLocation location = compiledEvent.event().getId();
-				helper.register(location, new SoundEvent(location));
+				helper.register(location, SoundEvent.createVariableRangeEvent(location));
 			}
 		}
 
@@ -635,7 +635,7 @@ public class AllSoundEvents {
 		@Override
 		public void register(RegisterEvent.RegisterHelper<SoundEvent> helper) {
 			ResourceLocation location = event.getId();
-			helper.register(location, new SoundEvent(location));
+			helper.register(location, SoundEvent.createVariableRangeEvent(location));
 		}
 
 		@Override

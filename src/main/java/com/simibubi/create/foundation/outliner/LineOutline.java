@@ -1,9 +1,10 @@
 package com.simibubi.create.foundation.outliner;
 
+import org.joml.Vector3d;
+import org.joml.Vector4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3d;
-import com.mojang.math.Vector4f;
 import com.simibubi.create.foundation.render.RenderTypes;
 import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
 

@@ -57,7 +57,7 @@ import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.recipe.CompatMetals;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -243,7 +243,7 @@ public class RemapHelper {
 
 	@SubscribeEvent
 	public static void remapBlocks(MissingMappingsEvent event) {
-		for (Mapping<Block> mapping : event.getMappings(Registry.BLOCK_REGISTRY, Create.ID)) {
+		for (Mapping<Block> mapping : event.getMappings(Registries.BLOCK, Create.ID)) {
 			ResourceLocation key = mapping.getKey();
 			String path = key.getPath();
 			ResourceLocation remappedId = reMap.get(path);
@@ -263,7 +263,7 @@ public class RemapHelper {
 
 	@SubscribeEvent
 	public static void remapItems(MissingMappingsEvent event) {
-		for (Mapping<Item> mapping : event.getMappings(Registry.ITEM_REGISTRY, Create.ID)) {
+		for (Mapping<Item> mapping : event.getMappings(Registries.ITEM, Create.ID)) {
 			ResourceLocation key = mapping.getKey();
 			String path = key.getPath();
 			ResourceLocation remappedId = reMap.get(path);
@@ -283,7 +283,7 @@ public class RemapHelper {
 
 	@SubscribeEvent
 	public static void remapFluids(MissingMappingsEvent event) {
-		for (Mapping<Fluid> mapping : event.getMappings(Registry.FLUID_REGISTRY, Create.ID)) {
+		for (Mapping<Fluid> mapping : event.getMappings(Registries.FLUID, Create.ID)) {
 			ResourceLocation key = mapping.getKey();
 			String path = key.getPath();
 			if (path.equals("milk"))
@@ -295,7 +295,7 @@ public class RemapHelper {
 
 	@SubscribeEvent
 	public static void remapBlockEntities(MissingMappingsEvent event) {
-		for (Mapping<BlockEntityType<?>> mapping : event.getMappings(Registry.BLOCK_ENTITY_TYPE_REGISTRY, Create.ID)) {
+		for (Mapping<BlockEntityType<?>> mapping : event.getMappings(Registries.BLOCK_ENTITY_TYPE, Create.ID)) {
 			ResourceLocation key = mapping.getKey();
 			String path = key.getPath();
 

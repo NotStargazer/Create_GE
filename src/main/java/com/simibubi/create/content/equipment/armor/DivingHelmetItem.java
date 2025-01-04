@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -25,9 +26,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber
 public class DivingHelmetItem extends BaseArmorItem {
 	public static final EquipmentSlot SLOT = EquipmentSlot.HEAD;
+	public static final ArmorItem.Type TYPE = ArmorItem.Type.HELMET;
 
 	public DivingHelmetItem(ArmorMaterial material, Properties properties, ResourceLocation textureLoc) {
-		super(material, SLOT, properties, textureLoc);
+		super(material, TYPE, properties, textureLoc);
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class DivingHelmetItem extends BaseArmorItem {
 	@SubscribeEvent
 	public static void breatheUnderwater(LivingTickEvent event) {
 		LivingEntity entity = event.getEntity();
-		Level world = entity.level;
+		Level world = entity.level();
 		boolean second = world.getGameTime() % 20 == 0;
 		boolean drowning = entity.getAirSupply() == 0;
 

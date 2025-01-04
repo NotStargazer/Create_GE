@@ -15,7 +15,7 @@ public class ComputerCraftProxy {
 	
 	private static void registerWithDependency() {
 		/* Comment if computercraft.implementation is not in the source set */
-		computerFactory = ComputerBehaviour::new;
+		 computerFactory = ComputerBehaviour::new;
 	}
 
 	private static Function<SmartBlockEntity, ? extends AbstractComputerBehaviour> fallbackFactory;

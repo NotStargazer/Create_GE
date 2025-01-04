@@ -25,7 +25,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +35,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.AbstractMinecart.Type;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -46,7 +44,6 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -105,7 +102,7 @@ public class MinecartContraptionItem extends Item {
 					d3 = 0.1D;
 				}
 			} else {
-				if (blockstate.getMaterial() != Material.AIR || !world.getBlockState(blockpos.below())
+				if (!blockstate.isAir() || !world.getBlockState(blockpos.below())
 					.is(BlockTags.RAILS)) {
 					return this.behaviourDefaultDispenseItem.dispense(source, stack);
 				}
@@ -200,9 +197,6 @@ public class MinecartContraptionItem extends Item {
 		return "item.create.minecart_contraption";
 	}
 
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
-
 	@SubscribeEvent
 	public static void wrenchCanBeUsedToPickUpMinecartContraptions(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
@@ -249,7 +243,7 @@ public class MinecartContraptionItem extends Item {
 		contraption.stop(event.getLevel());
 
 		for (MutablePair<StructureBlockInfo, MovementContext> pair : contraption.getActors())
-			if (AllMovementBehaviours.getBehaviour(pair.left.state)instanceof PortableStorageInterfaceMovement psim)
+			if (AllMovementBehaviours.getBehaviour(pair.left.state())instanceof PortableStorageInterfaceMovement psim)
 				psim.reset(pair.right);
 
 		ItemStack generatedStack = create(type, oce).setHoverName(entity.getCustomName());

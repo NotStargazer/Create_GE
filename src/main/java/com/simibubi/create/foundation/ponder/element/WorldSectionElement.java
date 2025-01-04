@@ -331,19 +331,16 @@ public class WorldSectionElement extends AnimatedSceneElement {
 
 			if (overlayMS == null) {
 				overlayMS = new PoseStack();
-				overlayMS.last().pose().load(ms.last().pose());
-				overlayMS.last().normal().load(ms.last().normal());
-
-				float scaleFactor = world.scene.getScaleFactor();
-				float f = (float) Math.pow(30 * scaleFactor, -1.2);
-				overlayMS.scale(f, f, f);
+				overlayMS.last().pose().set(ms.last().pose());
+				overlayMS.last().normal().set(ms.last().normal());
 			}
 
 			VertexConsumer builder = new SheetedDecalTextureGenerator(
 				buffer.getBuffer(ModelBakery.DESTROY_TYPES.get(entry.getValue())), overlayMS.last()
 					.pose(),
 				overlayMS.last()
-					.normal());
+					.normal(),
+				1);
 
 			ms.pushPose();
 			ms.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -438,6 +435,7 @@ public class WorldSectionElement extends AnimatedSceneElement {
 				BakedModel model = dispatcher.getBlockModel(state);
 				BlockEntity blockEntity = world.getBlockEntity(pos);
 				ModelData modelData = blockEntity != null ? blockEntity.getModelData() : ModelData.EMPTY;
+				modelData = model.getModelData(world, pos, state, modelData);
 				long seed = state.getSeed(pos);
 				random.setSeed(seed);
 				if (model.getRenderTypes(state, random, modelData).contains(layer)) {

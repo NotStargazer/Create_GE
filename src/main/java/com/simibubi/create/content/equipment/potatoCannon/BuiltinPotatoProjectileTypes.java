@@ -160,7 +160,7 @@ public class BuiltinPotatoProjectileTypes {
 			.soundPitch(1.1f)
 			.onEntityHit(ray -> {
 				Entity entity = ray.getEntity();
-				Level world = entity.level;
+				Level world = entity.level();
 
 				if (!(entity instanceof ZombieVillager) || !((ZombieVillager) entity).hasEffect(MobEffects.WEAKNESS))
 					return foodEffects(Foods.GOLDEN_APPLE, false).test(ray);
@@ -271,7 +271,7 @@ public class BuiltinPotatoProjectileTypes {
 	private static Predicate<EntityHitResult> potion(MobEffect effect, int level, int ticks, boolean recoverable) {
 		return ray -> {
 			Entity entity = ray.getEntity();
-			if (entity.level.isClientSide)
+			if (entity.level().isClientSide)
 				return true;
 			if (entity instanceof LivingEntity)
 				applyEffect((LivingEntity) entity, new MobEffectInstance(effect, ticks, level - 1));
@@ -282,7 +282,7 @@ public class BuiltinPotatoProjectileTypes {
 	private static Predicate<EntityHitResult> foodEffects(FoodProperties food, boolean recoverable) {
 		return ray -> {
 			Entity entity = ray.getEntity();
-			if (entity.level.isClientSide)
+			if (entity.level().isClientSide)
 				return true;
 
 			if (entity instanceof LivingEntity) {
@@ -317,8 +317,7 @@ public class BuiltinPotatoProjectileTypes {
 				return false;
 			BlockPos placePos = hitPos.relative(face);
 			if (!world.getBlockState(placePos)
-				.getMaterial()
-				.isReplaceable())
+				.canBeReplaced())
 				return false;
 			if (!(cropBlock.get() instanceof IPlantable))
 				return false;
@@ -347,8 +346,7 @@ public class BuiltinPotatoProjectileTypes {
 			Direction face = ray.getDirection();
 			BlockPos placePos = hitPos.relative(face);
 			if (!world.getBlockState(placePos)
-				.getMaterial()
-				.isReplaceable())
+				.canBeReplaced())
 				return false;
 
 			if (face == Direction.UP) {

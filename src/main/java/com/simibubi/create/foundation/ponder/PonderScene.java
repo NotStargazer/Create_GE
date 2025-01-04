@@ -17,12 +17,12 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import com.jozufozu.flywheel.util.DiffuseLightCalculator;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector4f;
 import com.simibubi.create.foundation.gui.UIRenderHelper;
 import com.simibubi.create.foundation.outliner.Outliner;
 import com.simibubi.create.foundation.ponder.element.PonderElement;
@@ -44,6 +44,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -258,9 +259,10 @@ public class PonderScene {
 		ForcedDiffuseState.popCalculator();
 	}
 
-	public void renderOverlay(PonderUI screen, PoseStack ms, float partialTicks) {
+	public void renderOverlay(PonderUI screen, GuiGraphics graphics, float partialTicks) {
+		PoseStack ms = graphics.pose();
 		ms.pushPose();
-		forEachVisible(PonderOverlayElement.class, e -> e.render(this, screen, ms, partialTicks));
+		forEachVisible(PonderOverlayElement.class, e -> e.render(this, screen, graphics, partialTicks));
 		ms.popPose();
 	}
 
@@ -571,7 +573,7 @@ public class PonderScene {
 		public Vec2 sceneToScreen(Vec3 vec, float pt) {
 			refreshMatrix(pt);
 			Vector4f vec4 = new Vector4f((float) vec.x, (float) vec.y, (float) vec.z, 1);
-			vec4.transform(cachedMat);
+			vec4.mul(cachedMat);
 			return new Vec2(vec4.x(), vec4.y());
 		}
 

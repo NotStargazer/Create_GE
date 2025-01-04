@@ -11,7 +11,6 @@ import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -64,9 +62,6 @@ public class BacktankBlock extends HorizontalKineticBlock
 		builder.add(BlockStateProperties.WATERLOGGED);
 		super.createBlockStateDefinition(builder);
 	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab pTab, NonNullList<ItemStack> pItems) {}
 
 	@Override
 	public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {

@@ -6,24 +6,26 @@ import java.util.function.BiConsumer;
 
 import javax.annotation.Nonnull;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.TickableGuiEventListener;
 import com.simibubi.create.foundation.utility.Components;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 
 public abstract class AbstractSimiWidget extends AbstractWidget implements TickableGuiEventListener {
 
 	public static final int HEADER_RGB = 0x5391E1;
 	public static final int HINT_RGB = 0x96B7E0;
-	
+
 	protected float z;
 	protected boolean wasHovered = false;
 	protected List<Component> toolTip = new LinkedList<>();
 	protected BiConsumer<Integer, Integer> onClick = (_$, _$$) -> {};
-	
+
 	public int lockedTooltipX = -1;
 	public int lockedTooltipY = -1;
 
@@ -37,6 +39,11 @@ public abstract class AbstractSimiWidget extends AbstractWidget implements Ticka
 
 	protected AbstractSimiWidget(int x, int y, int width, int height, Component message) {
 		super(x, y, width, height, message);
+	}
+
+	@Override
+	protected ClientTooltipPositioner createTooltipPositioner() {
+		return DefaultTooltipPositioner.INSTANCE;
 	}
 
 	public <T extends AbstractSimiWidget> T withCallback(BiConsumer<Integer, Integer> cb) {
@@ -63,26 +70,22 @@ public abstract class AbstractSimiWidget extends AbstractWidget implements Ticka
 	public void tick() {}
 
 	@Override
-	public void render(@Nonnull PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-		if (visible) {
-			isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-			beforeRender(ms, mouseX, mouseY, partialTicks);
-			renderButton(ms, mouseX, mouseY, partialTicks);
-			afterRender(ms, mouseX, mouseY, partialTicks);
-			wasHovered = isHoveredOrFocused();
-		}
+	public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		beforeRender(graphics, mouseX, mouseY, partialTicks);
+		doRender(graphics, mouseX, mouseY, partialTicks);
+		afterRender(graphics, mouseX, mouseY, partialTicks);
+		wasHovered = isHoveredOrFocused();
 	}
 
-	protected void beforeRender(@Nonnull PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-		ms.pushPose();
+	protected void beforeRender(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		graphics.pose().pushPose();
 	}
 
-	@Override
-	public void renderButton(@Nonnull PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+	protected void doRender(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 	}
 
-	protected void afterRender(@Nonnull PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-		ms.popPose();
+	protected void afterRender(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		graphics.pose().popPose();
 	}
 
 	public void runCallback(double mouseX, double mouseY) {
@@ -95,7 +98,7 @@ public abstract class AbstractSimiWidget extends AbstractWidget implements Ticka
 	}
 
 	@Override
-	public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
+	public void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
 		defaultButtonNarrationText(pNarrationElementOutput);
 	}
 }

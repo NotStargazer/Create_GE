@@ -6,6 +6,8 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import com.simibubi.create.foundation.mixin.accessor.EntityAccessor;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -15,6 +17,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -41,7 +44,7 @@ public class WrappedWorld extends Level {
 	protected LevelEntityGetter<Entity> entityGetter = new DummyLevelEntityGetter<>();
 
 	public WrappedWorld(Level world) {
-		super((WritableLevelData) world.getLevelData(), world.dimension(), world.dimensionTypeRegistration(),
+		super((WritableLevelData) world.getLevelData(), world.dimension(), world.registryAccess(), world.dimensionTypeRegistration(),
 			world::getProfiler, world.isClientSide, world.isDebug(), 0, 0);
 		this.world = world;
 	}
@@ -115,11 +118,15 @@ public class WrappedWorld extends Level {
 
 	@Override
 	public void playSeededSound(Player p_220363_, double p_220364_, double p_220365_, double p_220366_,
-			SoundEvent p_220367_, SoundSource p_220368_, float p_220369_, float p_220370_, long p_220371_) {}
+		SoundEvent p_220367_, SoundSource p_220368_, float p_220369_, float p_220370_, long p_220371_) {}
 
 	@Override
-	public void playSeededSound(Player p_220372_, Entity p_220373_, SoundEvent p_220374_, SoundSource p_220375_,
-			float p_220376_, float p_220377_, long p_220378_) {}
+	public void playSeededSound(Player pPlayer, double pX, double pY, double pZ, Holder<SoundEvent> pSound,
+		SoundSource pSource, float pVolume, float pPitch, long pSeed) {}
+
+	@Override
+	public void playSeededSound(Player pPlayer, Entity pEntity, Holder<SoundEvent> pSound, SoundSource pCategory,
+		float pVolume, float pPitch, long pSeed) {}
 
 	@Override
 	public void playSound(@Nullable Player player, double x, double y, double z, SoundEvent soundIn,
@@ -141,7 +148,7 @@ public class WrappedWorld extends Level {
 
 	@Override
 	public boolean addFreshEntity(Entity entityIn) {
-		entityIn.level = world;
+		((EntityAccessor) entityIn).create$callSetLevel(world);
 		return world.addFreshEntity(entityIn);
 	}
 
@@ -252,4 +259,10 @@ public class WrappedWorld extends Level {
 	public int getSectionYFromSectionIndex(int sectionIndex) {
 		return sectionIndex + this.getMinSection();
 	}
+
+	@Override
+	public FeatureFlagSet enabledFeatures() {
+		return world.enabledFeatures();
+	}
+
 }

@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class HosePulleyScenes {
@@ -123,7 +123,7 @@ public class HosePulleyScenes {
 		}
 
 		scene.world.modifyBlockEntity(util.grid.at(1, 5, 1), HosePulleyBlockEntity.class, be -> be
-			.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			.getCapability(ForgeCapabilities.FLUID_HANDLER)
 			.ifPresent(
 				ifh -> ((HosePulleyFluidHandler) ifh).fill(new FluidStack(Fluids.WATER, 100), FluidAction.EXECUTE)));
 
@@ -225,7 +225,7 @@ public class HosePulleyScenes {
 		scene.world.showSectionAndMerge(cogs, Direction.NORTH, hoselink);
 		scene.world.showSectionAndMerge(pipes, Direction.WEST, hoselink);
 		scene.world.modifyBlockEntity(util.grid.at(1, 6, 1), HosePulleyBlockEntity.class,
-			be -> be.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			be -> be.getCapability(ForgeCapabilities.FLUID_HANDLER)
 				.ifPresent(
 					fh -> ((HosePulleyFluidHandler) fh).fill(new FluidStack(Fluids.WATER, 100), FluidAction.EXECUTE)));
 		scene.world.propagatePipeChange(util.grid.at(3, 2, 1));
@@ -339,7 +339,7 @@ public class HosePulleyScenes {
 
 		scene.idle(40);
 		scene.world.modifyBlockEntity(util.grid.at(1, 3, 2), HosePulleyBlockEntity.class,
-			be -> be.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			be -> be.getCapability(ForgeCapabilities.FLUID_HANDLER)
 				.ifPresent(
 					fh -> ((HosePulleyFluidHandler) fh).fill(new FluidStack(Fluids.WATER, 1000), FluidAction.EXECUTE)));
 		scene.world.setKineticSpeed(hose, 0);
@@ -356,12 +356,12 @@ public class HosePulleyScenes {
 			.pointAt(util.vector.topOf(util.grid.at(1, 3, 2)));
 
 		scene.idle(60);
-		
+
 		scene.world.modifyBlockEntity(util.grid.at(4, 1, 1), FluidTankBlockEntity.class, be -> be.getTankInventory()
 			.fill(new FluidStack(Fluids.WATER, 24000), FluidAction.EXECUTE));
-		
+
 		scene.idle(20);
-		
+
 		scene.overlay.showText(60)
 			.text("Pipe networks can limitlessly take fluids from/to such pulleys")
 			.attachKeyFrame()

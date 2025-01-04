@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +57,7 @@ public class SignalBlock extends Block implements IBE<SignalBlockEntity>, IWrenc
 	}
 
 	@Override
-	public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
+	public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
 		return false;
 	}
 
@@ -89,7 +89,7 @@ public class SignalBlock extends Block implements IBE<SignalBlockEntity>, IWrenc
 		if (pState.getValue(POWERED) && !pLevel.hasNeighborSignal(pPos))
 			pLevel.setBlock(pPos, pState.cycle(POWERED), 2);
 	}
-	
+
 	@Override
 	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		IBE.onRemove(state, worldIn, pos, newState);

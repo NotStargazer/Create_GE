@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.Create;
 import com.simibubi.create.compat.jei.category.animations.AnimatedSpout;
 import com.simibubi.create.content.fluids.potion.PotionFluidHandler;
@@ -14,6 +13,7 @@ import com.simibubi.create.content.fluids.transfer.GenericItemFilling;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.RegisteredObjects;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -23,14 +23,15 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
@@ -58,13 +59,13 @@ public class SpoutCategory extends CreateRecipeCategory<FillingRecipe> {
 			}
 
 			LazyOptional<IFluidHandlerItem> capability =
-				stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY);
+				stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
 			if (!capability.isPresent())
 				continue;
 
 			for (FluidStack fluidStack : fluidStacks) {
 				ItemStack copy = stack.copy();
-				copy.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+				copy.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
 					.ifPresent(fhi -> {
 						if (!GenericItemFilling.isFluidHandlerValid(copy, fhi))
 							return;
@@ -72,7 +73,7 @@ public class SpoutCategory extends CreateRecipeCategory<FillingRecipe> {
 						fluidCopy.setAmount(1000);
 						fhi.fill(fluidCopy, FluidAction.EXECUTE);
 						ItemStack container = fhi.getContainer();
-						if (container.sameItem(copy))
+						if (ItemHelper.sameItem(container, copy))
 							return;
 						if (container.isEmpty())
 							return;
@@ -106,16 +107,16 @@ public class SpoutCategory extends CreateRecipeCategory<FillingRecipe> {
 		builder
 				.addSlot(RecipeIngredientRole.OUTPUT, 132, 51)
 				.setBackground(getRenderedSlot(), -1, -1)
-				.addItemStack(recipe.getResultItem());
+				.addItemStack(getResultItem(recipe));
 	}
 
 	@Override
-	public void draw(FillingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
-		AllGuiTextures.JEI_SHADOW.render(matrixStack, 62, 57);
-		AllGuiTextures.JEI_DOWN_ARROW.render(matrixStack, 126, 29);
+	public void draw(FillingRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+		AllGuiTextures.JEI_SHADOW.render(graphics, 62, 57);
+		AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 126, 29);
 		spout.withFluids(recipe.getRequiredFluid()
 			.getMatchingFluidStacks())
-			.draw(matrixStack, getBackground().getWidth() / 2 - 13, 22);
+			.draw(graphics, getBackground().getWidth() / 2 - 13, 22);
 	}
 
 }

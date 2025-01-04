@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 
 public class EncasingRegistry {
@@ -29,7 +29,7 @@ public class EncasingRegistry {
 
 	public static <B extends Block & EncasedBlock, P, E extends Block & EncasableBlock> NonNullUnaryOperator<BlockBuilder<B, P>> addVariantTo(Supplier<E> encasable) {
 		return builder -> {
-			builder.onRegisterAfter(Registry.BLOCK_REGISTRY, b -> addVariant(encasable.get(), b));
+			builder.onRegisterAfter(Registries.BLOCK, b -> addVariant(encasable.get(), b));
 			return builder;
 		};
 	}

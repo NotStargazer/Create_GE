@@ -26,7 +26,7 @@ import com.simibubi.create.foundation.utility.NBTHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -36,12 +36,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -59,7 +59,7 @@ public class SchematicItem extends Item {
 		super(properties);
 	}
 
-	public static ItemStack create(String schematic, String owner) {
+	public static ItemStack create(HolderGetter<Block> lookup, String schematic, String owner) {
 		ItemStack blueprint = AllItems.SCHEMATIC.asStack();
 
 		CompoundTag tag = new CompoundTag();
@@ -71,12 +71,9 @@ public class SchematicItem extends Item {
 		tag.putString("Mirror", Mirror.NONE.name());
 		blueprint.setTag(tag);
 
-		writeSize(blueprint);
+		writeSize(lookup, blueprint);
 		return blueprint;
 	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
 	@Override
 	@OnlyIn(value = Dist.CLIENT)
@@ -92,9 +89,9 @@ public class SchematicItem extends Item {
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
 
-	public static void writeSize(ItemStack blueprint) {
+	public static void writeSize(HolderGetter<Block> lookup, ItemStack blueprint) {
 		CompoundTag tag = blueprint.getTag();
-		StructureTemplate t = loadSchematic(blueprint);
+		StructureTemplate t = loadSchematic(lookup, blueprint);
 		tag.put("Bounds", NBTHelper.writeVec3i(t.getSize()));
 		blueprint.setTag(tag);
 		SchematicInstances.clearHash(blueprint);
@@ -114,7 +111,7 @@ public class SchematicItem extends Item {
 		return settings;
 	}
 
-	public static StructureTemplate loadSchematic(ItemStack blueprint) {
+	public static StructureTemplate loadSchematic(HolderGetter<Block> lookup, ItemStack blueprint) {
 		StructureTemplate t = new StructureTemplate();
 		String owner = blueprint.getTag()
 			.getString("Owner");

@@ -85,6 +85,8 @@ import com.simibubi.create.infrastructure.config.AllConfigs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -189,7 +191,7 @@ public abstract class Contraption {
 
 	public ContraptionWorld getContraptionWorld() {
 		if (world == null)
-			world = new ContraptionWorld(entity.level, this);
+			world = new ContraptionWorld(entity.level(), this);
 		return world;
 	}
 
@@ -251,7 +253,7 @@ public abstract class Contraption {
 		for (BlockFace blockFace : pendingSubContraptions) {
 			Direction face = blockFace.getFace();
 			StabilizedContraption subContraption = new StabilizedContraption(face);
-			Level world = entity.level;
+			Level world = entity.level();
 			BlockPos pos = blockFace.getPos();
 			try {
 				if (!subContraption.assemble(world, pos))
@@ -635,7 +637,7 @@ public abstract class Contraption {
 	protected void addBlock(BlockPos pos, Pair<StructureBlockInfo, BlockEntity> pair) {
 		StructureBlockInfo captured = pair.getKey();
 		BlockPos localPos = pos.subtract(anchor);
-		StructureBlockInfo structureBlockInfo = new StructureBlockInfo(localPos, captured.state, captured.nbt);
+		StructureBlockInfo structureBlockInfo = new StructureBlockInfo(localPos, captured.state(), captured.nbt());
 
 		if (blocks.put(localPos, structureBlockInfo) != null)
 			return;
@@ -644,10 +646,10 @@ public abstract class Contraption {
 		BlockEntity be = pair.getValue();
 		storage.addBlock(localPos, be);
 
-		if (AllMovementBehaviours.getBehaviour(captured.state) != null)
+		if (AllMovementBehaviours.getBehaviour(captured.state()) != null)
 			actors.add(MutablePair.of(structureBlockInfo, null));
 
-		MovingInteractionBehaviour interactionBehaviour = AllInteractionBehaviours.getBehaviour(captured.state);
+		MovingInteractionBehaviour interactionBehaviour = AllInteractionBehaviours.getBehaviour(captured.state());
 		if (interactionBehaviour != null)
 			interactors.put(localPos, interactionBehaviour);
 
@@ -735,7 +737,7 @@ public abstract class Contraption {
 			StructureBlockInfo structureBlockInfo = getBlocks().get(pos);
 			if (structureBlockInfo == null)
 				return;
-			MovingInteractionBehaviour behaviour = AllInteractionBehaviours.getBehaviour(structureBlockInfo.state);
+			MovingInteractionBehaviour behaviour = AllInteractionBehaviours.getBehaviour(structureBlockInfo.state());
 			if (behaviour != null)
 				interactors.put(pos, behaviour);
 		});
@@ -758,11 +760,11 @@ public abstract class Contraption {
 
 		ListTag actorsNBT = new ListTag();
 		for (MutablePair<StructureBlockInfo, MovementContext> actor : getActors()) {
-			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(actor.left.state);
+			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(actor.left.state());
 			if (behaviour == null)
 				continue;
 			CompoundTag compound = new CompoundTag();
-			compound.put("Pos", NbtUtils.writeBlockPos(actor.left.pos));
+			compound.put("Pos", NbtUtils.writeBlockPos(actor.left.pos()));
 			behaviour.writeExtraData(actor.right);
 			actor.right.writeToNBT(compound);
 			actorsNBT.add(compound);
@@ -833,12 +835,12 @@ public abstract class Contraption {
 		ListTag blockList = new ListTag();
 
 		for (StructureBlockInfo block : this.blocks.values()) {
-			int id = palette.idFor(block.state);
+			int id = palette.idFor(block.state());
 			CompoundTag c = new CompoundTag();
-			c.putLong("Pos", block.pos.asLong());
+			c.putLong("Pos", block.pos().asLong());
 			c.putInt("State", id);
-			if (block.nbt != null)
-				c.put("Data", block.nbt);
+			if (block.nbt() != null)
+				c.put("Data", block.nbt());
 			blockList.add(c);
 		}
 
@@ -853,6 +855,7 @@ public abstract class Contraption {
 	}
 
 	private void readBlocksCompound(Tag compound, Level world, boolean usePalettedDeserialization) {
+		HolderGetter<Block> holderGetter = world.holderLookup(Registries.BLOCK);
 		HashMapPalette<BlockState> palette = null;
 		ListTag blockList;
 		if (usePalettedDeserialization) {
@@ -864,7 +867,7 @@ public abstract class Contraption {
 			ListTag list = c.getList("Palette", 10);
 			palette.values.clear();
 			for (int i = 0; i < list.size(); ++i)
-				palette.values.add(NbtUtils.readBlockState(list.getCompound(i)));
+				palette.values.add(NbtUtils.readBlockState(holderGetter, list.getCompound(i)));
 
 			blockList = c.getList("BlockList", 10);
 		} else {
@@ -876,38 +879,38 @@ public abstract class Contraption {
 			CompoundTag c = (CompoundTag) e;
 
 			StructureBlockInfo info =
-				usePalettedDeserialization ? readStructureBlockInfo(c, finalPalette) : legacyReadStructureBlockInfo(c);
+				usePalettedDeserialization ? readStructureBlockInfo(c, finalPalette) : legacyReadStructureBlockInfo(c, holderGetter);
 
-			this.blocks.put(info.pos, info);
+			this.blocks.put(info.pos(), info);
 
 			if (!world.isClientSide)
 				return;
 
-			CompoundTag tag = info.nbt;
+			CompoundTag tag = info.nbt();
 			if (tag == null)
 				return;
 
-			tag.putInt("x", info.pos.getX());
-			tag.putInt("y", info.pos.getY());
-			tag.putInt("z", info.pos.getZ());
+			tag.putInt("x", info.pos().getX());
+			tag.putInt("y", info.pos().getY());
+			tag.putInt("z", info.pos().getZ());
 
-			BlockEntity be = BlockEntity.loadStatic(info.pos, info.state, tag);
+			BlockEntity be = BlockEntity.loadStatic(info.pos(), info.state(), tag);
 			if (be == null)
 				return;
 			be.setLevel(world);
-			modelData.put(info.pos, be.getModelData());
+			modelData.put(info.pos(), be.getModelData());
 			if (be instanceof KineticBlockEntity kbe)
 				kbe.setSpeed(0);
 			be.getBlockState();
 
-			MovementBehaviour movementBehaviour = AllMovementBehaviours.getBehaviour(info.state);
+			MovementBehaviour movementBehaviour = AllMovementBehaviours.getBehaviour(info.state());
 			if (movementBehaviour == null || !movementBehaviour.hasSpecialInstancedRendering())
 				maybeInstancedBlockEntities.add(be);
 
 			if (movementBehaviour != null && !movementBehaviour.renderAsNormalBlockEntity())
 				return;
 
-			presentBlockEntities.put(info.pos, be);
+			presentBlockEntities.put(info.pos(), be);
 			specialRenderedBlockEntities.add(be);
 		});
 	}
@@ -919,9 +922,9 @@ public abstract class Contraption {
 			blockListEntry.contains("Data") ? blockListEntry.getCompound("Data") : null);
 	}
 
-	private static StructureBlockInfo legacyReadStructureBlockInfo(CompoundTag blockListEntry) {
+	private static StructureBlockInfo legacyReadStructureBlockInfo(CompoundTag blockListEntry, HolderGetter<Block> holderGetter) {
 		return new StructureBlockInfo(NbtUtils.readBlockPos(blockListEntry.getCompound("Pos")),
-			NbtUtils.readBlockState(blockListEntry.getCompound("Block")),
+			NbtUtils.readBlockState(holderGetter, blockListEntry.getCompound("Block")),
 			blockListEntry.contains("Data") ? blockListEntry.getCompound("Data") : null);
 	}
 
@@ -943,23 +946,23 @@ public abstract class Contraption {
 			for (Iterator<StructureBlockInfo> iterator = blocks.values()
 				.iterator(); iterator.hasNext();) {
 				StructureBlockInfo block = iterator.next();
-				if (brittles != BlockMovementChecks.isBrittle(block.state))
+				if (brittles != BlockMovementChecks.isBrittle(block.state()))
 					continue;
 
 				for (int i = 0; i < superglue.size(); i++) {
 					AABB aabb = superglue.get(i);
 					if (aabb == null
-						|| !aabb.contains(block.pos.getX() + .5, block.pos.getY() + .5, block.pos.getZ() + .5))
+						|| !aabb.contains(block.pos().getX() + .5, block.pos().getY() + .5, block.pos().getZ() + .5))
 						continue;
 					if (minimisedGlue.get(i) == null)
-						minimisedGlue.set(i, new BoundingBox(block.pos));
+						minimisedGlue.set(i, new BoundingBox(block.pos()));
 					else
-						minimisedGlue.set(i, BBHelper.encapsulate(minimisedGlue.get(i), block.pos));
+						minimisedGlue.set(i, BBHelper.encapsulate(minimisedGlue.get(i), block.pos()));
 				}
 
-				BlockPos add = block.pos.offset(anchor)
+				BlockPos add = block.pos().offset(anchor)
 					.offset(offset);
-				if (customBlockRemoval(world, add, block.state))
+				if (customBlockRemoval(world, add, block.state()))
 					continue;
 				BlockState oldState = world.getBlockState(add);
 				Block blockIn = oldState.getBlock();
@@ -989,13 +992,13 @@ public abstract class Contraption {
 		}
 
 		for (StructureBlockInfo block : blocks.values()) {
-			BlockPos add = block.pos.offset(anchor)
+			BlockPos add = block.pos().offset(anchor)
 				.offset(offset);
 //			if (!shouldUpdateAfterMovement(block))
 //				continue;
 
 			int flags = Block.UPDATE_MOVE_BY_PISTON | Block.UPDATE_ALL;
-			world.sendBlockUpdated(add, block.state, Blocks.AIR.defaultBlockState(), flags);
+			world.sendBlockUpdated(add, block.state(), Blocks.AIR.defaultBlockState(), flags);
 
 			// when the blockstate is set to air, the block's POI data is removed, but
 			// markAndNotifyBlock tries to
@@ -1003,7 +1006,7 @@ public abstract class Contraption {
 			// we add the POI data back now
 			// (code copied from ServerWorld.onBlockStateChange)
 			ServerLevel serverWorld = (ServerLevel) world;
-			PoiTypes.forState(block.state)
+			PoiTypes.forState(block.state())
 				.ifPresent(poiType -> {
 					world.getServer()
 						.execute(() -> {
@@ -1013,9 +1016,9 @@ public abstract class Contraption {
 						});
 				});
 
-			world.markAndNotifyBlock(add, world.getChunkAt(add), block.state, Blocks.AIR.defaultBlockState(), flags,
+			world.markAndNotifyBlock(add, world.getChunkAt(add), block.state(), Blocks.AIR.defaultBlockState(), flags,
 				512);
-			block.state.updateIndirectNeighbourShapes(world, add, flags & -2);
+			block.state().updateIndirectNeighbourShapes(world, add, flags & -2);
 		}
 	}
 
@@ -1026,11 +1029,11 @@ public abstract class Contraption {
 
 		for (boolean nonBrittles : Iterate.trueAndFalse) {
 			for (StructureBlockInfo block : blocks.values()) {
-				if (nonBrittles == BlockMovementChecks.isBrittle(block.state))
+				if (nonBrittles == BlockMovementChecks.isBrittle(block.state()))
 					continue;
 
-				BlockPos targetPos = transform.apply(block.pos);
-				BlockState state = transform.apply(block.state);
+				BlockPos targetPos = transform.apply(block.pos());
+				BlockState state = transform.apply(block.state());
 
 				if (customBlockPlacement(world, targetPos, state))
 					continue;
@@ -1081,7 +1084,7 @@ public abstract class Contraption {
 
 				BlockEntity blockEntity = world.getBlockEntity(targetPos);
 
-				CompoundTag tag = block.nbt;
+				CompoundTag tag = block.nbt();
 
 				// Temporary fix: Calling load(CompoundTag tag) on a Sculk sensor causes it to not react to vibrations.
 				if(state.is(Blocks.SCULK_SENSOR) || state.is(Blocks.SCULK_SHRIEKER))
@@ -1113,8 +1116,8 @@ public abstract class Contraption {
 		for (StructureBlockInfo block : blocks.values()) {
 			if (!shouldUpdateAfterMovement(block))
 				continue;
-			BlockPos targetPos = transform.apply(block.pos);
-			world.markAndNotifyBlock(targetPos, world.getChunkAt(targetPos), block.state, block.state,
+			BlockPos targetPos = transform.apply(block.pos());
+			world.markAndNotifyBlock(targetPos, world.getChunkAt(targetPos), block.state(), block.state(),
 				Block.UPDATE_MOVE_BY_PISTON | Block.UPDATE_ALL, 512);
 		}
 
@@ -1151,7 +1154,7 @@ public abstract class Contraption {
 
 		for (MutablePair<StructureBlockInfo, MovementContext> pair : actors) {
 			MovementContext context = new MovementContext(world, pair.left, this);
-			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.left.state);
+			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.left.state());
 			if (behaviour != null)
 				behaviour.startMoving(context);
 			pair.setRight(context);
@@ -1181,7 +1184,7 @@ public abstract class Contraption {
 
 	public void setActorsActive(ItemStack referenceStack, boolean enable) {
 		for (MutablePair<StructureBlockInfo, MovementContext> pair : actors) {
-			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.left.state);
+			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.left.state());
 			if (behaviour == null)
 				continue;
 			ItemStack behaviourStack = behaviour.canBeDisabledVia(pair.right);
@@ -1211,7 +1214,7 @@ public abstract class Contraption {
 
 	public void forEachActor(Level world, BiConsumer<MovementBehaviour, MovementContext> callBack) {
 		for (MutablePair<StructureBlockInfo, MovementContext> pair : actors) {
-			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.getLeft().state);
+			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.getLeft().state());
 			if (behaviour == null)
 				continue;
 			callBack.accept(behaviour, pair.getRight());
@@ -1219,10 +1222,10 @@ public abstract class Contraption {
 	}
 
 	protected boolean shouldUpdateAfterMovement(StructureBlockInfo info) {
-		if (PoiTypes.forState(info.state)
+		if (PoiTypes.forState(info.state())
 			.isPresent())
 			return false;
-		if (info.state.getBlock() instanceof SlidingDoorBlock)
+		if (info.state().getBlock() instanceof SlidingDoorBlock)
 			return false;
 		return true;
 	}
@@ -1292,7 +1295,7 @@ public abstract class Contraption {
 	@Nullable
 	public MutablePair<StructureBlockInfo, MovementContext> getActorAt(BlockPos localPos) {
 		for (MutablePair<StructureBlockInfo, MovementContext> pair : actors)
-			if (localPos.equals(pair.left.pos))
+			if (localPos.equals(pair.left.pos()))
 				return pair;
 		return null;
 	}
@@ -1319,7 +1322,7 @@ public abstract class Contraption {
 			for (Entry<BlockPos, StructureBlockInfo> entry : blocks.entrySet()) {
 				StructureBlockInfo info = entry.getValue();
 				BlockPos localPos = entry.getKey();
-				VoxelShape collisionShape = info.state.getCollisionShape(world, localPos, CollisionContext.empty());
+				VoxelShape collisionShape = info.state().getCollisionShape(world, localPos, CollisionContext.empty());
 				if (collisionShape.isEmpty())
 					continue;
 				combinedShape = Shapes.joinUnoptimized(combinedShape,
@@ -1420,7 +1423,7 @@ public abstract class Contraption {
 
 	public boolean containsBlockBreakers() {
 		for (MutablePair<StructureBlockInfo, MovementContext> pair : actors) {
-			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.getLeft().state);
+			MovementBehaviour behaviour = AllMovementBehaviours.getBehaviour(pair.getLeft().state());
 			if (behaviour instanceof BlockBreakingMovementBehaviour || behaviour instanceof HarvesterMovementBehaviour)
 				return true;
 		}

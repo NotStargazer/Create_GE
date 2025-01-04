@@ -22,14 +22,14 @@ public class FanProcessing {
 				CompoundTag processing = compound.getCompound("Processing");
 
 				if (AllFanProcessingTypes.parseLegacy(processing.getString("Type")) != type)
-					return type.canProcess(entity.getItem(), entity.level);
+					return type.canProcess(entity.getItem(), entity.level());
 				else if (processing.getInt("Time") >= 0)
 					return true;
 				else if (processing.getInt("Time") == -1)
 					return false;
 			}
 		}
-		return type.canProcess(entity.getItem(), entity.level);
+		return type.canProcess(entity.getItem(), entity.level());
 	}
 
 	public static boolean applyProcessing(ItemEntity entity, FanProcessingType type) {
@@ -67,9 +67,9 @@ public class FanProcessing {
 			resetProcessingTime(entity, type);
 		}
 		for (ItemStack additional : stacks) {
-			ItemEntity entityIn = new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), additional);
+			ItemEntity entityIn = new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), additional);
 			entityIn.setDeltaMovement(entity.getDeltaMovement());
-			entity.level.addFreshEntity(entityIn);
+			entity.level().addFreshEntity(entityIn);
 		}
 		return true;
 	}

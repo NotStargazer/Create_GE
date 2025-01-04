@@ -3,11 +3,11 @@ package com.simibubi.create.foundation.gui.widget;
 import javax.annotation.Nonnull;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.utility.Components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -45,12 +45,12 @@ public class Label extends AbstractSimiWidget {
 
 	public void setTextAndTrim(Component newText, boolean trimFront, int maxWidthPx) {
 		Font fontRenderer = Minecraft.getInstance().font;
-		
+
 		if (fontRenderer.width(newText) <= maxWidthPx) {
 			text = newText;
 			return;
 		}
-		
+
 		String trim = "...";
 		int trimWidth = fontRenderer.width(trim);
 
@@ -71,7 +71,7 @@ public class Label extends AbstractSimiWidget {
 	}
 
 	@Override
-	public void renderButton(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void doRender(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		if (text == null || text.getString().isEmpty())
 			return;
 
@@ -79,11 +79,8 @@ public class Label extends AbstractSimiWidget {
 		MutableComponent copy = text.plainCopy();
 		if (suffix != null && !suffix.isEmpty())
 			copy.append(suffix);
-		
-		if (hasShadow)
-			font.drawShadow(matrixStack, copy, x, y, color);
-		else
-			font.draw(matrixStack, copy, x, y, color);
+
+		graphics.drawString(font, copy, getX(), getY(), color, hasShadow);
 	}
 
 }

@@ -177,7 +177,7 @@ public class TrackBlock extends Block
 		if (bestAxis.lengthSqr() == 1)
 			for (boolean neg : Iterate.trueAndFalse) {
 				BlockPos offset = ctx.getClickedPos()
-					.offset(new BlockPos(bestAxis.scale(neg ? -1 : 1)));
+					.offset(BlockPos.containing(bestAxis.scale(neg ? -1 : 1)));
 
 				if (level.getBlockState(offset)
 					.isFaceSturdy(level, offset, Direction.UP)
@@ -265,8 +265,7 @@ public class TrackBlock extends Block
 			BlockFace otherTrack = otherSide.getSecond();
 			BlockPos otherTrackPos = otherTrack.getPos();
 			BlockState existing = otherLevel.getBlockState(otherTrackPos);
-			if (!existing.getMaterial()
-				.isReplaceable()) {
+			if (!existing.canBeReplaced()) {
 				fail = "blocked";
 				failPos = otherTrackPos;
 				continue;
@@ -462,7 +461,7 @@ public class TrackBlock extends Block
 				continue;
 			for (int side : Iterate.positiveAndNegative) {
 				BlockPos girderPos = pPos.below()
-					.offset(vec3.z * side, 0, vec3.x * side);
+					.offset(BlockPos.containing(vec3.z * side, 0, vec3.x * side));
 				BlockState girderState = pLevel.getBlockState(girderPos);
 				if (girderState.getBlock() instanceof GirderBlock girderBlock
 					&& !blockTicks.hasScheduledTick(girderPos, girderBlock))

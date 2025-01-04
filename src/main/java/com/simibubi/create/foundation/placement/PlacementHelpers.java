@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -11,8 +13,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.utility.AngleHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
@@ -22,6 +23,7 @@ import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.config.CClient;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
@@ -167,7 +169,7 @@ public class PlacementHelpers {
 			float screenX = res.getGuiScaledWidth() / 2f;
 			float progress = getCurrentAlpha();
 
-			drawDirectionIndicator(event.getPoseStack(), event.getPartialTick(), screenX, screenY, progress);
+			drawDirectionIndicator(event.getGuiGraphics(), event.getPartialTick(), screenX, screenY, progress);
 		}
 	}
 
@@ -176,7 +178,7 @@ public class PlacementHelpers {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static void drawDirectionIndicator(PoseStack ms, float partialTicks, float centerX, float centerY,
+	private static void drawDirectionIndicator(GuiGraphics graphics, float partialTicks, float centerX, float centerY,
 		float progress) {
 		float r = .8f;
 		float g = .8f;
@@ -208,6 +210,7 @@ public class PlacementHelpers {
 		float length = 10;
 
 		CClient.PlacementIndicatorSetting mode = AllConfigs.client().placementIndicator.get();
+		PoseStack ms = graphics.pose();
 		if (mode == CClient.PlacementIndicatorSetting.TRIANGLE)
 			fadedArrow(ms, centerX, centerY, r, g, b, a, length, snappedAngle);
 		else if (mode == CClient.PlacementIndicatorSetting.TEXTURE)
@@ -216,14 +219,14 @@ public class PlacementHelpers {
 
 	private static void fadedArrow(PoseStack ms, float centerX, float centerY, float r, float g, float b, float a,
 		float length, float snappedAngle) {
-		RenderSystem.disableTexture();
+//		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 		ms.pushPose();
 		ms.translate(centerX, centerY, 5);
-		ms.mulPose(Vector3f.ZP.rotationDegrees(angle.getValue(0)));
+		ms.mulPose(Axis.ZP.rotationDegrees(angle.getValue(0)));
 		// RenderSystem.rotatef(snappedAngle, 0, 0, 1);
 		double scale = AllConfigs.client().indicatorScale.get();
 		ms.scale((float) scale, (float) scale, 1);
@@ -263,13 +266,13 @@ public class PlacementHelpers {
 
 		tessellator.end();
 		RenderSystem.disableBlend();
-		RenderSystem.enableTexture();
+//		RenderSystem.enableTexture();
 		ms.popPose();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void textured(PoseStack ms, float centerX, float centerY, float alpha, float snappedAngle) {
-		RenderSystem.enableTexture();
+//		RenderSystem.enableTexture();
 		AllGuiTextures.PLACEMENT_INDICATOR_SHEET.bind();
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableBlend();

@@ -13,9 +13,9 @@ import com.simibubi.create.foundation.blockEntity.IMergeableBE;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -46,7 +46,6 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
@@ -162,11 +161,11 @@ public class BlockHelper {
 		float effectChance, Consumer<ItemStack> droppedItemCallback) {
 		FluidState fluidState = world.getFluidState(pos);
 		BlockState state = world.getBlockState(pos);
-		
+
 		if (world.random.nextFloat() < effectChance)
 			world.levelEvent(2001, pos, Block.getId(state));
 		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-		
+
 		if (player != null) {
 			BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, player);
 			MinecraftForge.EVENT_BUS.post(event);
@@ -194,16 +193,15 @@ public class BlockHelper {
 					.ultraWarm())
 					return;
 
-				Material material = world.getBlockState(pos.below())
-					.getMaterial();
-				if (material.blocksMotion() || material.isLiquid())
+				 BlockState blockstate = world.getBlockState(pos.below());
+		         if (blockstate.blocksMotion() || blockstate.liquid())
 					world.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
 				return;
 			}
 
 			state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);
 		}
-		
+
 		world.setBlockAndUpdate(pos, fluidState.createLegacyBlock());
 	}
 
@@ -223,8 +221,8 @@ public class BlockHelper {
 		int idx = chunk.getSectionIndex(target.getY());
 		LevelChunkSection chunksection = chunk.getSection(idx);
 		if (chunksection == null) {
-			chunksection = new LevelChunkSection(chunk.getSectionYFromSectionIndex(idx), world.registryAccess()
-				.registryOrThrow(Registry.BIOME_REGISTRY));
+			chunksection = new LevelChunkSection(world.registryAccess()
+				.registryOrThrow(Registries.BIOME));
 			chunk.getSections()[idx] = chunksection;
 		}
 		BlockState old = chunksection.setBlockState(SectionPos.sectionRelative(target.getX()),

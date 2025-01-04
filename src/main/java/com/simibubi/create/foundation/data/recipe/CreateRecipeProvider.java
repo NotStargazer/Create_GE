@@ -9,7 +9,7 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.Create;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.ItemTags;
@@ -24,12 +24,12 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 
 	protected final List<GeneratedRecipe> all = new ArrayList<>();
 
-	public CreateRecipeProvider(DataGenerator generator) {
-		super(generator);
+	public CreateRecipeProvider(PackOutput output) {
+		super(output);
 	}
 
 	@Override
-	protected void buildCraftingRecipes(Consumer<FinishedRecipe> p_200404_1_) {
+	protected void buildRecipes(Consumer<FinishedRecipe> p_200404_1_) {
 		all.forEach(c -> c.register(p_200404_1_));
 		Create.LOGGER.info(getName() + " registered " + all.size() + " recipe" + (all.size() == 1 ? "" : "s"));
 	}

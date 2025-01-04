@@ -37,9 +37,7 @@ import com.simibubi.create.infrastructure.command.ServerLagger;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.simibubi.create.infrastructure.data.CreateDatagen;
 import com.simibubi.create.infrastructure.worldgen.AllFeatures;
-import com.simibubi.create.infrastructure.worldgen.AllOreFeatureConfigEntries;
 import com.simibubi.create.infrastructure.worldgen.AllPlacementModifiers;
-import com.simibubi.create.infrastructure.worldgen.BuiltinRegistration;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -106,7 +104,7 @@ public class Create {
 
 		AllSoundEvents.prepare();
 		AllTags.init();
-		AllCreativeModeTabs.init();
+		AllCreativeModeTabs.register(modEventBus);
 		AllBlocks.register();
 		AllItems.register();
 		AllFluids.register();
@@ -120,10 +118,8 @@ public class Create {
 		AllStructureProcessorTypes.register(modEventBus);
 		AllEntityDataSerializers.register(modEventBus);
 		AllPackets.registerPackets();
-		AllOreFeatureConfigEntries.init();
 		AllFeatures.register(modEventBus);
 		AllPlacementModifiers.register(modEventBus);
-		BuiltinRegistration.register(modEventBus);
 
 		AllConfigs.register(modLoadingContext);
 

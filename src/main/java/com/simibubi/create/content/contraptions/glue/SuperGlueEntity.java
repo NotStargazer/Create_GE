@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -177,13 +178,13 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
 
 	@Override
 	public void move(MoverType typeIn, Vec3 pos) {
-		if (!level.isClientSide && isAlive() && pos.lengthSqr() > 0.0D)
+		if (!level().isClientSide && isAlive() && pos.lengthSqr() > 0.0D)
 			discard();
 	}
 
 	@Override
 	public void push(double x, double y, double z) {
-		if (!level.isClientSide && isAlive() && x * x + y * y + z * z > 0.0D)
+		if (!level().isClientSide && isAlive() && x * x + y * y + z * z > 0.0D)
 			discard();
 	}
 
@@ -260,7 +261,7 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -309,7 +310,7 @@ public class SuperGlueEntity extends Entity implements IEntityAdditionalSpawnDat
 		Vec3 origin = new Vec3(bb.minX, bb.minY, bb.minZ);
 		Vec3 extents = new Vec3(bb.getXsize(), bb.getYsize(), bb.getZsize());
 
-		if (!(level instanceof ServerLevel slevel))
+		if (!(level() instanceof ServerLevel slevel))
 			return;
 
 		for (Axis axis : Iterate.axes) {

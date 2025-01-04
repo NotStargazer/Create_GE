@@ -1,9 +1,10 @@
 package com.simibubi.create.content.equipment.blueprint;
 
+import org.joml.Matrix3f;
+
 import com.jozufozu.flywheel.core.PartialModel;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix3f;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.equipment.blueprint.BlueprintEntity.BlueprintSection;
 import com.simibubi.create.foundation.render.CachedBufferer;
@@ -13,12 +14,12 @@ import com.simibubi.create.foundation.utility.Couple;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -62,9 +63,8 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity> {
 		TransformStack.cast(ms)
 			.rotateY(vertical ? 0 : -yaw)
 			.rotateX(fakeNormalXRotation);
-		Matrix3f copy = ms.last()
-			.normal()
-			.copy();
+		Matrix3f copy = new Matrix3f(ms.last()
+			.normal());
 
 		ms.popPose();
 		ms.pushPose();
@@ -80,7 +80,7 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity> {
 		PoseStack squashedMS = new PoseStack();
 		squashedMS.last()
 			.pose()
-			.multiply(ms.last()
+			.mul(ms.last()
 				.pose());
 
 		for (int x = 0; x < entity.size; x++) {
@@ -102,11 +102,12 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity> {
 
 					squashedMS.last()
 						.normal()
-						.load(copy);
+						.set(copy);
 
 					Minecraft.getInstance()
 						.getItemRenderer()
-						.renderStatic(stack, TransformType.GUI, itemLight, OverlayTexture.NO_OVERLAY, squashedMS, buffer, 0);
+						.renderStatic(stack, ItemDisplayContext.GUI, itemLight, OverlayTexture.NO_OVERLAY, squashedMS,
+							buffer, entity.level(), 0);
 					squashedMS.popPose();
 				});
 				squashedMS.popPose();

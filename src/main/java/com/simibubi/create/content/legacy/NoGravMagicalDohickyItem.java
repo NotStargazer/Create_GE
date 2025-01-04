@@ -2,12 +2,10 @@ package com.simibubi.create.content.legacy;
 
 import com.simibubi.create.foundation.utility.VecHelper;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,11 +18,8 @@ public class NoGravMagicalDohickyItem extends Item {
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {}
-
-	@Override
 	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-		Level world = entity.level;
+		Level world = entity.level();
 		Vec3 pos = entity.position();
 		CompoundTag persistentData = entity.getPersistentData();
 

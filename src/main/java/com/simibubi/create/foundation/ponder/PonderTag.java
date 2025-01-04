@@ -1,12 +1,11 @@
 package com.simibubi.create.foundation.ponder;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.element.ScreenElement;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -82,18 +81,18 @@ public class PonderTag implements ScreenElement {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void render(PoseStack ms, int x, int y) {
+	public void render(GuiGraphics graphics, int x, int y) {
+		PoseStack ms = graphics.pose();
 		ms.pushPose();
 		ms.translate(x, y, 0);
 		if (icon != null) {
-			RenderSystem.setShaderTexture(0, icon);
 			ms.scale(0.25f, 0.25f, 1);
-			GuiComponent.blit(ms, 0, 0, 0, 0, 0, 64, 64, 64, 64);
+			graphics.blit(icon, 0, 0, 0, 0, 0, 64, 64, 64, 64);
 		} else if (!itemIcon.isEmpty()) {
 			ms.translate(-2, -2, 0);
 			ms.scale(1.25f, 1.25f, 1.25f);
 			GuiGameElement.of(itemIcon)
-				.render(ms);
+				.render(graphics);
 		}
 		ms.popPose();
 	}

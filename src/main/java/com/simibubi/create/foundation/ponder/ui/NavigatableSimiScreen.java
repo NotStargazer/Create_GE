@@ -9,19 +9,18 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.gui.Theme;
 import com.simibubi.create.foundation.gui.UIRenderHelper;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
-import com.simibubi.create.foundation.ponder.PonderTooltipHandler;
 import com.simibubi.create.foundation.utility.Color;
 import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -87,18 +86,19 @@ public abstract class NavigatableSimiScreen extends AbstractSimiScreen {
 	protected abstract void initBackTrackIcon(PonderButton backTrack);
 
 	@Override
-	public void render(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-		super.render(ms, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 //		renderZeloBreadcrumbs(ms, mouseX, mouseY, partialTicks);
 		if (backTrack == null)
 			return;
 
+		PoseStack ms = graphics.pose();
 		ms.pushPose();
 		ms.translate(0, 0, 500);
 		if (backTrack.isHoveredOrFocused()) {
 			MutableComponent translate = Lang.translateDirect(backTrackingLangKey());
-			font.draw(ms, translate, 41 - font.width(translate) / 2, height - 16,
-				Theme.i(Theme.Key.TEXT_DARKER));
+			graphics.drawString(font, translate, 41 - font.width(translate) / 2, height - 16,
+				Theme.i(Theme.Key.TEXT_DARKER), false);
 			if (Mth.equal(arrowAnimation.getValue(), arrowAnimation.getChaseTarget())) {
 				arrowAnimation.setValue(1);
 				arrowAnimation.setValue(1);// called twice to also set the previous value to 1
@@ -112,64 +112,73 @@ public abstract class NavigatableSimiScreen extends AbstractSimiScreen {
 	}
 
 	@Override
-	protected void renderWindowBackground(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWindowBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		if (backTrack != null) {
 			int x = (int) Mth.lerp(arrowAnimation.getValue(partialTicks), -9, 21);
-			int maxX = backTrack.x + backTrack.getWidth();
+			int maxX = backTrack.getX() + backTrack.getWidth();
 
-			if (x + 30 < backTrack.x)
-				UIRenderHelper.breadcrumbArrow(ms, x + 30, height - 51, 0, maxX - (x + 30), 20, 5,
+			if (x + 30 < backTrack.getX())
+				UIRenderHelper.breadcrumbArrow(graphics, x + 30, height - 51, 0, maxX - (x + 30), 20, 5,
 					Theme.p(Theme.Key.PONDER_BACK_ARROW));
 
-			UIRenderHelper.breadcrumbArrow(ms, x, height - 51, 0, 30, 20, 5, Theme.p(Theme.Key.PONDER_BACK_ARROW));
-			UIRenderHelper.breadcrumbArrow(ms, x - 30, height - 51, 0, 30, 20, 5, Theme.p(Theme.Key.PONDER_BACK_ARROW));
+			UIRenderHelper.breadcrumbArrow(graphics, x, height - 51, 0, 30, 20, 5, Theme.p(Theme.Key.PONDER_BACK_ARROW));
+			UIRenderHelper.breadcrumbArrow(graphics, x - 30, height - 51, 0, 30, 20, 5, Theme.p(Theme.Key.PONDER_BACK_ARROW));
 		}
 
 		if (transition.getChaseTarget() == 0 || transition.settled()) {
-			renderBackground(ms);
+			renderBackground(graphics);
 			return;
 		}
 
-		renderBackground(ms);
+		renderBackground(graphics);
 
-		Screen lastScreen = ScreenOpener.getPreviouslyRenderedScreen();
+		PoseStack ms = graphics.pose();
+		
+//		Screen lastScreen = ScreenOpener.getPreviouslyRenderedScreen();
 		float transitionValue = transition.getValue(partialTicks);
 		float scale = 1 + 0.5f * transitionValue;
 
+		
+		/*
+		 * Looks like this stopped working sometime before 1.18
+		 * Now commented as it does mess with the background alpha since 1.20
+		 */
+		
 		// draw last screen into buffer
-		if (lastScreen != null && lastScreen != this && !transition.settled()) {
-			ms.pushPose();
-			UIRenderHelper.framebuffer.clear(Minecraft.ON_OSX);
-			ms.translate(0, 0, -1000);
-			UIRenderHelper.framebuffer.bindWrite(true);
-			PonderTooltipHandler.enable = false;
-			lastScreen.render(ms, mouseX, mouseY, partialTicks);
-			PonderTooltipHandler.enable = true;
-
-			ms.popPose();
-			ms.pushPose();
-
-			// use the buffer texture
-			minecraft.getMainRenderTarget()
-				.bindWrite(true);
-
-			Window window = minecraft.getWindow();
-			int dpx = window.getGuiScaledWidth() / 2;
-			int dpy = window.getGuiScaledHeight() / 2;
-			if (lastScreen instanceof NavigatableSimiScreen navigableScreen) {
-				dpx = navigableScreen.depthPointX;
-				dpy = navigableScreen.depthPointY;
-			}
-
-			ms.translate(dpx, dpy, 0);
-			ms.scale(scale, scale, 1);
-			ms.translate(-dpx, -dpy, 0);
-			RenderSystem.enableBlend();
-			RenderSystem.defaultBlendFunc();
-			UIRenderHelper.drawFramebuffer(1f - Math.abs(transitionValue));
-			RenderSystem.disableBlend();
-			ms.popPose();
-		}
+//		if (lastScreen != null && lastScreen != this && !transition.settled()) {
+//			ms.pushPose();
+//			UIRenderHelper.framebuffer.clear(Minecraft.ON_OSX);
+//			ms.translate(0, 0, -1000);
+//			UIRenderHelper.framebuffer.bindWrite(true);
+//			PonderTooltipHandler.enable = false;
+//			// Using 0,0 for mouse coords to hide tooltips
+//			lastScreen.render(graphics, 0, 0, partialTicks);
+//			PonderTooltipHandler.enable = true;
+//
+//			ms.popPose();
+//			ms.pushPose();
+//
+//			// use the buffer texture
+//			minecraft.getMainRenderTarget()
+//				.bindWrite(true);
+//
+//			Window window = minecraft.getWindow();
+//			int dpx = window.getGuiScaledWidth() / 2;
+//			int dpy = window.getGuiScaledHeight() / 2;
+//			if (lastScreen instanceof NavigatableSimiScreen navigableScreen) {
+//				dpx = navigableScreen.depthPointX;
+//				dpy = navigableScreen.depthPointY;
+//			}
+//
+//			ms.translate(dpx, dpy, 0);
+//			ms.scale(scale, scale, 1);
+//			ms.translate(-dpx, -dpy, 0);
+//			RenderSystem.enableBlend();
+//			RenderSystem.defaultBlendFunc();
+//			UIRenderHelper.drawFramebuffer(1f - Math.abs(transitionValue));
+//			RenderSystem.disableBlend();
+//			ms.popPose();
+//		}
 
 		// modify current screen as well
 		scale = transitionValue > 0 ? 1 - 0.5f * (1 - transitionValue) : 1 + .5f * (1 + transitionValue);
@@ -205,7 +214,7 @@ public abstract class NavigatableSimiScreen extends AbstractSimiScreen {
 
 	public void shareContextWith(NavigatableSimiScreen other) {}
 
-	protected void renderZeloBreadcrumbs(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+	protected void renderZeloBreadcrumbs(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		List<Screen> history = ScreenOpener.getScreenHistory();
 		if (history.isEmpty())
 			return;
@@ -228,13 +237,14 @@ public abstract class NavigatableSimiScreen extends AbstractSimiScreen {
 		if (x.getValue() < 25)
 			x.setValue(25);
 
+		PoseStack ms = graphics.pose();
 		ms.pushPose();
 		ms.translate(0, 0, 600);
 		names.forEach(s -> {
 			int sWidth = font.width(s);
-			UIRenderHelper.breadcrumbArrow(ms, x.getValue(), y.getValue(), 0, sWidth + spacing, 14, spacing / 2,
+			UIRenderHelper.breadcrumbArrow(graphics, x.getValue(), y.getValue(), 0, sWidth + spacing, 14, spacing / 2,
 					new Color(0xdd101010), new Color(0x44101010));
-			font.draw(ms, s, x.getValue() + 5, y.getValue() + 3, first.getValue() ? 0xffeeffee : 0xffddeeff);
+			graphics.drawString(font, s, x.getValue() + 5, y.getValue() + 3, first.getValue() ? 0xffeeffee : 0xffddeeff, false);
 			first.setFalse();
 
 			x.add(sWidth + spacing);

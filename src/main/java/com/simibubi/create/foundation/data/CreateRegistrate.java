@@ -2,6 +2,8 @@ package com.simibubi.create.foundation.data;
 
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -32,12 +34,14 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -52,8 +56,12 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.RegistryObject;
 
 public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
+	private static final Map<RegistryEntry<?>, RegistryObject<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+
 	@Nullable
 	protected Function<Item, TooltipModifier> currentTooltipModifierFactory;
+	@Nullable
+	protected RegistryObject<CreativeModeTab> currentTab;
 
 	protected CreateRegistrate(String modid) {
 		super(modid);
@@ -61,6 +69,10 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 
 	public static CreateRegistrate create(String modid) {
 		return new CreateRegistrate(modid);
+	}
+
+	public static boolean isInCreativeTab(RegistryEntry<?> entry, RegistryObject<CreativeModeTab> tab) {
+		return TAB_LOOKUP.get(entry) == tab;
 	}
 
 	public CreateRegistrate setTooltipModifierFactory(@Nullable Function<Item, TooltipModifier> factory) {
@@ -73,6 +85,16 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		return currentTooltipModifierFactory;
 	}
 
+	@Nullable
+	public CreateRegistrate setCreativeTab(RegistryObject<CreativeModeTab> tab) {
+		currentTab = tab;
+		return self();
+	}
+
+	public RegistryObject<CreativeModeTab> getCreativeTab() {
+		return currentTab;
+	}
+
 	@Override
 	public CreateRegistrate registerEventListeners(IEventBus bus) {
 		return super.registerEventListeners(bus);
@@ -83,10 +105,13 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator,
 		NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
 		RegistryEntry<T> entry = super.accept(name, type, builder, creator, entryFactory);
-		if (type.equals(Registry.ITEM_REGISTRY)) {
+		if (type.equals(Registries.ITEM)) {
 			if (currentTooltipModifierFactory != null) {
 				TooltipModifier.REGISTRY.registerDeferred(entry.getId(), currentTooltipModifierFactory);
 			}
+		}
+		if (currentTab != null) {
+			TAB_LOOKUP.put(entry, currentTab);
 		}
 		return entry;
 	}

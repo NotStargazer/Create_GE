@@ -18,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -44,24 +43,24 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
 		super(properties);
 		registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
 	}
-	
+
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
 		super.createBlockStateDefinition(pBuilder.add(WATERLOGGED));
 	}
-	
+
 	@Override
 	public FluidState getFluidState(BlockState pState) {
 		return fluidState(pState);
 	}
-	
+
 	@Override
 	public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState,
 		LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
 		updateWater(pLevel, pState, pCurrentPos);
 		return pState;
 	}
-	
+
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
 		return withWater(super.getStateForPlacement(pContext), pContext);
@@ -91,7 +90,7 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
 		float p_180658_4_) {
 		Optional<EjectorBlockEntity> blockEntityOptional = getBlockEntityOptional(p_180658_1_, p_180658_2_);
 		if (blockEntityOptional.isPresent() && !p_180658_3_.isSuppressingBounce()) {
-			p_180658_3_.causeFallDamage(p_180658_4_, 1.0F, DamageSource.FALL);
+			p_180658_3_.causeFallDamage(p_180658_4_, 1.0F, p_180658_1_.damageSources().fall());
 			return;
 		}
 		super.fallOn(p_180658_1_, p_152427_, p_180658_2_, p_180658_3_, p_180658_4_);
@@ -124,7 +123,7 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
 		if (ejectorBlockEntity.launcher.getHorizontalDistance() == 0)
 			return;
 
-		if (entityIn.isOnGround()) {
+		if (entityIn.onGround()) {
 			entityIn.setOnGround(false);
 			Vec3 center = VecHelper.getCenterOf(position)
 				.add(0, 7 / 16f, 0);
@@ -141,7 +140,7 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
 
 		ejectorBlockEntity.activate();
 		ejectorBlockEntity.notifyUpdate();
-		if (entityIn.level.isClientSide)
+		if (entityIn.level().isClientSide)
 			AllPackets.getChannel().sendToServer(new EjectorTriggerPacket(ejectorBlockEntity.getBlockPos()));
 	}
 

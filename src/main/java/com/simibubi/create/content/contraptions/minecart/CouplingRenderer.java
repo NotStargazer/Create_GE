@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.block.Blocks;
@@ -51,8 +51,9 @@ public class CouplingRenderer {
 		if (carts.getFirst() == null || carts.getSecond() == null)
 			return;
 
-		Couple<Integer> lightValues = carts.map(c -> LevelRenderer.getLightColor(world, new BlockPos(c.getBoundingBox()
-			.getCenter())));
+		Couple<Integer> lightValues =
+			carts.map(c -> LevelRenderer.getLightColor(world, BlockPos.containing(c.getBoundingBox()
+				.getCenter())));
 
 		Vec3 center = carts.getFirst()
 			.position()
@@ -131,8 +132,8 @@ public class CouplingRenderer {
 		roll = roll > 0 ? Mth.sin(roll) * roll * rollAmplifier / 10.0F * cart.getHurtDir() : 0;
 
 		Vec3 positionVec = new Vec3(xIn, yIn, zIn);
-		Vec3 frontVec = positionVec.add(VecHelper.rotate(new Vec3(.5, 0, 0), 180 - yaw, Axis.Y));
-		Vec3 backVec = positionVec.add(VecHelper.rotate(new Vec3(-.5, 0, 0), 180 - yaw, Axis.Y));
+		Vec3 frontVec = positionVec.add(VecHelper.rotate(new Vec3(.5, 0, 0), 180 - yaw, Direction.Axis.Y));
+		Vec3 backVec = positionVec.add(VecHelper.rotate(new Vec3(-.5, 0, 0), 180 - yaw, Direction.Axis.Y));
 
 		Vec3 railVecOfPos = cart.getPos(xIn, yIn, zIn);
 		boolean flip = false;
@@ -193,9 +194,9 @@ public class CouplingRenderer {
 
 		public Vec3 apply(Vec3 vec) {
 			vec = vec.add(offset, 0, 0);
-			vec = VecHelper.rotate(vec, roll, Axis.X);
-			vec = VecHelper.rotate(vec, pitch, Axis.Z);
-			vec = VecHelper.rotate(vec, yaw, Axis.Y);
+			vec = VecHelper.rotate(vec, roll, Direction.Axis.X);
+			vec = VecHelper.rotate(vec, pitch, Direction.Axis.Z);
+			vec = VecHelper.rotate(vec, yaw, Direction.Axis.Y);
 			return vec.add(x, y, z);
 		}
 

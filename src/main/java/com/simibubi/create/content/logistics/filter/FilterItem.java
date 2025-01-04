@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.content.logistics.filter.AttributeFilterMenu.WhitelistMode;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
 
@@ -190,7 +191,7 @@ public class FilterItem extends Item implements MenuProvider {
 		if (matchNBT) {
 			return ItemHandlerHelper.canItemStacksStack(filter, stack);
 		} else {
-			return ItemStack.isSame(filter, stack);
+			return ItemHelper.sameItem(filter, stack);
 		}
 	}
 

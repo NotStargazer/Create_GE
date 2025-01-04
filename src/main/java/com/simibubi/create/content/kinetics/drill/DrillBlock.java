@@ -10,6 +10,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.damageTypes.CreateDamageSources;
 import com.simibubi.create.foundation.placement.IPlacementHelper;
 import com.simibubi.create.foundation.placement.PlacementHelpers;
 import com.simibubi.create.foundation.placement.PlacementOffset;
@@ -21,7 +22,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -50,10 +50,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBlockEntity>, SimpleWaterloggedBlock {
-	public static DamageSource damageSourceDrill = new DamageSource("create.mechanical_drill").bypassArmor();
-
 	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
-	
+
 	public DrillBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(super.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
@@ -69,7 +67,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 		withBlockEntityDo(worldIn, pos, be -> {
 			if (be.getSpeed() == 0)
 				return;
-			entityIn.hurt(damageSourceDrill, (float) getDamage(be.getSpeed()));
+			entityIn.hurt(CreateDamageSources.drill(worldIn), (float) getDamage(be.getSpeed()));
 		});
 	}
 
@@ -168,7 +166,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 
 	@MethodsReturnNonnullByDefault
 	private static class PlacementHelper implements IPlacementHelper {
-		
+
 		@Override
 		public Predicate<ItemStack> getItemPredicate() {
 			return AllBlocks.MECHANICAL_DRILL::isIn;
@@ -186,8 +184,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 				state.getValue(FACING)
 					.getAxis(),
 				dir -> world.getBlockState(pos.relative(dir))
-					.getMaterial()
-					.isReplaceable());
+					.canBeReplaced());
 
 			if (directions.isEmpty())
 				return PlacementOffset.fail();

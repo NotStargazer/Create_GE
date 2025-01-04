@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.logistics.filter.FilterScreenPacket;
@@ -20,10 +19,10 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 
 public class BlueprintScreen extends AbstractSimiContainerScreen<BlueprintMenu> {
 
@@ -65,41 +64,37 @@ public class BlueprintScreen extends AbstractSimiContainerScreen<BlueprintMenu> 
 	}
 
 	@Override
-	protected void renderBg(PoseStack ms, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
 		int invX = getLeftOfCentered(PLAYER_INVENTORY.width);
 		int invY = topPos + background.height + 4;
-		renderPlayerInventory(ms, invX, invY);
+		renderPlayerInventory(graphics, invX, invY);
 
 		int x = leftPos;
 		int y = topPos;
 
-		background.render(ms, x, y, this);
-		font.draw(ms, title, x + 15, y + 4, 0xFFFFFF);
+		background.render(graphics, x, y);
+		graphics.drawString(font, title, x + 15, y + 4, 0xFFFFFF, false);
 
 		GuiGameElement.of(AllPartialModels.CRAFTING_BLUEPRINT_1x1).<GuiGameElement
 			.GuiRenderBuilder>at(x + background.width + 20, y + background.height - 32, 0)
 			.rotate(45, -45, 22.5f)
 			.scale(40)
-			.render(ms);
+			.render(graphics);
 	}
 
 	@Override
-	protected void renderTooltip(PoseStack ms, int x, int y) {
+	protected void renderTooltip(GuiGraphics graphics, int x, int y) {
 		if (!menu.getCarried()
-			.isEmpty() || this.hoveredSlot == null || this.hoveredSlot.hasItem()
-			|| hoveredSlot.container == menu.playerInventory) {
-			super.renderTooltip(ms, x, y);
+			.isEmpty() || this.hoveredSlot == null || hoveredSlot.container == menu.playerInventory) {
+			super.renderTooltip(graphics, x, y);
 			return;
 		}
-		renderComponentTooltip(ms, addToTooltip(new LinkedList<>(), hoveredSlot.getSlotIndex(), true), x, y, font);
-	}
 
-	@Override
-	public List<Component> getTooltipFromItem(ItemStack stack) {
-		List<Component> list = super.getTooltipFromItem(stack);
-		if (hoveredSlot.container == menu.playerInventory)
-			return list;
-		return hoveredSlot != null ? addToTooltip(list, hoveredSlot.getSlotIndex(), false) : list;
+		List<Component> list = new LinkedList<>();
+		if (hoveredSlot.hasItem())
+			list = getTooltipFromContainerItem(hoveredSlot.getItem());
+
+		graphics.renderComponentTooltip(font, addToTooltip(list, hoveredSlot.getSlotIndex(), true), x, y);
 	}
 
 	private List<Component> addToTooltip(List<Component> list, int slot, boolean isEmptySlot) {

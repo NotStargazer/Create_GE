@@ -16,6 +16,7 @@ import com.simibubi.create.foundation.utility.BlockHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -90,7 +91,8 @@ public class SchematicPrinter {
 		if (!blueprint.hasTag() || !blueprint.getTag().getBoolean("Deployed"))
 			return;
 
-		StructureTemplate activeTemplate = SchematicItem.loadSchematic(blueprint);
+		StructureTemplate activeTemplate =
+			SchematicItem.loadSchematic(originalWorld.holderLookup(Registries.BLOCK), blueprint);
 		StructurePlaceSettings settings = SchematicItem.getSettings(blueprint, processNBT);
 
 		schematicAnchor = NbtUtils.readBlockPos(blueprint.getTag()

@@ -37,10 +37,10 @@ public class MovementContext {
 
 	public MovementContext(Level world, StructureBlockInfo info, Contraption contraption) {
 		this.world = world;
-		this.state = info.state;
-		this.blockEntityData = info.nbt;
+		this.state = info.state();
+		this.blockEntityData = info.nbt();
 		this.contraption = contraption;
-		localPos = info.pos;
+		localPos = info.pos();
 
 		disabled = false;
 		firstMovement = true;

@@ -40,19 +40,19 @@ public class ModularGuiLineBuilder {
 		addScrollInput(input, inputTransform, dataKey);
 		return this;
 	}
-	
+
 	public ModularGuiLineBuilder customArea(int x, int width) {
 		target.customBoxes.add(Couple.create(x, width));
 		return this;
 	}
-	
+
 	public ModularGuiLineBuilder speechBubble() {
 		target.speechBubble = true;
 		return this;
 	}
 
 	private <T extends ScrollInput> void addScrollInput(T input, BiConsumer<T, Label> inputTransform, String dataKey) {
-		Label label = new Label(input.x + 5, y, Components.immutableEmpty());
+		Label label = new Label(input.getX() + 5, y, Components.immutableEmpty());
 		label.withShadow();
 		inputTransform.accept(input, label);
 		input.writingTo(label);
@@ -79,7 +79,7 @@ public class ModularGuiLineBuilder {
 		EditBox input = new EditBox(font, x + this.x + 5, y, width - 9, 8, Components.immutableEmpty());
 		input.setBordered(false);
 		input.setTextColor(0xffffff);
-		input.changeFocus(false);
+		input.setFocused(false);
 		input.mouseClicked(0, 0, 0);
 		TooltipArea tooltipArea = new TooltipArea(this.x + x, y - 4, width, 18);
 		inputTransform.accept(input, tooltipArea);

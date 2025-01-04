@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import com.google.common.hash.Hashing;
-import com.google.common.hash.HashingOutputStream;
+import com.google.common.hash.HashCode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -26,9 +26,11 @@ import com.simibubi.create.foundation.ponder.PonderScene;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.providers.ProviderType;
 
+import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 /**
@@ -40,21 +42,23 @@ public class LangMerger implements DataProvider {
 	static final Gson GSON = new GsonBuilder().setPrettyPrinting()
 		.disableHtmlEscaping()
 		.create();
-	private static final String CATEGORY_HEADER = "\t\"_\": \"->------------------------]  %s  [------------------------<-\",";
+	private static final String CATEGORY_HEADER =
+		"\t\"_\": \"->------------------------]  %s  [------------------------<-\",";
 
-	private DataGenerator gen;
 	private final String modid;
 	private final String displayName;
 	private final LangPartial[] langPartials;
 
 	private List<Object> mergedLangData;
 	private List<String> langIgnore;
+	private PackOutput output;
 
-	public <T extends LangPartial> LangMerger(DataGenerator gen, String modid, String displayName, T[] langPartials) {
-		this.gen = gen;
+	public <T extends LangPartial> LangMerger(PackOutput output, String modid, String displayName,
+		T[] allLangPartials) {
+		this.output = output;
 		this.modid = modid;
 		this.displayName = displayName;
-		this.langPartials = langPartials;
+		this.langPartials = allLangPartials;
 		this.mergedLangData = new ArrayList<>();
 		this.langIgnore = new ArrayList<>();
 		populateLangIgnore();
@@ -79,15 +83,24 @@ public class LangMerger implements DataProvider {
 	}
 
 	@Override
-	public void run(CachedOutput cache) throws IOException {
-		Path path = this.gen.getOutputFolder()
-			.resolve("assets/" + modid + "/lang/" + "en_us.json");
+	public CompletableFuture<?> run(CachedOutput pOutput) {
+		Path path = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
+			.json(new ResourceLocation(modid, "en_us"));
 
-		collectExistingEntries(path);
-		collectEntries();
-		if (mergedLangData.isEmpty())
-			return;
-		save(cache, mergedLangData, path, "Merging en_us.json with hand-written lang entries...");
+		return CompletableFuture.runAsync(() -> {
+			try {
+				collectExistingEntries(path);
+				collectEntries();
+				if (mergedLangData.isEmpty())
+					return;
+				save(pOutput, mergedLangData, path,
+					"Merging en_us.json with hand-written lang entries...");
+
+			} catch (IOException ioexception) {
+				LOGGER.error("Failed to run LangMerger", ioexception);
+			}
+
+		}, Util.backgroundExecutor());
 	}
 
 	private void collectExistingEntries(Path path) throws IOException {
@@ -118,7 +131,7 @@ public class LangMerger implements DataProvider {
 				});
 			jsonobject.remove("_");
 			keysToRemove.forEach(jsonobject::remove);
-			
+
 			addAll("Game Elements", jsonobject);
 			reader.close();
 		}
@@ -185,25 +198,23 @@ public class LangMerger implements DataProvider {
 				.getAsJsonObject());
 	}
 
-	@SuppressWarnings("deprecation")
-	private void save(CachedOutput cache, List<Object> dataIn, Path target, String message)
-		throws IOException {
-
+	private void save(CachedOutput cache, List<Object> dataIn, Path target, String message) throws IOException {
 		ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-		HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
-
-		Writer writer = new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8);
+		Writer writer = new OutputStreamWriter(bytearrayoutputstream, StandardCharsets.UTF_8);
 		writer.append(createString(dataIn));
 		writer.close();
 
-		cache.writeIfNeeded(target, bytearrayoutputstream.toByteArray(), hashingoutputstream.hash());
+		CachedOutput.NO_CACHE.writeIfNeeded(target, bytearrayoutputstream.toByteArray(), HashCode.fromInt(0));
+		Create.LOGGER.info(message);
 	}
 
 	protected String createString(List<Object> data) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{\n");
 		data.forEach(builder::append);
-		builder.append("\t\"_\": \"Thank you for translating ").append(displayName).append("!\"\n\n");
+		builder.append("\t\"_\": \"Thank you for translating ")
+			.append(displayName)
+			.append("!\"\n\n");
 		builder.append("}");
 		return builder.toString();
 	}

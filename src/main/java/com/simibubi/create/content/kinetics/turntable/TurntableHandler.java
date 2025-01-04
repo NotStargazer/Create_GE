@@ -20,7 +20,7 @@ public class TurntableHandler {
 			return;
 		if (!AllBlocks.TURNTABLE.has(mc.level.getBlockState(pos)))
 			return;
-		if (!mc.player.isOnGround())
+		if (!mc.player.onGround())
 			return;
 		if (mc.isPaused())
 			return;

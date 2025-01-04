@@ -2,10 +2,11 @@ package com.simibubi.create.foundation.outliner;
 
 import java.util.Optional;
 
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import com.simibubi.create.AllSpecialTextures;
 import com.simibubi.create.foundation.render.RenderTypes;
 import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
@@ -199,7 +200,7 @@ public class AABBOutline extends Outline {
 		float lineLengthY = maxPos.y() - minPos.y();
 		float lineLengthZ = maxPos.z() - minPos.z();
 
-		origin.load(minPos);
+		origin.set(minPos);
 		bufferCuboidLine(pose, consumer, origin, Direction.EAST, lineLengthX, lineWidth, color, lightmap, disableNormals);
 		bufferCuboidLine(pose, consumer, origin, Direction.UP, lineLengthY, lineWidth, color, lightmap, disableNormals);
 		bufferCuboidLine(pose, consumer, origin, Direction.SOUTH, lineLengthZ, lineWidth, color, lightmap, disableNormals);

@@ -30,6 +30,7 @@ import com.simibubi.create.content.trains.entity.TravellingPoint.ITrackSelector;
 import com.simibubi.create.content.trains.entity.TravellingPoint.SteerDirection;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackGraph;
+import com.simibubi.create.foundation.damageTypes.CreateDamageSources;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.Couple;
@@ -112,8 +113,8 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 	}
 
 	@Override
-	protected DamageSource getDamageSource() {
-		return RollerBlock.damageSourceRoller;
+	protected DamageSource getDamageSource(Level level) {
+		return CreateDamageSources.roller(level);
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 			max = hardness;
 			argMax = toBreak;
 		}
-		
+
 		if (argMax == null) {
 			triggerPaver(context, pos);
 			return;
@@ -200,13 +201,13 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 				.isEmpty())
 				startingY = 0;
 		}
-		
+
 		// Train
 		PaveTask profileForTracks = createHeightProfileForTracks(context);
 		if (profileForTracks != null) {
 			for (Couple<Integer> coords : profileForTracks.keys()) {
 				float height = profileForTracks.get(coords);
-				BlockPos targetPosition = new BlockPos(coords.getFirst(), height, coords.getSecond());
+				BlockPos targetPosition = BlockPos.containing(coords.getFirst(), height, coords.getSecond());
 				boolean shouldPlaceSlab = height > Math.floor(height) + .45;
 				if (startingY == 1 && shouldPlaceSlab && context.world.getBlockState(targetPosition.above())
 					.getOptionalValue(SlabBlock.TYPE)
@@ -262,8 +263,8 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 		Axis axis = Axis.X;
 		StructureBlockInfo info = context.contraption.getBlocks()
 			.get(BlockPos.ZERO);
-		if (info != null && info.state.hasProperty(StandardBogeyBlock.AXIS))
-			axis = info.state.getValue(StandardBogeyBlock.AXIS);
+		if (info != null && info.state().hasProperty(StandardBogeyBlock.AXIS))
+			axis = info.state().getValue(StandardBogeyBlock.AXIS);
 
 		Direction orientation = cce.getInitialOrientation();
 		Direction rollerFacing = context.state.getValue(RollerBlock.FACING);
@@ -324,7 +325,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 			for (Couple<Integer> coords : profileForTracks.keys()) {
 				float height = profileForTracks.get(coords);
 				boolean shouldPlaceSlab = height > Math.floor(height) + .45;
-				BlockPos targetPosition = new BlockPos(coords.getFirst(), height, coords.getSecond());
+				BlockPos targetPosition = BlockPos.containing(coords.getFirst(), height, coords.getSecond());
 				paveSet.add(Pair.of(targetPosition, shouldPlaceSlab));
 			}
 
@@ -467,8 +468,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 		BlockState existing = level.getBlockState(targetPos);
 		if (existing.is(toPlace.getBlock()))
 			return PaveResult.PASS;
-		if (!existing.is(BlockTags.LEAVES) && !existing.getMaterial()
-			.isReplaceable()
+		if (!existing.is(BlockTags.LEAVES) && !existing.canBeReplaced()
 			&& !existing.getCollisionShape(level, targetPos)
 				.isEmpty())
 			return PaveResult.FAIL;

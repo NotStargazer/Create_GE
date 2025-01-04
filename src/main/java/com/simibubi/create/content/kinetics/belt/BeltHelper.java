@@ -17,7 +17,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class BeltHelper {
 
@@ -26,7 +26,7 @@ public class BeltHelper {
 
 	public static boolean isItemUpright(ItemStack stack) {
 		return uprightCache.computeIfAbsent(stack.getItem(),
-			item -> stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+			item -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
 				.isPresent() || AllItemTags.UPRIGHT_ON_BELT.matches(stack));
 	}
 

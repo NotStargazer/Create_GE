@@ -3,6 +3,7 @@ package com.simibubi.create.content.contraptions;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,10 +30,11 @@ public class ContraptionBlockChangedPacket extends SimplePacketBase {
 		buffer.writeNbt(NbtUtils.writeBlockState(newState));
 	}
 
+	@SuppressWarnings("deprecation")
 	public ContraptionBlockChangedPacket(FriendlyByteBuf buffer) {
 		entityID = buffer.readInt();
 		localPos = buffer.readBlockPos();
-		newState = NbtUtils.readBlockState(buffer.readNbt());
+		newState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), buffer.readNbt());
 	}
 
 	@Override

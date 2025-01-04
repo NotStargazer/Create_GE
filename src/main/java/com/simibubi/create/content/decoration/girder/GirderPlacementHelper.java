@@ -82,7 +82,7 @@ public class GirderPlacementHelper implements IPlacementHelper {
 		for (Direction dir : directions) {
 			int range = AllConfigs.server().equipment.placementAssistRange.get();
 			if (player != null) {
-				AttributeInstance reach = player.getAttribute(ForgeMod.REACH_DISTANCE.get());
+				AttributeInstance reach = player.getAttribute(ForgeMod.BLOCK_REACH.get());
 				if (reach != null && reach.hasModifier(ExtendoGripItem.singleRangeAttributeModifier))
 					range += 4;
 			}
@@ -93,8 +93,7 @@ public class GirderPlacementHelper implements IPlacementHelper {
 			BlockPos newPos = pos.relative(dir, poles + 1);
 			BlockState newState = world.getBlockState(newPos);
 
-			if (!newState.getMaterial()
-				.isReplaceable())
+			if (!newState.canBeReplaced())
 				continue;
 
 			return PlacementOffset.success(newPos,

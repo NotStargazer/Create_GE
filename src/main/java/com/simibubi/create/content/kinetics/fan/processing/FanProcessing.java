@@ -38,7 +38,7 @@ public class FanProcessing {
 		ItemStack entityItem = entity.getItem();
 		ItemStack processItem = entityItem.copy();
 		processItem.setCount(1);
-		List<ItemStack> stacks = type.process(processItem, entity.level);
+		List<ItemStack> stacks = type.process(processItem, entity.level());
 		if (stacks == null)
 			return false;
 		if (stacks.isEmpty()) {

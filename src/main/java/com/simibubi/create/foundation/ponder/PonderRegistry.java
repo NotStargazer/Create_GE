@@ -121,7 +121,7 @@ public class PonderRegistry {
 			new DataInputStream(new BufferedInputStream(new GZIPInputStream(resourceStream)));
 		CompoundTag nbt = NbtIo.read(stream, new NbtAccounter(0x20000000L));
         CreateGrandExpanse.overrideNBT(nbt);
-        t.load(nbt);
+        t.load(Minecraft.getInstance().level.holderLookup(Registries.BLOCK), nbt);
 		return t;
 	}
 

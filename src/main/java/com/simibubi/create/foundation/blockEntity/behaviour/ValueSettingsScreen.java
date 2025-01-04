@@ -134,7 +134,6 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		int x = guiLeft;
 		int y = guiTop;
 		int milestoneCount = board.width() / board.milestoneInterval() + 1;
-		int blitOffset = getBlitOffset();
 		int scale = board.width() > 128 ? 1 : 2;
 
 		Component title = board.title();
@@ -258,7 +257,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		AllGuiTextures.BRASS_FRAME_BL.render(graphics, x, y + h - 4);
 		AllGuiTextures.BRASS_FRAME_BR.render(graphics, x + w - 4, y + h - 4);
 		int zLevel = 0;
-		
+
 		if (h > 8) {
 			UIRenderHelper.drawStretched(graphics, x, y + 4, 3, h - 8, zLevel, AllGuiTextures.BRASS_FRAME_LEFT);
 			UIRenderHelper.drawStretched(graphics, x + w - 3, y + 4, 3, h - 8, zLevel, AllGuiTextures.BRASS_FRAME_RIGHT);

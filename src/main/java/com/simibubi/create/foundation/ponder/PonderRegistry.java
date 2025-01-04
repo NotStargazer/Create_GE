@@ -13,12 +13,12 @@ import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 import com.simibubi.create.Create;
+import com.simibubi.create.ge.CreateGrandExpanse;
 import com.simibubi.create.infrastructure.ponder.PonderIndex;
 import com.simibubi.create.infrastructure.ponder.SharedText;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -119,7 +119,8 @@ public class PonderRegistry {
 		DataInputStream stream =
 			new DataInputStream(new BufferedInputStream(new GZIPInputStream(resourceStream)));
 		CompoundTag nbt = NbtIo.read(stream, new NbtAccounter(0x20000000L));
-		t.load(Minecraft.getInstance().level.holderLookup(Registries.BLOCK), nbt);
+        CreateGrandExpanse.overrideNBT(nbt);
+        t.load(nbt);
 		return t;
 	}
 

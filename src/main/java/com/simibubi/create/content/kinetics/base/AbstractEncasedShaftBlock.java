@@ -15,8 +15,8 @@ import net.minecraft.world.level.material.PushReaction;
 
 @MethodsReturnNonnullByDefault
 public abstract class AbstractEncasedShaftBlock extends RotatedPillarKineticBlock {
-    public AbstractEncasedShaftBlock(Properties properties) {
-        super(properties);
+    public AbstractEncasedShaftBlock(int tier, Properties properties) {
+        super(tier, properties);
     }
 
     @Override

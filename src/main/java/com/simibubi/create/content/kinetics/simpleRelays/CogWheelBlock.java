@@ -3,6 +3,8 @@ package com.simibubi.create.content.kinetics.simpleRelays;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllCreativeModeTabs;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.decoration.encasing.EncasableBlock;
 import com.simibubi.create.content.kinetics.base.IRotate;
@@ -10,15 +12,19 @@ import com.simibubi.create.content.kinetics.speedController.SpeedControllerBlock
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.utility.Iterate;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -38,17 +44,9 @@ public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel
 
 	boolean isLarge;
 
-	protected CogWheelBlock(boolean large, Properties properties) {
-		super(properties);
+	public CogWheelBlock(int tier, boolean large, Properties properties) {
+		super(tier, properties);
 		isLarge = large;
-	}
-
-	public static CogWheelBlock small(Properties properties) {
-		return new CogWheelBlock(false, properties);
-	}
-
-	public static CogWheelBlock large(Properties properties) {
-		return new CogWheelBlock(true, properties);
 	}
 
 	@Override
@@ -59,6 +57,14 @@ public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel
 	@Override
 	public boolean isSmallCog() {
 		return !isLarge;
+	}
+
+	@Override
+	public void fillItemCategory(CreativeModeTab pTab, NonNullList<ItemStack> pItems) {
+		super.fillItemCategory(pTab, pItems);
+		// Ensure the belt item is added after large cogwheels in the creative tab
+		if (CreateGrandExpanse.isAnyOf(AllBlocks.LARGE_COGWHEELS, this) && pTab == AllCreativeModeTabs.BASE_CREATIVE_TAB)
+			pItems.add(AllItems.BELT_CONNECTOR.asStack());
 	}
 
 	@Override

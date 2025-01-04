@@ -66,8 +66,8 @@ public class BeltRenderer extends SafeBlockEntityRenderer<BeltBlockEntity> {
 			boolean downward = beltSlope == BeltSlope.DOWNWARD;
 			boolean upward = beltSlope == BeltSlope.UPWARD;
 			boolean diagonal = downward || upward;
-			boolean start = part == BeltPart.START;
-			boolean end = part == BeltPart.END;
+			boolean start = BeltPart.anyStart(part);
+			boolean end = BeltPart.anyEnd(part);
 			boolean sideways = beltSlope == BeltSlope.SIDEWAYS;
 			boolean alongX = facing.getAxis() == Direction.Axis.X;
 
@@ -139,7 +139,8 @@ public class BeltRenderer extends SafeBlockEntityRenderer<BeltBlockEntity> {
 					return stack;
 				};
 
-				SuperByteBuffer superBuffer = CachedBufferer.partialDirectional(AllPartialModels.BELT_PULLEY, blockState, dir, matrixStackSupplier);
+				int tier = BeltPart.getTier(blockState.getValue(BeltBlock.PART));
+				SuperByteBuffer superBuffer = CachedBufferer.partialDirectional(AllPartialModels.BELT_PULLEYS[tier], blockState, dir, matrixStackSupplier);
 				KineticBlockEntityRenderer.standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
 			}
 		}

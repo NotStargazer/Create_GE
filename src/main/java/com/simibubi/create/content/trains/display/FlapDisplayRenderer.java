@@ -229,7 +229,7 @@ public class FlapDisplayRenderer extends KineticBlockEntityRenderer<FlapDisplayB
 
 	@Override
 	protected SuperByteBuffer getRotatedModel(FlapDisplayBlockEntity be, BlockState state) {
-		return CachedBufferer.partialFacingVertical(AllPartialModels.SHAFTLESS_COGWHEEL, state,
+		return CachedBufferer.partialFacingVertical(AllPartialModels.SHAFTLESS_COGWHEELS[0], state,
 			state.getValue(FlapDisplayBlock.HORIZONTAL_FACING));
 	}
 

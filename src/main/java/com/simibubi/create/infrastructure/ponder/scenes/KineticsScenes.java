@@ -83,7 +83,7 @@ public class KineticsScenes {
 		scene.world.showSection(shaft, Direction.DOWN);
 		scene.idle(20);
 
-		BlockEntry<EncasedShaftBlock> andesiteEncased = AllBlocks.ANDESITE_ENCASED_SHAFT;
+		BlockEntry<EncasedShaftBlock> andesiteEncased = AllBlocks.ANDESITE_ENCASED_SHAFTS[0];
 		ItemStack andesiteCasingItem = AllBlocks.ANDESITE_CASING.asStack();
 
 		scene.overlay.showControls(new InputWindowElement(util.vector.topOf(3, 1, 2), Pointing.DOWN).rightClick()
@@ -94,7 +94,7 @@ public class KineticsScenes {
 		scene.world.setKineticSpeed(shaft, 32);
 		scene.idle(10);
 
-		BlockEntry<EncasedShaftBlock> brassEncased = AllBlocks.BRASS_ENCASED_SHAFT;
+		BlockEntry<EncasedShaftBlock> brassEncased = AllBlocks.BRASS_ENCASED_SHAFTS[0];
 		ItemStack brassCasingItem = AllBlocks.BRASS_CASING.asStack();
 
 		scene.overlay.showControls(new InputWindowElement(util.vector.topOf(1, 0, 2), Pointing.UP).rightClick()
@@ -156,7 +156,7 @@ public class KineticsScenes {
 	public static void largeCogAsRelay(SceneBuilder scene, SceneBuildingUtil util) {
 		scene.title("large_cogwheel", "Relaying rotational force using Large Cogwheels");
 		scene.configureBasePlate(1, 1, 5);
-		scene.world.setBlock(util.grid.at(4, 2, 3), AllBlocks.LARGE_COGWHEEL.getDefaultState()
+		scene.world.setBlock(util.grid.at(4, 2, 3), AllBlocks.LARGE_COGWHEELS[0].getDefaultState()
 			.setValue(CogWheelBlock.AXIS, Axis.X), false);
 
 		scene.showBasePlate();
@@ -212,9 +212,9 @@ public class KineticsScenes {
 
 		BlockPos lowerCog = util.grid.at(3, 1, 2);
 		BlockPos upperCog = util.grid.at(3, 2, 3);
-		BlockState largeCogState = AllBlocks.LARGE_COGWHEEL.getDefaultState()
+		BlockState largeCogState = AllBlocks.LARGE_COGWHEELS[0].getDefaultState()
 			.setValue(CogWheelBlock.AXIS, Axis.X);
-		BlockState smallCogState = AllBlocks.COGWHEEL.getDefaultState()
+		BlockState smallCogState = AllBlocks.COGWHEELS[0].getDefaultState()
 			.setValue(CogWheelBlock.AXIS, Axis.X);
 
 		scene.world.setBlock(lowerCog, largeCogState, false);
@@ -317,7 +317,7 @@ public class KineticsScenes {
 		scene.world.showSection(large2, Direction.EAST);
 		scene.idle(20);
 
-		BlockEntry<EncasedCogwheelBlock> andesiteEncased = AllBlocks.ANDESITE_ENCASED_COGWHEEL;
+		BlockEntry<EncasedCogwheelBlock> andesiteEncased = AllBlocks.ANDESITE_ENCASED_COGWHEELS[0];
 		ItemStack andesiteCasingItem = AllBlocks.ANDESITE_CASING.asStack();
 
 		scene.overlay.showControls(new InputWindowElement(util.vector.topOf(3, 0, 2), Pointing.UP).rightClick()
@@ -337,7 +337,7 @@ public class KineticsScenes {
 		scene.world.setKineticSpeed(small2, 32);
 		scene.idle(15);
 
-		BlockEntry<EncasedCogwheelBlock> brassEncased = AllBlocks.BRASS_ENCASED_LARGE_COGWHEEL;
+		BlockEntry<EncasedCogwheelBlock> brassEncased = AllBlocks.BRASS_ENCASED_LARGE_COGWHEELS[0];
 		ItemStack brassCasingItem = AllBlocks.BRASS_CASING.asStack();
 
 		scene.overlay.showControls(new InputWindowElement(util.vector.topOf(1, 0, 3), Pointing.UP).rightClick()
@@ -433,8 +433,8 @@ public class KineticsScenes {
 			.substract(gearbox), Direction.UP);
 		scene.idle(20);
 
-		BlockState defaultState = AllBlocks.SHAFT.getDefaultState();
-		BlockState cogState = AllBlocks.COGWHEEL.getDefaultState();
+		BlockState defaultState = AllBlocks.SHAFTS[0].getDefaultState();
+		BlockState cogState = AllBlocks.COGWHEELS[0].getDefaultState();
 		scene.world.setBlock(largeCogBack, defaultState.setValue(CogWheelBlock.AXIS, Axis.Z), false);
 		scene.world.setBlock(largeCogFront, defaultState.setValue(CogWheelBlock.AXIS, Axis.Z), false);
 		scene.world.setBlock(largeCogRight, defaultState.setValue(CogWheelBlock.AXIS, Axis.X), false);

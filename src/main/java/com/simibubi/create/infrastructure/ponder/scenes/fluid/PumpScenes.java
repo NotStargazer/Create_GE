@@ -176,7 +176,7 @@ public class PumpScenes {
 		Selection tank2 = util.select.fromTo(0, 1, 2, 0, 2, 2);
 		Selection megapipe1 = util.select.fromTo(0, 3, 5, 1, 4, 2);
 		Selection megapipe2 = util.select.fromTo(3, 3, 1, 5, 6, 2);
-		
+
 		scene.world.modifyBlock(pumpPos, s -> s.setValue(PumpBlock.FACING, Direction.WEST), false);
 		scene.world.modifyBlockEntity(util.grid.at(0, 1, 2), FluidTankBlockEntity.class, be -> be.getTankInventory()
 			.drain(3000, FluidAction.EXECUTE));
@@ -187,7 +187,7 @@ public class PumpScenes {
 		scene.world.setBlock(east, AllBlocks.GLASS_FLUID_PIPE.getDefaultState()
 			.setValue(GlassFluidPipeBlock.AXIS, Axis.X), false);
 
-		scene.world.setBlock(pumpPos.south(), AllBlocks.COGWHEEL.getDefaultState()
+		scene.world.setBlock(pumpPos.south(), AllBlocks.COGWHEELS[0].getDefaultState()
 			.setValue(CogWheelBlock.AXIS, Axis.X), false);
 		Selection southPump = util.select.position(pumpPos.south());
 		scene.world.setKineticSpeed(southPump, 4);

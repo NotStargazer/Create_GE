@@ -59,7 +59,7 @@ public class EncasedCogInstance extends KineticBlockEntityInstance<KineticBlockE
 		for (Direction d : Iterate.directionsInAxis(axis)) {
 			if (!def.hasShaftTowards(blockEntity.getLevel(), blockEntity.getBlockPos(), blockState, d))
 				continue;
-			RotatingData data = setup(getRotatingMaterial().getModel(AllPartialModels.SHAFT_HALF, blockState, d)
+			RotatingData data = setup(getRotatingMaterial().getModel(AllPartialModels.SHAFT_HALVES[blockEntity.getTier()], blockState, d)
 				.createInstance());
 			if (large)
 				data.setRotationOffset(BracketedKineticBlockEntityRenderer.getShaftAngleOffset(axis, pos));
@@ -95,7 +95,9 @@ public class EncasedCogInstance extends KineticBlockEntityInstance<KineticBlockE
 		BlockState referenceState = blockEntity.getBlockState();
 		Direction facing =
 			Direction.fromAxisAndDirection(referenceState.getValue(BlockStateProperties.AXIS), AxisDirection.POSITIVE);
-		PartialModel partial = large ? AllPartialModels.SHAFTLESS_LARGE_COGWHEEL : AllPartialModels.SHAFTLESS_COGWHEEL;
+		PartialModel partial = large
+				? AllPartialModels.SHAFTLESS_LARGE_COGWHEELS[blockEntity.blockTier]
+				: AllPartialModels.SHAFTLESS_COGWHEELS[blockEntity.blockTier];
 
 		return getRotatingMaterial().getModel(partial, referenceState, facing, () -> {
 			PoseStack poseStack = new PoseStack();

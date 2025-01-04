@@ -221,11 +221,11 @@ public class SteamScenes {
 		Selection pump1 = util.select.fromTo(5, 2, 2, 4, 1, 1);
 		Selection pump2 = util.select.fromTo(5, 2, 7, 4, 1, 6);
 		Selection pump3 = util.select.fromTo(2, 3, 7, 1, 1, 6);
-		
+
 		scene.world.modifyBlock(util.grid.at(4, 2, 7), s -> s.setValue(PumpBlock.FACING, Direction.SOUTH), false);
 		scene.world.modifyBlock(util.grid.at(1, 2, 7), s -> s.setValue(PumpBlock.FACING, Direction.SOUTH), false);
 		scene.world.modifyBlock(util.grid.at(2, 3, 7), s -> s.setValue(PumpBlock.FACING, Direction.SOUTH), false);
-		
+
 		scene.idle(15);
 		ElementLink<WorldSectionElement> tankElement = scene.world.showIndependentSection(tank, Direction.DOWN);
 		scene.world.moveSection(tankElement, util.vector.of(0, -1, 0), 0);
@@ -252,11 +252,11 @@ public class SteamScenes {
 
 		scene.overlay.showControls(
 			new InputWindowElement(util.vector.blockSurface(util.grid.at(3, 1, 3), Direction.UP), Pointing.DOWN)
-				.withItem(AllBlocks.SHAFT.asStack())
+				.withItem(AllBlocks.SHAFTS[3].asStack())
 				.rightClick(),
 			60);
 		scene.idle(10);
-		scene.world.setBlock(engine1ShaftPos, AllBlocks.SHAFT.getDefaultState()
+		scene.world.setBlock(engine1ShaftPos, AllBlocks.SHAFTS[3].getDefaultState()
 			.setValue(ShaftBlock.AXIS, Axis.Z), false);
 		ElementLink<WorldSectionElement> engineShaftElement = scene.world.showIndependentSection(engine1Shaft, null);
 		scene.world.moveSection(engineShaftElement, util.vector.of(0, -3, 2), 0);
@@ -265,7 +265,7 @@ public class SteamScenes {
 		scene.world.hideIndependentSection(engineElement, null);
 		engineElement = scene.world.showIndependentSectionImmediately(engine1);
 		scene.world.moveSection(engineElement, util.vector.of(0, -3, 2), 0);
-		scene.world.setBlock(engine1ShaftPos, AllBlocks.POWERED_SHAFT.getDefaultState()
+		scene.world.setBlock(engine1ShaftPos, AllBlocks.POWERED_SHAFTS[3].getDefaultState()
 			.setValue(ShaftBlock.AXIS, Axis.Z), false);
 		scene.effects.indicateSuccess(util.grid.at(1, 1, 3));
 		scene.idle(40);

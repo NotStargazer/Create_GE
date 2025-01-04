@@ -12,7 +12,7 @@ public class CuttingRecipeGen extends ProcessingRecipeGen {
 	GeneratedRecipe
 
 	ANDESITE_ALLOY = create(I::andesite, b -> b.duration(200)
-		.output(AllBlocks.SHAFT.get(), 6)),
+		.output(AllBlocks.SHAFTS[0].get(), 6)),
 
 		BAMBOO_PLANKS = create(() -> Blocks.BAMBOO_PLANKS, b -> b.duration(20)
 			.output(Blocks.BAMBOO_MOSAIC, 1)),

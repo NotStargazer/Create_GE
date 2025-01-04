@@ -19,7 +19,7 @@
     },
     {
       "chance": 5.0,
-      "item": "create:cogwheel"
+      "item": "create:cogwheel_tier_0"
     },
     {
       "chance": 3.0,
@@ -27,7 +27,7 @@
     },
     {
       "chance": 2.0,
-      "item": "create:shaft"
+      "item": "create:shaft_tier_0"
     },
     {
       "chance": 2.0,
@@ -48,7 +48,7 @@
           "item": "create:incomplete_precision_mechanism"
         },
         {
-          "item": "create:cogwheel"
+          "item": "create:cogwheel_tier_0"
         }
       ],
       "results": [
@@ -64,7 +64,7 @@
           "item": "create:incomplete_precision_mechanism"
         },
         {
-          "item": "create:large_cogwheel"
+          "item": "create:large_cogwheel_tier_0"
         }
       ],
       "results": [

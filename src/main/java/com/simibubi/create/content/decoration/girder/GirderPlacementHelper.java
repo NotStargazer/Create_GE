@@ -8,6 +8,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.equipment.extendoGrip.ExtendoGripItem;
 import com.simibubi.create.foundation.placement.IPlacementHelper;
 import com.simibubi.create.foundation.placement.PlacementOffset;
+import com.simibubi.create.ge.CreateGrandExpanse;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.minecraft.core.BlockPos;
@@ -31,7 +32,7 @@ public class GirderPlacementHelper implements IPlacementHelper {
 
 	@Override
 	public Predicate<BlockState> getStatePredicate() {
-		return Predicates.or(AllBlocks.METAL_GIRDER::has, AllBlocks.METAL_GIRDER_ENCASED_SHAFT::has);
+		return Predicates.or(AllBlocks.METAL_GIRDER::has, s -> CreateGrandExpanse.hasAnyOf(AllBlocks.METAL_GIRDER_ENCASED_SHAFTS, s));
 	}
 
 	private boolean canExtendToward(BlockState state, Direction side) {

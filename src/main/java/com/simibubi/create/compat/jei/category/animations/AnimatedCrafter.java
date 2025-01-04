@@ -22,7 +22,7 @@ public class AnimatedCrafter extends AnimatedKinetics {
 			.rotateY(-22.5f);
 		int scale = 22;
 
-		blockElement(cogwheel())
+		blockElement(cogwheel(0))
 			.rotateBlock(90, 0, getCurrentAngle())
 			.scale(scale)
 			.render(graphics);

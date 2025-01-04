@@ -6,7 +6,7 @@
       "tag": "minecraft:wooden_slabs"
     },
     "S": {
-      "item": "create:shaft"
+      "item": "create:shaft_tier_0"
     }
   },
   "pattern": [

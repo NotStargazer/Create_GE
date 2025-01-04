@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ClutchBlock extends GearshiftBlock {
 
-	public ClutchBlock(Properties properties) {
-		super(properties);
+	public ClutchBlock(int tier, Properties properties) {
+		super(tier, properties);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class ClutchBlock extends GearshiftBlock {
 			detachKinetics(worldIn, pos, previouslyPowered);
 		}
 	}
-	
+
 	@Override
 	public BlockEntityType<? extends SplitShaftBlockEntity> getBlockEntityType() {
 		return AllBlockEntityTypes.CLUTCH.get();

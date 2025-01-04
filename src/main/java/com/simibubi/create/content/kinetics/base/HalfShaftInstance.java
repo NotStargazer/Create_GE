@@ -16,7 +16,7 @@ public class HalfShaftInstance<T extends KineticBlockEntity> extends SingleRotat
     @Override
     protected Instancer<RotatingData> getModel() {
 		Direction dir = getShaftDirection();
-		return getRotatingMaterial().getModel(AllPartialModels.SHAFT_HALF, blockState, dir);
+		return getRotatingMaterial().getModel(AllPartialModels.SHAFT_HALVES[blockEntity.getTier()], blockState, dir);
 	}
 
     protected Direction getShaftDirection() {

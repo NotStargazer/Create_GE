@@ -2,7 +2,7 @@
 	"credit": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
 	"textures": {
 		"gearbox_top": "create:block/gearbox_top",
-		"gearbox": "create:block/gearbox",
+		"gearbox": "create:block/gearbox_tier_0",
 		"andesite_casing_short": "create:block/andesite_casing_short",
 		"particle": "create:block/mechanical_saw_top",
 		"mechanical_saw_top": "create:block/mechanical_saw_top"

@@ -211,7 +211,7 @@ public class DebugScenes {
 			.whileSneaking()
 			.withWrench(), 40);
 		scene.idle(20);
-		scene.world.replaceBlocks(shaftSelection, AllBlocks.SHAFT.getDefaultState(), true);
+		scene.world.replaceBlocks(shaftSelection, AllBlocks.SHAFTS[0].getDefaultState(), true);
 
 		scene.idle(20);
 		scene.world.hideSection(shaftSelection, Direction.UP);
@@ -436,17 +436,17 @@ public class DebugScenes {
 
 		scene.world.modifyEntities(ItemEntity.class, Entity::discard);
 	}
-	
+
 	public static void pipeScene(SceneBuilder scene, SceneBuildingUtil util) {
 		scene.title("debug_pipes", "Manipulating Items");
 		scene.configureBasePlate(0, 0, 5);
 		scene.world.showSection(util.select.layer(0), Direction.UP);
 		scene.idle(10);
 		scene.world.showSection(util.select.layersFrom(1), Direction.DOWN);
-	
-		
-		
-		
+
+
+
+
 	}
 
 }

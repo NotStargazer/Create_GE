@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "create:shaft"
+      "item": "create:shaft_tier_0"
     },
     "C": {
       "tag": "forge:ingots/brass"

@@ -78,15 +78,15 @@ public abstract class CreateRecipeProvider extends RecipeProvider {
 		}
 
 		static ItemLike shaft() {
-			return AllBlocks.SHAFT.get();
+			return AllBlocks.SHAFTS[0].get();
 		}
 
 		static ItemLike cog() {
-			return AllBlocks.COGWHEEL.get();
+			return AllBlocks.COGWHEELS[0].get();
 		}
 
 		static ItemLike largeCog() {
-			return AllBlocks.LARGE_COGWHEEL.get();
+			return AllBlocks.LARGE_COGWHEELS[0].get();
 		}
 
 		static ItemLike andesiteCasing() {

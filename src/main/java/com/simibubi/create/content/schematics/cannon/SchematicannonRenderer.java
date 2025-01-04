@@ -171,7 +171,7 @@ public class SchematicannonRenderer extends SafeBlockEntityRenderer<Schematicann
 				BlockState state;
 				if (launched instanceof ForBelt) {
 					// Render a shaft instead of the belt
-					state = AllBlocks.SHAFT.getDefaultState();
+					state = AllBlocks.SHAFTS[0].getDefaultState();
 				} else {
 					state = ((ForBlockState) launched).state;
 				}

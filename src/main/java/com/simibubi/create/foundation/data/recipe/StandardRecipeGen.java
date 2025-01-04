@@ -247,16 +247,16 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.viaShaped(b -> b.define('A', I.brassNugget())
 				.pattern("AAA")),
 
-		COGWHEEL = create(AllBlocks.COGWHEEL).unlockedBy(I::andesite)
+		COGWHEEL = create(AllBlocks.COGWHEELS[0]).unlockedBy(I::andesite)
 			.viaShapeless(b -> b.requires(I.shaft())
 				.requires(I.planks())),
 
-		LARGE_COGWHEEL = create(AllBlocks.LARGE_COGWHEEL).unlockedBy(I::andesite)
+		LARGE_COGWHEEL = create(AllBlocks.LARGE_COGWHEELS[0]).unlockedBy(I::andesite)
 			.viaShapeless(b -> b.requires(I.shaft())
 				.requires(I.planks())
 				.requires(I.planks())),
 
-		LARGE_COGWHEEL_FROM_LITTLE = create(AllBlocks.LARGE_COGWHEEL).withSuffix("_from_little")
+		LARGE_COGWHEEL_FROM_LITTLE = create(AllBlocks.LARGE_COGWHEELS[0]).withSuffix("_from_little")
 			.unlockedBy(I::andesite)
 			.viaShapeless(b -> b.requires(I.cog())
 				.requires(I.planks())),
@@ -275,7 +275,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("SCS")
 				.pattern("SSS")),
 
-		SHAFT = create(AllBlocks.SHAFT).returns(8)
+		SHAFT = create(AllBlocks.SHAFTS[0]).returns(8)
 			.unlockedBy(I::andesite)
 			.viaShaped(b -> b.define('A', I.andesite())
 				.pattern("A")
@@ -397,8 +397,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("DDD")
 				.pattern("DDD")),
 
-		ADJUSTABLE_PULLEY = create(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFT).unlockedBy(I::electronTube)
-			.viaShapeless(b -> b.requires(AllBlocks.ENCASED_CHAIN_DRIVE.get())
+		ADJUSTABLE_PULLEY = create(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[0]).unlockedBy(I::electronTube)
+			.viaShapeless(b -> b.requires(AllBlocks.ENCASED_CHAIN_DRIVES[0].get())
 				.requires(I.electronTube())),
 
 		CART_ASSEMBLER = create(AllBlocks.CART_ASSEMBLER).unlockedBy(I::andesite)
@@ -739,12 +739,12 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("C")
 				.pattern("I")),
 
-		CLUTCH = create(AllBlocks.CLUTCH).unlockedBy(I::andesiteCasing)
+		CLUTCH = create(AllBlocks.CLUTCHES[0]).unlockedBy(I::andesiteCasing)
 			.viaShapeless(b -> b.requires(I.andesiteCasing())
 				.requires(I.shaft())
 				.requires(I.redstone())),
 
-		GEARSHIFT = create(AllBlocks.GEARSHIFT).unlockedBy(I::andesiteCasing)
+		GEARSHIFT = create(AllBlocks.GEARSHIFTS[0]).unlockedBy(I::andesiteCasing)
 			.viaShapeless(b -> b.requires(I.andesiteCasing())
 				.requires(I.cog())
 				.requires(I.redstone())),
@@ -795,14 +795,14 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.unlockedBy(AllBlocks.CART_ASSEMBLER::get)
 			.viaShapeless(b -> b.requires(AllItems.FURNACE_MINECART_CONTRAPTION.get())),
 
-		GEARBOX = create(AllBlocks.GEARBOX).unlockedBy(I::cog)
+		GEARBOX = create(AllBlocks.GEARBOXES[0]).unlockedBy(I::cog)
 			.viaShaped(b -> b.define('C', I.cog())
 				.define('B', I.andesiteCasing())
 				.pattern(" C ")
 				.pattern("CBC")
 				.pattern(" C ")),
 
-		GEARBOX_CYCLE = conversionCycle(ImmutableList.of(AllBlocks.GEARBOX, AllItems.VERTICAL_GEARBOX)),
+		GEARBOX_CYCLE = conversionCycle(ImmutableList.of(AllBlocks.GEARBOXES[0], AllItems.VERTICAL_GEARBOXES[0])),
 
 		MYSTERIOUS_CUCKOO_CLOCK = create(AllBlocks.MYSTERIOUS_CUCKOO_CLOCK).unlockedBy(AllBlocks.CUCKOO_CLOCK::get)
 			.viaShaped(b -> b.define('C', Tags.Items.GUNPOWDER)
@@ -811,7 +811,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("CBC")
 				.pattern(" C ")),
 
-		ENCASED_CHAIN_DRIVE = create(AllBlocks.ENCASED_CHAIN_DRIVE).unlockedBy(I::andesiteCasing)
+		ENCASED_CHAIN_DRIVE = create(AllBlocks.ENCASED_CHAIN_DRIVES[0]).unlockedBy(I::andesiteCasing)
 			.viaShapeless(b -> b.requires(I.andesiteCasing())
 				.requires(I.ironNugget())
 				.requires(I.ironNugget())

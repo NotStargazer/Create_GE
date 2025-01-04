@@ -23,7 +23,7 @@ public class ShaftlessCogwheelInstance extends SingleRotatingInstance<KineticBlo
     protected Instancer<RotatingData> getModel() {
         Direction facing = blockState.getValue(MechanicalCrafterBlock.HORIZONTAL_FACING);
 
-		return getRotatingMaterial().getModel(AllPartialModels.SHAFTLESS_COGWHEEL, blockState, facing, rotateToFace(facing));
+		return getRotatingMaterial().getModel(AllPartialModels.SHAFTLESS_COGWHEELS[blockEntity.getTier()], blockState, facing, rotateToFace(facing));
     }
 
 	private Supplier<PoseStack> rotateToFace(Direction facing) {

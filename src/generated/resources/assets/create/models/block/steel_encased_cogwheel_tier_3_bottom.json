@@ -1,0 +1,10 @@
+{
+  "parent": "create:block/encased_cogwheel/block_bottom",
+  "textures": {
+    "1": "minecraft:block/stripped_spruce_log_top",
+    "4": "create:block/gearbox",
+    "casing": "create:block/steel_casing",
+    "particle": "create:block/steel_casing",
+    "side": "create:block/steel_encased_cogwheel_side"
+  }
+}

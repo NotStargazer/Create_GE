@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "create:cogwheel"
+      "item": "create:cogwheel_tier_0"
     },
     {
       "item": "create:fluid_pipe"

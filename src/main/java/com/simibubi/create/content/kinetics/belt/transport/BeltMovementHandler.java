@@ -95,7 +95,7 @@ public class BeltMovementHandler {
 
 		// Lock entities in place
 		boolean isPlayer = entityIn instanceof Player;
-		if (entityIn instanceof LivingEntity && !isPlayer) 
+		if (entityIn instanceof LivingEntity && !isPlayer)
 			((LivingEntity) entityIn).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 1, false, false));
 
 		final Direction beltFacing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -117,9 +117,9 @@ public class BeltMovementHandler {
 
 		BeltPart part = blockState.getValue(BeltBlock.PART);
 		float top = 13 / 16f;
-		boolean onSlope = notHorizontal && (part == BeltPart.MIDDLE || part == BeltPart.PULLEY
-			|| part == (slope == BeltSlope.UPWARD ? BeltPart.END : BeltPart.START) && entityIn.getY() - pos.getY() < top
-			|| part == (slope == BeltSlope.UPWARD ? BeltPart.START : BeltPart.END)
+		boolean onSlope = notHorizontal && (part == BeltPart.MIDDLE || BeltPart.anyPulley(part)
+			||  (slope == BeltSlope.UPWARD ? BeltPart.anyEnd(part) : BeltPart.anyStart(part)) && entityIn.getY() - pos.getY() < top
+			||  (slope == BeltSlope.UPWARD ? BeltPart.anyStart(part) : BeltPart.anyEnd(part))
 				&& entityIn.getY() - pos.getY() > top);
 
 		boolean movingDown = onSlope && slope == (movementFacing == beltFacing ? BeltSlope.DOWNWARD : BeltSlope.UPWARD);
@@ -142,9 +142,9 @@ public class BeltMovementHandler {
 			|| ((LivingEntity) entityIn).zza == 0 && ((LivingEntity) entityIn).xxa == 0)
 			movement = movement.add(centering);
 
-		float step = entityIn.maxUpStep();
-		if (!isPlayer) 
-			entityIn.setMaxUpStep(1);
+		float step = entityIn.maxUpStep;
+		if (!isPlayer)
+			entityIn.maxUpStep = 1;
 
 		// Entity Collisions
 		if (Math.abs(movementSpeed) < .5f) {
@@ -176,11 +176,11 @@ public class BeltMovementHandler {
 		} else {
 			entityIn.move(SELF, movement);
 		}
-		
+
 		entityIn.setOnGround(true);
 
 		if (!isPlayer)
-			entityIn.setMaxUpStep(step);
+			entityIn.maxUpStep = step;
 
 		boolean movedPastEndingSlope = onSlope && (AllBlocks.BELT.has(world.getBlockState(entityIn.blockPosition()))
 			|| AllBlocks.BELT.has(world.getBlockState(entityIn.blockPosition()
@@ -192,7 +192,7 @@ public class BeltMovementHandler {
 			entityIn.setDeltaMovement(movement);
 			entityIn.hurtMarked = true;
 		}
-		
+
 	}
 
 	public static boolean shouldIgnoreBlocking(Entity me, Entity other) {

@@ -165,14 +165,16 @@ public abstract class LaunchedItem {
 
 		@Override
 		void place(Level world) {
-			boolean isStart = state.getValue(BeltBlock.PART) == BeltPart.START;
+			BeltPart beltPart = state.getValue(BeltBlock.PART);
+			int tier = BeltPart.getTier(beltPart);
+			boolean isStart = BeltPart.anyStart(beltPart);
 			BlockPos offset = BeltBlock.nextSegmentPosition(state, BlockPos.ZERO, isStart);
 			int i = length - 1;
 			Axis axis = state.getValue(BeltBlock.SLOPE) == BeltSlope.SIDEWAYS ? Axis.Y
 				: state.getValue(BeltBlock.HORIZONTAL_FACING)
 					.getClockWise()
 					.getAxis();
-			world.setBlockAndUpdate(target, AllBlocks.SHAFT.getDefaultState()
+			world.setBlockAndUpdate(target, AllBlocks.SHAFTS[tier].getDefaultState()
 				.setValue(AbstractSimpleShaftBlock.AXIS, axis));
 			BeltConnectorItem.createBelts(world, target,
 				target.offset(offset.getX() * i, offset.getY() * i, offset.getZ() * i));

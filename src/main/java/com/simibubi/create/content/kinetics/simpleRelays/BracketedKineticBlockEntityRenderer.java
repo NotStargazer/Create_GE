@@ -9,6 +9,8 @@ import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
 
+import com.simibubi.create.ge.CreateGrandExpanse;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
@@ -30,7 +32,7 @@ public class BracketedKineticBlockEntityRenderer extends KineticBlockEntityRende
 		if (Backend.canUseInstancing(be.getLevel()))
 			return;
 
-		if (!AllBlocks.LARGE_COGWHEEL.has(be.getBlockState())) {
+		if (!CreateGrandExpanse.hasAnyOf(AllBlocks.LARGE_COGWHEELS, be.getBlockState())) {
 			super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
 			return;
 		}
@@ -41,12 +43,12 @@ public class BracketedKineticBlockEntityRenderer extends KineticBlockEntityRende
 		Axis axis = getRotationAxisOf(be);
 		Direction facing = Direction.fromAxisAndDirection(axis, AxisDirection.POSITIVE);
 		renderRotatingBuffer(be,
-			CachedBufferer.partialFacingVertical(AllPartialModels.SHAFTLESS_LARGE_COGWHEEL, be.getBlockState(), facing),
+			CachedBufferer.partialFacingVertical(AllPartialModels.SHAFTLESS_LARGE_COGWHEELS[0], be.getBlockState(), facing),
 			ms, buffer.getBuffer(RenderType.solid()), light);
 
 		float angle = getAngleForLargeCogShaft(be, axis);
 		SuperByteBuffer shaft =
-			CachedBufferer.partialFacingVertical(AllPartialModels.COGWHEEL_SHAFT, be.getBlockState(), facing);
+			CachedBufferer.partialFacingVertical(AllPartialModels.COGWHEEL_SHAFTS[be.getTier()], be.getBlockState(), facing);
 		kineticRotationTransform(shaft, be, axis, angle, light);
 		shaft.renderInto(ms, buffer.getBuffer(RenderType.solid()));
 

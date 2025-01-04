@@ -9,6 +9,8 @@ import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollVa
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
 
+import com.simibubi.create.infrastructure.config.AllConfigs;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,7 +31,7 @@ public class KineticScrollValueBehaviour extends ScrollValueBehaviour {
 			Components.literal("\u27f2")
 				.withStyle(ChatFormatting.BOLD));
 		ValueSettingsFormatter formatter = new ValueSettingsFormatter(this::formatSettings);
-		return new ValueSettingsBoard(label, 256, 32, rows, formatter);
+		return new ValueSettingsBoard(label, AllConfigs.server().kinetics.maxRotationSpeedT3.get(), 256, 32, rows, formatter);
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class KineticScrollValueBehaviour extends ScrollValueBehaviour {
 				.style(ChatFormatting.BOLD))
 			.component();
 	}
-	
+
 	@Override
 	public String getClipboardKey() {
 		return "Speed";

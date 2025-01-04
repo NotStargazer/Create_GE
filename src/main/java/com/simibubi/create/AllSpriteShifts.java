@@ -46,12 +46,17 @@ public class AllSpriteShifts {
 		CRAFTER_OTHERSIDE = horizontal("crafter_side"),
 		ANDESITE_ENCASED_COGWHEEL_SIDE = vertical("andesite_encased_cogwheel_side"),
 		ANDESITE_ENCASED_COGWHEEL_OTHERSIDE = horizontal("andesite_encased_cogwheel_side"),
+		COPPER_ENCASED_COGWHEEL_SIDE = vertical("copper_encased_cogwheel_side"),
+		COPPER_ENCASED_COGWHEEL_OTHERSIDE = horizontal("copper_encased_cogwheel_side"),
 		BRASS_ENCASED_COGWHEEL_SIDE = vertical("brass_encased_cogwheel_side"),
 		BRASS_ENCASED_COGWHEEL_OTHERSIDE = horizontal("brass_encased_cogwheel_side"),
+		STEEL_ENCASED_COGWHEEL_SIDE = vertical("steel_encased_cogwheel_side"),
+		STEEL_ENCASED_COGWHEEL_OTHERSIDE = horizontal("steel_encased_cogwheel_side"),
 		GIRDER_POLE = vertical("girder_pole_side");
 
-	public static final CTSpriteShiftEntry ANDESITE_CASING = omni("andesite_casing"),
-		BRASS_CASING = omni("brass_casing"), COPPER_CASING = omni("copper_casing"),
+	public static final CTSpriteShiftEntry
+		ANDESITE_CASING = omni("andesite_casing"), BRASS_CASING = omni("brass_casing"),
+		COPPER_CASING = omni("copper_casing"), STEEL_CASING = omni("steel_casing"),
 		SHADOW_STEEL_CASING = omni("shadow_steel_casing"), REFINED_RADIANCE_CASING = omni("refined_radiance_casing"),
 		RAILWAY_CASING = omni("railway_casing"), RAILWAY_CASING_SIDE = omni("railway_casing_side"),
 		CREATIVE_CASING = getCT(AllCTTypes.RECTANGLE, "creative_casing");

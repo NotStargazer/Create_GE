@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.AllSoundEvents;
@@ -20,7 +21,6 @@ import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,7 +54,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 	@Override
 	protected void init() {
-		int maxValue = board.maxValue();
+		int maxValue = board.width();
 		maxLabelWidth = 0;
 		int milestoneCount = maxValue / board.milestoneInterval() + 1;
 		int scale = maxValue > 128 ? 1 : 2;
@@ -109,12 +109,13 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		}
 		column -= 1;
 
-		return new ValueSettings(row,
-			milestonesOnly ? Math.min(column * board.milestoneInterval(), board.maxValue()) : column);
+		int outVal = Math.round(Math.min(milestonesOnly ? column * board.milestoneInterval() : column, board.width()));
+
+		return new ValueSettings(row, outVal);
 	}
 
 	public Vec2 getCoordinateOfValue(int row, int column) {
-		int scale = board.maxValue() > 128 ? 1 : 2;
+		int scale = board.width() > 128 ? 1 : 2;
 		float xOut =
 			guiLeft + ((Math.max(1, column) - 1) / board.milestoneInterval()) * milestoneSize + column * scale + 1.5f;
 		xOut += maxLabelWidth + 14 + 4;
@@ -129,11 +130,12 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 	}
 
 	@Override
-	protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWindow(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
 		int x = guiLeft;
 		int y = guiTop;
-		int milestoneCount = board.maxValue() / board.milestoneInterval() + 1;
-		int scale = board.maxValue() > 128 ? 1 : 2;
+		int milestoneCount = board.width() / board.milestoneInterval() + 1;
+		int blitOffset = getBlitOffset();
+		int scale = board.width() > 128 ? 1 : 2;
 
 		Component title = board.title();
 		Component tip = Lang.translateDirect("gui.value_settings.release_to_confirm", Components.keybind("key.use"));
@@ -141,7 +143,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 		int fattestLabel = Math.max(font.width(tip), font.width(title));
 		if (iconMode)
-			for (int i = 0; i <= board.maxValue(); i++)
+			for (int i = 0; i <= board.width(); i++)
 				fattestLabel = Math.max(fattestLabel, font.width(board.formatter()
 					.format(new ValueSettings(0, i))));
 
@@ -151,45 +153,44 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		int fadeInStart = (bgWidth - fadeInWidth) / 2 - fatTipOffset;
 		int additionalHeight = iconMode ? 46 : 33;
 
-		int zLevel = 0;
-		UIRenderHelper.drawStretched(graphics, x - 11 + fadeInStart, y - 17, fadeInWidth, windowHeight + additionalHeight,
-			zLevel, AllGuiTextures.VALUE_SETTINGS_OUTER_BG);
-		UIRenderHelper.drawStretched(graphics, x - 10 + fadeInStart, y - 18, fadeInWidth - 2, 1,
-			zLevel, AllGuiTextures.VALUE_SETTINGS_OUTER_BG);
-		UIRenderHelper.drawStretched(graphics, x - 10 + fadeInStart, y - 17 + windowHeight + additionalHeight,
-			zLevel, fadeInWidth - 2, 1, AllGuiTextures.VALUE_SETTINGS_OUTER_BG);
+		UIRenderHelper.drawStretched(ms, x - 11 + fadeInStart, y - 17, fadeInWidth, windowHeight + additionalHeight,
+			blitOffset, AllGuiTextures.VALUE_SETTINGS_OUTER_BG);
+		UIRenderHelper.drawStretched(ms, x - 10 + fadeInStart, y - 18, fadeInWidth - 2, 1, blitOffset,
+			AllGuiTextures.VALUE_SETTINGS_OUTER_BG);
+		UIRenderHelper.drawStretched(ms, x - 10 + fadeInStart, y - 17 + windowHeight + additionalHeight,
+			fadeInWidth - 2, 1, blitOffset, AllGuiTextures.VALUE_SETTINGS_OUTER_BG);
 
 		if (fadeInWidth > fattestLabel) {
 			int textX = x - 11 - fatTipOffset + bgWidth / 2;
-			graphics.drawString(font, title, textX - font.width(title) / 2, y - 14, 0xdddddd, false);
-			graphics.drawString(font, tip, textX - font.width(tip) / 2, y + windowHeight + additionalHeight - 27, 0xdddddd, false);
+			font.draw(ms, title, textX - font.width(title) / 2, y - 14, 0xdddddd);
+			font.draw(ms, tip, textX - font.width(tip) / 2, y + windowHeight + additionalHeight - 27, 0xdddddd);
 		}
 
-		renderBrassFrame(graphics, x + maxLabelWidth + 14, y - 3, valueBarWidth + 8, board.rows()
+		renderBrassFrame(ms, x + maxLabelWidth + 14, y - 3, valueBarWidth + 8, board.rows()
 			.size() * 11 + 5);
-		UIRenderHelper.drawStretched(graphics, x + maxLabelWidth + 17, y, valueBarWidth + 2, board.rows()
-			.size() * 11 - 1, zLevel, AllGuiTextures.VALUE_SETTINGS_BAR_BG);
+		UIRenderHelper.drawStretched(ms, x + maxLabelWidth + 17, y, valueBarWidth + 2, board.rows()
+			.size() * 11 - 1, blitOffset, AllGuiTextures.VALUE_SETTINGS_BAR_BG);
 
 		int originalY = y;
 		for (Component component : board.rows()) {
 			int valueBarX = x + maxLabelWidth + 14 + 4;
 
 			if (!iconMode) {
-				UIRenderHelper.drawCropped(graphics, x - 4, y, maxLabelWidth + 8, 11,
-					zLevel, AllGuiTextures.VALUE_SETTINGS_LABEL_BG);
+				UIRenderHelper.drawCropped(ms, x - 4, y, maxLabelWidth + 8, 11, blitOffset,
+					AllGuiTextures.VALUE_SETTINGS_LABEL_BG);
 				for (int w = 0; w < valueBarWidth; w += AllGuiTextures.VALUE_SETTINGS_BAR.width - 1)
-					UIRenderHelper.drawCropped(graphics, valueBarX + w, y + 1,
-						Math.min(AllGuiTextures.VALUE_SETTINGS_BAR.width - 1, valueBarWidth - w), 8,
-						zLevel, AllGuiTextures.VALUE_SETTINGS_BAR);
-				graphics.drawString(font, component, x, y + 1, 0x442000, false);
+					UIRenderHelper.drawCropped(ms, valueBarX + w, y + 1,
+						Math.min(AllGuiTextures.VALUE_SETTINGS_BAR.width - 1, valueBarWidth - w), 8, blitOffset,
+						AllGuiTextures.VALUE_SETTINGS_BAR);
+				font.draw(ms, component, x, y + 1, 0x442000);
 			}
 
 			int milestoneX = valueBarX;
 			for (int milestone = 0; milestone < milestoneCount; milestone++) {
 				if (iconMode)
-					AllGuiTextures.VALUE_SETTINGS_WIDE_MILESTONE.render(graphics, milestoneX, y + 1);
+					AllGuiTextures.VALUE_SETTINGS_WIDE_MILESTONE.render(ms, milestoneX, y + 1);
 				else
-					AllGuiTextures.VALUE_SETTINGS_MILESTONE.render(graphics, milestoneX, y + 1);
+					AllGuiTextures.VALUE_SETTINGS_MILESTONE.render(ms, milestoneX, y + 1);
 				milestoneX += milestoneSize + board.milestoneInterval() * scale;
 			}
 
@@ -197,18 +198,19 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		}
 
 		if (!iconMode)
-			renderBrassFrame(graphics, x - 7, originalY - 3, maxLabelWidth + 14, board.rows()
+			renderBrassFrame(ms, x - 7, originalY - 3, maxLabelWidth + 14, board.rows()
 				.size() * 11 + 5);
 
 		if (ticksOpen < 1)
 			return;
 
 		ValueSettings closest = getClosestCoordinate(mouseX, mouseY);
+		ValueSettings outValue = new ValueSettings(closest.row(), closest.value() * (int)((float) board.maxValue() / board.width()));
 
 		if (!closest.equals(lastHovered)) {
-			onHover.accept(closest);
+			onHover.accept(outValue);
 			if (soundCoolDown == 0) {
-				float pitch = (closest.value()) / (float) (board.maxValue());
+				float pitch = (outValue.value()) / (float) (board.maxValue());
 				pitch = Mth.lerp(pitch, 1.15f, 1.5f);
 				minecraft.getSoundManager()
 					.play(SimpleSoundInstance.forUI(AllSoundEvents.SCROLL_VALUE.getMainEvent(), pitch, 0.25F));
@@ -220,7 +222,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 		Vec2 coordinate = getCoordinateOfValue(closest.row(), closest.value());
 		Component cursorText = board.formatter()
-			.format(closest);
+			.format(outValue);
 
 		AllIcons cursorIcon = null;
 		if (board.formatter() instanceof ScrollOptionSettingsFormatter sosf)
@@ -231,47 +233,48 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 		int cursorY = ((int) (coordinate.y)) - 7;
 
 		if (cursorIcon != null) {
-			AllGuiTextures.VALUE_SETTINGS_CURSOR_ICON.render(graphics, cursorX - 2, cursorY - 3);
+			AllGuiTextures.VALUE_SETTINGS_CURSOR_ICON.render(ms, cursorX - 2, cursorY - 3);
 			RenderSystem.setShaderColor(0.265625f, 0.125f, 0, 1);
-			cursorIcon.render(graphics, cursorX + 1, cursorY - 1);
+			cursorIcon.render(ms, cursorX + 1, cursorY - 1);
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 			if (fadeInWidth > fattestLabel)
-				graphics.drawString(font, cursorText, x - 11 - fatTipOffset + (bgWidth - font.width(cursorText)) / 2,
-					originalY + windowHeight + additionalHeight - 40, 0xFBDC7D, false);
+				font.draw(ms, cursorText, x - 11 - fatTipOffset + (bgWidth - font.width(cursorText)) / 2,
+					originalY + windowHeight + additionalHeight - 40, 0xFBDC7D);
 			return;
 		}
 
-		AllGuiTextures.VALUE_SETTINGS_CURSOR_LEFT.render(graphics, cursorX - 3, cursorY);
-		UIRenderHelper.drawCropped(graphics, cursorX, cursorY, cursorWidth, 14,
-			zLevel, AllGuiTextures.VALUE_SETTINGS_CURSOR);
-		AllGuiTextures.VALUE_SETTINGS_CURSOR_RIGHT.render(graphics, cursorX + cursorWidth, cursorY);
+		AllGuiTextures.VALUE_SETTINGS_CURSOR_LEFT.render(ms, cursorX - 3, cursorY);
+		UIRenderHelper.drawCropped(ms, cursorX, cursorY, cursorWidth, 14, blitOffset,
+			AllGuiTextures.VALUE_SETTINGS_CURSOR);
+		AllGuiTextures.VALUE_SETTINGS_CURSOR_RIGHT.render(ms, cursorX + cursorWidth, cursorY);
 
-		graphics.drawString(font, cursorText, cursorX + 2, cursorY + 3, 0x442000, false);
+		font.draw(ms, cursorText, cursorX + 2, cursorY + 3, 0x442000);
 	}
 
-	protected void renderBrassFrame(GuiGraphics graphics, int x, int y, int w, int h) {
-		AllGuiTextures.BRASS_FRAME_TL.render(graphics, x, y);
-		AllGuiTextures.BRASS_FRAME_TR.render(graphics, x + w - 4, y);
-		AllGuiTextures.BRASS_FRAME_BL.render(graphics, x, y + h - 4);
-		AllGuiTextures.BRASS_FRAME_BR.render(graphics, x + w - 4, y + h - 4);
-		int zLevel = 0;
-		
+	protected void renderBrassFrame(PoseStack ms, int x, int y, int w, int h) {
+		AllGuiTextures.BRASS_FRAME_TL.render(ms, x, y);
+		AllGuiTextures.BRASS_FRAME_TR.render(ms, x + w - 4, y);
+		AllGuiTextures.BRASS_FRAME_BL.render(ms, x, y + h - 4);
+		AllGuiTextures.BRASS_FRAME_BR.render(ms, x + w - 4, y + h - 4);
+
 		if (h > 8) {
-			UIRenderHelper.drawStretched(graphics, x, y + 4, 3, h - 8, zLevel, AllGuiTextures.BRASS_FRAME_LEFT);
-			UIRenderHelper.drawStretched(graphics, x + w - 3, y + 4, 3, h - 8, zLevel, AllGuiTextures.BRASS_FRAME_RIGHT);
+			UIRenderHelper.drawStretched(ms, x, y + 4, 3, h - 8, getBlitOffset(), AllGuiTextures.BRASS_FRAME_LEFT);
+			UIRenderHelper.drawStretched(ms, x + w - 3, y + 4, 3, h - 8, getBlitOffset(),
+				AllGuiTextures.BRASS_FRAME_RIGHT);
 		}
 
 		if (w > 8) {
-			UIRenderHelper.drawCropped(graphics, x + 4, y, w - 8, 3, zLevel, AllGuiTextures.BRASS_FRAME_TOP);
-			UIRenderHelper.drawCropped(graphics, x + 4, y + h - 3, w - 8, 3, zLevel, AllGuiTextures.BRASS_FRAME_BOTTOM);
+			UIRenderHelper.drawCropped(ms, x + 4, y, w - 8, 3, getBlitOffset(), AllGuiTextures.BRASS_FRAME_TOP);
+			UIRenderHelper.drawCropped(ms, x + 4, y + h - 3, w - 8, 3, getBlitOffset(),
+				AllGuiTextures.BRASS_FRAME_BOTTOM);
 		}
 
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics) {
+	public void renderBackground(PoseStack p_238651_1_, int p_238651_2_) {
 		int a = ((int) (0x50 * Math.min(1, (ticksOpen + AnimationTickHolder.getPartialTicks()) / 20f))) << 24;
-		graphics.fillGradient(0, 0, this.width, this.height, 0x101010 | a, 0x101010 | a);
+		fillGradient(p_238651_1_, 0, 0, this.width, this.height, 0x101010 | a, 0x101010 | a);
 	}
 
 	@Override
@@ -286,7 +289,7 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 	public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
 		ValueSettings closest = getClosestCoordinate((int) pMouseX, (int) pMouseY);
 		int column = closest.value() + ((int) Math.signum(pDelta)) * (hasShiftDown() ? board.milestoneInterval() : 1);
-		column = Mth.clamp(column, 0, board.maxValue());
+		column = Mth.clamp(column, 0, board.width());
 		if (column == closest.value())
 			return false;
 		setCursor(getCoordinateOfValue(closest.row(), column));
@@ -307,8 +310,14 @@ public class ValueSettingsScreen extends AbstractSimiScreen {
 
 	@Override
 	public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-		if (minecraft.options.keyUse.matchesMouse(pButton)) {
-			saveAndClose(pMouseX, pMouseY);
+		if (pButton == 1) {
+			ValueSettings closest = getClosestCoordinate((int) pMouseX, (int) pMouseY);
+			ValueSettings outValue = new ValueSettings(closest.row(), closest.value() * (int)((float) board.maxValue() / board.width()));
+			// FIXME: value settings may be face-sensitive on future components
+			AllPackets.getChannel()
+				.sendToServer(new ValueSettingsPacket(pos, closest.row(), outValue.value(), null, Direction.UP,
+					AllKeys.ctrlDown()));
+			onClose();
 			return true;
 		}
 		return super.mouseReleased(pMouseX, pMouseY, pButton);

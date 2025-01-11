@@ -49,6 +49,11 @@ public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel
 		isLarge = large;
 	}
 
+	public CogWheelBlock(boolean large, Properties properties) {
+		super(0, properties);
+		isLarge = large;
+	}
+
 	@Override
 	public boolean isLargeCog() {
 		return isLarge;

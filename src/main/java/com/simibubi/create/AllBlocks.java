@@ -372,6 +372,26 @@ public class AllBlocks {
 
 	//So dependents don't crash
 	public static final BlockEntry<ShaftBlock> SHAFT;
+	public static final BlockEntry<CogWheelBlock> COGWHEEL;
+	public static final BlockEntry<CogWheelBlock> LARGE_COGWHEEL;
+	public static final BlockEntry<EncasedShaftBlock> ANDESITE_ENCASED_SHAFT;
+	public static final BlockEntry<EncasedShaftBlock> COPPER_ENCASED_SHAFT;
+	public static final BlockEntry<EncasedShaftBlock> BRASS_ENCASED_SHAFT;
+	public static final BlockEntry<EncasedShaftBlock> STEEL_ENCASED_SHAFT;
+	public static final BlockEntry<EncasedCogwheelBlock> ANDESITE_ENCASED_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> COPPER_ENCASED_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> BRASS_ENCASED_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> STEEL_ENCASED_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> ANDESITE_ENCASED_LARGE_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> COPPER_ENCASED_LARGE_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> BRASS_ENCASED_LARGE_COGWHEEL;
+	public static final BlockEntry<EncasedCogwheelBlock> STEEL_ENCASED_LARGE_COGWHEEL;
+	public static final BlockEntry<GearboxBlock> GEARBOX;
+	public static final BlockEntry<ClutchBlock> CLUTCH;
+	public static final BlockEntry<GearshiftBlock> GEARSHIFT;
+	public static final BlockEntry<ChainDriveBlock> ENCASED_CHAIN_DRIVE;
+	public static final BlockEntry<ChainGearshiftBlock> ADJUSTABLE_CHAIN_GEARSHIFT;
+	public static final BlockEntry<GirderEncasedShaftBlock> METAL_GIRDER_ENCASED_SHAFT;
 
 	static
 	{
@@ -613,6 +633,26 @@ public class AllBlocks {
 		}
 
 		SHAFT = SHAFTS[0];
+		COGWHEEL = COGWHEELS[0];
+		LARGE_COGWHEEL = LARGE_COGWHEELS[0];
+		ANDESITE_ENCASED_SHAFT = ANDESITE_ENCASED_SHAFTS[0];
+		COPPER_ENCASED_SHAFT = COPPER_ENCASED_SHAFTS[0];
+		BRASS_ENCASED_SHAFT = BRASS_ENCASED_SHAFTS[0];
+		STEEL_ENCASED_SHAFT = STEEL_ENCASED_SHAFTS[0];
+		ANDESITE_ENCASED_COGWHEEL = ANDESITE_ENCASED_COGWHEELS[0];
+		COPPER_ENCASED_COGWHEEL = COPPER_ENCASED_COGWHEELS[0];
+		BRASS_ENCASED_COGWHEEL = BRASS_ENCASED_COGWHEELS[0];
+		STEEL_ENCASED_COGWHEEL = STEEL_ENCASED_COGWHEELS[0];
+		ANDESITE_ENCASED_LARGE_COGWHEEL = ANDESITE_ENCASED_LARGE_COGWHEELS[0];
+		COPPER_ENCASED_LARGE_COGWHEEL = COPPER_ENCASED_LARGE_COGWHEELS[0];
+		BRASS_ENCASED_LARGE_COGWHEEL = BRASS_ENCASED_LARGE_COGWHEELS[0];
+		STEEL_ENCASED_LARGE_COGWHEEL = STEEL_ENCASED_LARGE_COGWHEELS[0];
+		GEARBOX = GEARBOXES[0];
+		CLUTCH = CLUTCHES[0];
+		GEARSHIFT = GEARSHIFTS[0];
+		ENCASED_CHAIN_DRIVE = ENCASED_CHAIN_DRIVES[0];
+		ADJUSTABLE_CHAIN_GEARSHIFT = ADJUSTABLE_CHAIN_GEARSHIFTS[0];
+		METAL_GIRDER_ENCASED_SHAFT = METAL_GIRDER_ENCASED_SHAFTS[0];
 	}
 
 	public static final BlockEntry<BeltBlock> BELT = REGISTRATE.block("belt", BeltBlock::new)

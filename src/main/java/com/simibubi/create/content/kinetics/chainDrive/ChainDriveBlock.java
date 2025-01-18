@@ -43,6 +43,11 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock
 		registerDefaultState(defaultBlockState().setValue(PART, Part.NONE));
 	}
 
+	public ChainDriveBlock(Properties properties) {
+		super(-1, properties);
+		registerDefaultState(defaultBlockState().setValue(PART, Part.NONE));
+	}
+
 	@Override
 	public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
 		return false;

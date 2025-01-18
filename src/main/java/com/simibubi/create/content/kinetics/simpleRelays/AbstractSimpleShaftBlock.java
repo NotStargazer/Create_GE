@@ -24,6 +24,9 @@ public abstract class AbstractSimpleShaftBlock extends AbstractShaftBlock implem
 	public AbstractSimpleShaftBlock(int tier, Properties properties) {
 		super(tier, properties);
 	}
+	public AbstractSimpleShaftBlock(Properties properties) {
+		super(-1, properties);
+	}
 
 	@Override
 	public InteractionResult onWrenched(BlockState state, UseOnContext context) {

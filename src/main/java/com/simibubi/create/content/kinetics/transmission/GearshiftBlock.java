@@ -28,6 +28,10 @@ public class GearshiftBlock extends AbstractEncasedShaftBlock implements IBE<Spl
 		super(tier, properties);
 		registerDefaultState(defaultBlockState().setValue(POWERED, false));
 	}
+	public GearshiftBlock(Properties properties) {
+		super(-1, properties);
+		registerDefaultState(defaultBlockState().setValue(POWERED, false));
+	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {

@@ -29,6 +29,9 @@ public class GearboxBlock extends RotatedPillarKineticBlock implements IBE<Gearb
 	public GearboxBlock(int tier, Properties properties) {
 		super(tier, properties);
 	}
+	public GearboxBlock(Properties properties) {
+		super(-1, properties);
+	}
 
 	@Override
 	public PushReaction getPistonPushReaction(BlockState state) {

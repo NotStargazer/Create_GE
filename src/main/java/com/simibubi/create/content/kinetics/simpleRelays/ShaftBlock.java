@@ -41,6 +41,9 @@ public class ShaftBlock extends AbstractSimpleShaftBlock implements EncasableBlo
 	public ShaftBlock(int tier, Properties properties) {
 		super(tier, properties);
 	}
+	public ShaftBlock(Properties properties) {
+		super(-1, properties);
+	}
 
 	public static boolean isShaft(BlockState state) {
 		return CreateGrandExpanse.hasAnyOf(AllBlocks.SHAFTS, state);

@@ -40,6 +40,11 @@ public class EncasedShaftBlock extends AbstractEncasedShaftBlock
 		this.casing = casing;
 	}
 
+	public EncasedShaftBlock(Properties properties, Supplier<Block> casing) {
+		super(-1, properties);
+		this.casing = casing;
+	}
+
 	@Override
 	public void fillItemCategory(CreativeModeTab pTab, NonNullList<ItemStack> pItems) {}
 

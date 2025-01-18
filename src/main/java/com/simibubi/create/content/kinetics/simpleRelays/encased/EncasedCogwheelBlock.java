@@ -62,6 +62,13 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock
 		registerDefaultState(defaultBlockState().setValue(TOP_SHAFT, false)
 			.setValue(BOTTOM_SHAFT, false));
 	}
+	public EncasedCogwheelBlock(Properties properties, boolean large, Supplier<Block> casing) {
+		super(-1, properties);
+		isLarge = large;
+		this.casing = casing;
+		registerDefaultState(defaultBlockState().setValue(TOP_SHAFT, false)
+			.setValue(BOTTOM_SHAFT, false));
+	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {

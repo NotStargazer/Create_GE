@@ -13,6 +13,9 @@ public class ClutchBlock extends GearshiftBlock {
 	public ClutchBlock(int tier, Properties properties) {
 		super(tier, properties);
 	}
+	public ClutchBlock(Properties properties) {
+		super(-1, properties);
+	}
 
 	@Override
 	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,

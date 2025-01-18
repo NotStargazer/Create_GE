@@ -17,6 +17,9 @@ public abstract class AbstractEncasedShaftBlock extends RotatedPillarKineticBloc
     public AbstractEncasedShaftBlock(int tier, Properties properties) {
         super(tier, properties);
     }
+    public AbstractEncasedShaftBlock(Properties properties) {
+        super(-1, properties);
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

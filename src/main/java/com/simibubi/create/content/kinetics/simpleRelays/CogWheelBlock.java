@@ -50,7 +50,7 @@ public class CogWheelBlock extends AbstractSimpleShaftBlock implements ICogWheel
 	}
 
 	public CogWheelBlock(boolean large, Properties properties) {
-		super(0, properties);
+		super(-1, properties);
 		isLarge = large;
 	}
 

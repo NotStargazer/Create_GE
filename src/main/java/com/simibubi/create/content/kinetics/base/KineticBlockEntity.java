@@ -97,7 +97,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 	{
 		if (blockTier == -1 || blockTier > 3)
 		{
-			return 0;
+			return 3;
 		}
 
 		return blockTier;

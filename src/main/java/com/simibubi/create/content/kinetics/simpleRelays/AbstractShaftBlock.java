@@ -26,6 +26,10 @@ public abstract class AbstractShaftBlock extends RotatedPillarKineticBlock
 		super(tier, properties);
 		registerDefaultState(super.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 	}
+	public AbstractShaftBlock(Properties properties) {
+		super(-1, properties);
+		registerDefaultState(super.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
+	}
 
 	@Override
 	public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {

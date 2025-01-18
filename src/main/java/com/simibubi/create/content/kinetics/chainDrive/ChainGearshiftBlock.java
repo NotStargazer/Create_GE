@@ -22,6 +22,11 @@ public class ChainGearshiftBlock extends ChainDriveBlock {
 		registerDefaultState(defaultBlockState().setValue(POWERED, false));
 	}
 
+	public ChainGearshiftBlock(Properties properties) {
+		super(-1, properties);
+		registerDefaultState(defaultBlockState().setValue(POWERED, false));
+	}
+
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder.add(POWERED));

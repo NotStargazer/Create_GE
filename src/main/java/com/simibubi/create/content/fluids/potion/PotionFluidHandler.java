@@ -22,9 +22,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -35,6 +37,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 public class PotionFluidHandler {
+
+	public static boolean isPotionItem(ItemStack stack) {
+		return stack.getItem() instanceof PotionItem && !(stack.getCraftingRemainingItem()
+			.getItem() instanceof BucketItem);
+	}
 
 	public static Pair<FluidStack, ItemStack> emptyPotion(ItemStack stack, boolean simulate) {
 		FluidStack fluid = getFluidFromPotionItem(stack);
@@ -62,8 +69,7 @@ public class PotionFluidHandler {
 	public static FluidStack getFluidFromPotion(Potion potion, BottleType bottleType, int amount) {
 		if (potion == Potions.WATER && bottleType == BottleType.REGULAR)
 			return new FluidStack(Fluids.WATER, amount);
-		FluidStack fluid = PotionFluid.of(amount, potion);
-		NBTHelper.writeEnum(fluid.getOrCreateTag(), "Bottle", bottleType);
+		FluidStack fluid = PotionFluid.of(amount, potion, bottleType);
 		return fluid;
 	}
 

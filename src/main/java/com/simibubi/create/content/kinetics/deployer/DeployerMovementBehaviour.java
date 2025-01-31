@@ -8,8 +8,6 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.core.virtual.VirtualRenderWorld;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
@@ -17,9 +15,8 @@ import com.simibubi.create.content.contraptions.OrientedContraptionEntity;
 import com.simibubi.create.content.contraptions.behaviour.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.contraptions.mounted.MountedContraption;
-import com.simibubi.create.content.contraptions.render.ActorInstance;
+import com.simibubi.create.content.contraptions.render.ActorVisual;
 import com.simibubi.create.content.contraptions.render.ContraptionMatrices;
-import com.simibubi.create.content.contraptions.render.ContraptionRenderDispatcher;
 import com.simibubi.create.content.kinetics.deployer.DeployerBlockEntity.Mode;
 import com.simibubi.create.content.logistics.filter.FilterItemStack;
 import com.simibubi.create.content.schematics.SchematicInstances;
@@ -33,7 +30,10 @@ import com.simibubi.create.foundation.item.ItemHelper.ExtractionCountMode;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
+import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 
+import dev.engine_room.flywheel.api.visualization.VisualizationContext;
+import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,6 +73,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 			return;
 
 		activate(context, pos, player, mode);
+		checkForTrackPlacementAdvancement(context, player);
 		tryDisposeOfExcess(context);
 		context.stall = player.blockBreakingProgress != null;
 	}
@@ -80,9 +81,13 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 	public void activate(MovementContext context, BlockPos pos, DeployerFakePlayer player, Mode mode) {
 		Level world = context.world;
 
+		player.placedTracks = false;
+
 		FilterItemStack filter = context.getFilterFromBE();
-		if (AllItems.SCHEMATIC.isIn(filter.item()))
+		if (AllItems.SCHEMATIC.isIn(filter.item())) {
 			activateAsSchematicPrinter(context, pos, player, world, filter.item());
+			return;
+		}
 
 		Vec3 facingVec = Vec3.atLowerCornerOf(context.state.getValue(DeployerBlock.FACING)
 			.getNormal());
@@ -101,13 +106,14 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 
 		player.setYRot(AbstractContraptionEntity.yawFromVector(facingVec));
 		player.setXRot(xRot);
-		player.placedTracks = false;
 
 		DeployerHandler.activate(player, vec, pos, facingVec, mode);
+	}
 
+	protected void checkForTrackPlacementAdvancement(MovementContext context, DeployerFakePlayer player) {
 		if ((context.contraption instanceof MountedContraption || context.contraption instanceof CarriageContraption)
 			&& player.placedTracks && context.blockEntityData != null && context.blockEntityData.contains("Owner"))
-			AllAdvancements.SELF_DEPLOYING.awardTo(world.getPlayerByUUID(context.blockEntityData.getUUID("Owner")));
+			AllAdvancements.SELF_DEPLOYING.awardTo(context.world.getPlayerByUUID(context.blockEntityData.getUUID("Owner")));
 	}
 
 	protected void activateAsSchematicPrinter(MovementContext context, BlockPos pos, DeployerFakePlayer player,
@@ -140,7 +146,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		if (!context.contraption.hasUniversalCreativeCrate) {
 			IItemHandler itemHandler = context.contraption.getSharedInventory();
 			for (ItemRequirement.StackRequirement required : requiredItems) {
-				ItemStack stack= ItemHelper
+				ItemStack stack = ItemHelper
 					.extract(itemHandler, required::matches, ExtractionCountMode.EXACTLY,
 						required.stack.getCount(), true);
 				if (stack.isEmpty())
@@ -154,8 +160,11 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		CompoundTag data = BlockHelper.prepareBlockEntityData(blockState, schematicWorld.getBlockEntity(pos));
 		BlockSnapshot blocksnapshot = BlockSnapshot.create(world.dimension(), world, pos);
 		BlockHelper.placeSchematicBlock(world, blockState, pos, contextStack, data);
+
 		if (ForgeEventFactory.onBlockPlace(player, blocksnapshot, Direction.UP))
 			blocksnapshot.restore(true, false);
+		else if (AllBlocks.TRACK.has(blockState))
+			player.placedTracks = true;
 	}
 
 	@Override
@@ -282,21 +291,21 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 	}
 
 	@Override
-	public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld,
-		ContraptionMatrices matrices, MultiBufferSource buffers) {
-		if (!ContraptionRenderDispatcher.canInstance())
-			DeployerRenderer.renderInContraption(context, renderWorld, matrices, buffers);
+	public boolean disableBlockEntityRendering() {
+		return true;
 	}
 
 	@Override
-	public boolean hasSpecialInstancedRendering() {
-		return true;
+	public void renderInContraption(MovementContext context, VirtualRenderWorld renderWorld,
+		ContraptionMatrices matrices, MultiBufferSource buffers) {
+		if (!VisualizationManager.supportsVisualization(context.world))
+			DeployerRenderer.renderInContraption(context, renderWorld, matrices, buffers);
 	}
 
 	@Nullable
 	@Override
-	public ActorInstance createInstance(MaterialManager materialManager, VirtualRenderWorld simulationWorld,
-		MovementContext context) {
-		return new DeployerActorInstance(materialManager, simulationWorld, context);
+	public ActorVisual createVisual(VisualizationContext visualizationContext, VirtualRenderWorld simulationWorld,
+		MovementContext movementContext) {
+		return new DeployerActorVisual(visualizationContext, simulationWorld, movementContext);
 	}
 }

@@ -54,6 +54,14 @@ public class FluidHelper {
 		return convertToStill(fluid) == Fluids.LAVA;
 	}
 
+	public static boolean isSame(FluidStack fluidStack, FluidStack fluidStack2) {
+		return fluidStack.getFluid() == fluidStack2.getFluid();
+	}
+
+	public static boolean isSame(FluidStack fluidStack, Fluid fluid) {
+		return fluidStack.getFluid() == fluid;
+	}
+
 	@SuppressWarnings("deprecation")
 	public static boolean isTag(Fluid fluid, TagKey<Fluid> tag) {
 		return fluid.is(tag);
@@ -139,6 +147,8 @@ public class FluidHelper {
 		Fluid fluid = ForgeRegistries.FLUIDS.getValue(id);
 		if (fluid == null)
 			throw new JsonSyntaxException("Unknown fluid '" + id + "'");
+		if (fluid == Fluids.EMPTY)
+			throw new JsonSyntaxException("Invalid empty fluid '" + id + "'");
 		int amount = GsonHelper.getAsInt(json, "amount");
 		FluidStack stack = new FluidStack(fluid, amount);
 

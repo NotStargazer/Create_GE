@@ -492,8 +492,8 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 		if (!(contraption instanceof CarriageContraption cc))
 			return sides;
 
-		sides.setFirst(cc.blazeBurnerConductors.getFirst());
-		sides.setSecond(cc.blazeBurnerConductors.getSecond());
+		sides.setFirst(cc.blockConductors.getFirst());
+		sides.setSecond(cc.blockConductors.getSecond());
 
 		for (Entity entity : getPassengers()) {
 			if (entity instanceof Player)
@@ -736,11 +736,12 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 		dimensional.updateRenderedCutoff();
 	}
 
+	// FIXME: entities should not reference their visual in any way
 	@OnlyIn(Dist.CLIENT)
-	private WeakReference<CarriageContraptionInstance> instanceHolder;
+	private WeakReference<CarriageContraptionVisual> instanceHolder;
 
 	@OnlyIn(Dist.CLIENT)
-	public void bindInstance(CarriageContraptionInstance instance) {
+	public void bindInstance(CarriageContraptionVisual instance) {
 		this.instanceHolder = new WeakReference<>(instance);
 		updateRenderedPortalCutoff();
 	}
@@ -780,7 +781,7 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 		// update hidden bogeys (if instanced)
 		if (instanceHolder == null)
 			return;
-		CarriageContraptionInstance instance = instanceHolder.get();
+		CarriageContraptionVisual instance = instanceHolder.get();
 		if (instance == null)
 			return;
 

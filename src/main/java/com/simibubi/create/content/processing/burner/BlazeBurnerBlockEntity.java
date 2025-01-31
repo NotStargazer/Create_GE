@@ -2,10 +2,10 @@ package com.simibubi.create.content.processing.burner;
 
 import java.util.List;
 
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
+import com.simibubi.create.content.processing.basin.BasinBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -14,6 +14,7 @@ import com.simibubi.create.foundation.utility.VecHelper;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat.Chaser;
 
+import dev.engine_room.flywheel.api.backend.BackendManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -75,7 +76,8 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 		super.tick();
 
 		if (level.isClientSide) {
-			tickAnimation();
+			if (shouldTickAnimation())
+				tickAnimation();
 			if (!isVirtual())
 				spawnParticles(getHeatLevelFromBlock(), 1);
 			return;
@@ -102,7 +104,13 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void tickAnimation() {
+	private boolean shouldTickAnimation() {
+		// Offload the animation tick to the visual when flywheel in enabled
+		return !BackendManager.isBackendOn();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	void tickAnimation() {
 		boolean active = getHeatLevelFromBlock().isAtLeast(HeatLevel.FADING) && isValidBlockAbove();
 
 		if (!active) {
@@ -269,7 +277,7 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 		if (isVirtual())
 			return false;
 		BlockState blockState = level.getBlockState(worldPosition.above());
-		return AllBlocks.BASIN.has(blockState) || blockState.getBlock() instanceof FluidTankBlock;
+		return BasinBlock.isBasin(level, worldPosition.above()) || blockState.getBlock() instanceof FluidTankBlock;
 	}
 
 	protected void playSound() {
@@ -305,14 +313,14 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 		Vec3 c = VecHelper.getCenterOf(worldPosition);
 		Vec3 v = c.add(VecHelper.offsetRandomly(Vec3.ZERO, r, .125f)
 			.multiply(1, 0, 1));
-		
+
 		if (r.nextInt(4) != 0)
 			return;
 
 		boolean empty = level.getBlockState(worldPosition.above())
 			.getCollisionShape(level, worldPosition.above())
 			.isEmpty();
-		
+
 		if (empty || r.nextInt(8) == 0)
 			level.addParticle(ParticleTypes.LARGE_SMOKE, v.x, v.y, v.z, 0, 0, 0);
 

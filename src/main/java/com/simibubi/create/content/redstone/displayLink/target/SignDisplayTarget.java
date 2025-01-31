@@ -26,7 +26,7 @@ public class SignDisplayTarget extends DisplayTarget {
 			if (i > 0 && isReserved(i + line, sign, context))
 				break;
 
-			signText.setMessage(i + line, text.get(i));
+			signText = signText.setMessage(i + line, text.get(i));
 			changed = true;
 		}
 
@@ -40,6 +40,11 @@ public class SignDisplayTarget extends DisplayTarget {
 	@Override
 	public DisplayTargetStats provideStats(DisplayLinkContext context) {
 		return new DisplayTargetStats(4, 15, this);
+	}
+	
+	@Override
+	public boolean requiresComponentSanitization() {
+		return true;
 	}
 
 }

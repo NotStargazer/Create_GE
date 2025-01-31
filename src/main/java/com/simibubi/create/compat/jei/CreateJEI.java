@@ -78,6 +78,7 @@ import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.registration.IExtraIngredientRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -90,6 +91,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -98,7 +100,9 @@ import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @JeiPlugin
 @SuppressWarnings("unused")
@@ -146,6 +150,7 @@ public class CreateJEI implements IModPlugin {
 
 		smoking = builder(SmokingRecipe.class)
 				.addTypedRecipes(() -> RecipeType.SMOKING)
+				.removeNonAutomation()
 				.catalystStack(ProcessingViaFanCategory.getFan("fan_smoking"))
 				.doubleItemIcon(AllItems.PROPELLER.get(), Items.CAMPFIRE)
 				.emptyBackground(178, 72)
@@ -155,6 +160,7 @@ public class CreateJEI implements IModPlugin {
 				.addTypedRecipesExcluding(() -> RecipeType.SMELTING, () -> RecipeType.BLASTING)
 				.addTypedRecipes(() -> RecipeType.BLASTING)
 				.removeRecipes(() -> RecipeType.SMOKING)
+				.removeNonAutomation()
 				.catalystStack(ProcessingViaFanCategory.getFan("fan_blasting"))
 				.doubleItemIcon(AllItems.PROPELLER.get(), Items.LAVA_BUCKET)
 				.emptyBackground(178, 72)
@@ -260,6 +266,7 @@ public class CreateJEI implements IModPlugin {
 				.addTypedRecipes(AllRecipeTypes.DEPLOYING)
 				.addTypedRecipes(AllRecipeTypes.SANDPAPER_POLISHING::getType, DeployerApplicationRecipe::convert)
 				.addTypedRecipes(AllRecipeTypes.ITEM_APPLICATION::getType, ManualApplicationRecipe::asDeploying)
+				.removeNonAutomation()
 				.catalyst(AllBlocks.DEPLOYER::get)
 				.catalyst(AllBlocks.DEPOT::get)
 				.catalyst(AllItems.BELT_CONNECTOR::get)
@@ -358,6 +365,22 @@ public class CreateJEI implements IModPlugin {
 		PotionFluid potionFluid = AllFluids.POTION.get();
 		registration.registerSubtypeInterpreter(ForgeTypes.FLUID_STACK, potionFluid.getSource(), interpreter);
 		registration.registerSubtypeInterpreter(ForgeTypes.FLUID_STACK, potionFluid.getFlowing(), interpreter);
+	}
+
+	@Override
+	public void registerExtraIngredients(IExtraIngredientRegistration registration) {
+		Collection<Potion> potions = ForgeRegistries.POTIONS.getValues();
+		Collection<FluidStack> potionFluids = new ArrayList<>(potions.size() * 3);
+		for (Potion potion : potions) {
+			// @goshante: Ingame potion fluids always have Bottle tag that specifies
+			// to what bottle type this potion belongs
+			// Potion fluid without this tag wouldn't be recognized by other mods
+			for (PotionFluid.BottleType bottleType : PotionFluid.BottleType.values()) {
+				FluidStack potionFluid = PotionFluid.of(1000, potion, bottleType);
+				potionFluids.add(potionFluid);
+			}
+		}
+		registration.addExtraIngredients(ForgeTypes.FLUID_STACK, potionFluids);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -465,6 +488,10 @@ public class CreateJEI implements IModPlugin {
 					return false;
 				});
 			});
+		}
+
+		public CategoryBuilder<T> removeNonAutomation() {
+			return addRecipeListConsumer(recipes -> recipes.removeIf(AllRecipeTypes.CAN_BE_AUTOMATED.negate()));
 		}
 
 		public CategoryBuilder<T> catalystStack(Supplier<ItemStack> supplier) {

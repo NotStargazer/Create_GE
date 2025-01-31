@@ -33,6 +33,8 @@ public class CClient extends ConfigBase {
 			Comments.ingameMenuConfigButtonOffsetX);
 	public final ConfigBool ignoreFabulousWarning = b(false, "ignoreFabulousWarning",
 		Comments.ignoreFabulousWarning);
+	public final ConfigBool rotateWhenSeated = b(true, "rotateWhenSeated",
+		Comments.rotatewhenSeated);
 
 	// custom fluid fog
 	public final ConfigGroup fluidFogSettings = group(1, "fluidFogSettings", Comments.fluidFogSettings);
@@ -86,6 +88,10 @@ public class CClient extends ConfigBase {
 	public final ConfigFloat mountedZoomMultiplier = f(3, 0, "mountedZoomMultiplier", Comments.mountedZoomMultiplier);
 	public final ConfigBool showTrackGraphOnF3 = b(false, "showTrackGraphOnF3", Comments.showTrackGraphOnF3);
 	public final ConfigBool showExtendedTrackGraphOnF3 = b(false, "showExtendedTrackGraphOnF3", Comments.showExtendedTrackGraphOnF3);
+	public final ConfigBool showTrainMapOverlay = b(true, "showTrainMapOverlay", Comments.showTrainMapOverlay);
+	public final ConfigBool trainMapOverlay = b(true, "showTrainMapOverlay", Comments.showTrainMapOverlay);
+	public final ConfigEnum<TrainMapTheme> trainMapColorTheme =
+		e(TrainMapTheme.RED, "trainMapColorTheme", Comments.trainMapColorTheme);
 
 	@Override
 	public String getName() {
@@ -94,6 +100,10 @@ public class CClient extends ConfigBase {
 
 	public enum PlacementIndicatorSetting {
 		TEXTURE, TRIANGLE, NONE
+	}
+	
+	public enum TrainMapTheme {
+		RED, GREY, WHITE
 	}
 
 	private static class Comments {
@@ -125,6 +135,7 @@ public class CClient extends ConfigBase {
 				"The sign (-/+) of this value determines what side of the row the button appears on (left/right)"
 		};
 		static String ignoreFabulousWarning = "Setting this to true will prevent Create from sending you a warning when playing with Fabulous graphics enabled";
+		static String rotatewhenSeated = "Disable to prevent being rotated while seated on a Moving Contraption";
 		static String overlay = "Settings for the Goggle Overlay";
 		static String overlayOffset = "Offset the overlay from goggle- and hover- information by this many pixels on the respective axis; Use /create overlay";
 		static String overlayCustomColor = "Enable this to use your custom colors for the Goggle- and Hover- Overlay";
@@ -154,6 +165,8 @@ public class CClient extends ConfigBase {
 		static String ambientVolumeCap = "Maximum volume modifier of Ambient noise";
 
 		static String trains = "Railway related settings";
+		static String showTrainMapOverlay = "Display Track Networks and Trains on supported map mods";
+		static String trainMapColorTheme = "Track Network Color on maps";
 		static String mountedZoomMultiplier = "How far away the Camera should zoom when seated on a train";
 		static String showTrackGraphOnF3 = "Display nodes and edges of a Railway Network while f3 debug mode is active";
 		static String showExtendedTrackGraphOnF3 = "Additionally display materials of a Rail Network while f3 debug mode is active";

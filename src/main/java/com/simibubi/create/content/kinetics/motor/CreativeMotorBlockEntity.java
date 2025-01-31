@@ -2,7 +2,6 @@ package com.simibubi.create.content.kinetics.motor;
 
 import java.util.List;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
@@ -13,8 +12,7 @@ import com.simibubi.create.foundation.utility.AngleHelper;
 import com.simibubi.create.foundation.utility.Lang;
 import com.simibubi.create.foundation.utility.VecHelper;
 
-import com.simibubi.create.infrastructure.config.AllConfigs;
-
+import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -25,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 public class CreativeMotorBlockEntity extends GeneratingKineticBlockEntity {
 
 	public static final int DEFAULT_SPEED = 16;
+	public static final int MAX_SPEED = 256;
 
 	protected ScrollValueBehaviour generatedSpeed;
 
@@ -35,7 +34,7 @@ public class CreativeMotorBlockEntity extends GeneratingKineticBlockEntity {
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		super.addBehaviours(behaviours);
-		int max = AllConfigs.server().kinetics.maxRotationSpeedT3.get();
+		int max = MAX_SPEED;
 		generatedSpeed = new KineticScrollValueBehaviour(Lang.translateDirect("kinetics.creative_motor.rotation_speed"),
 			this, new MotorValueBox());
 		generatedSpeed.between(-max, max);
@@ -80,8 +79,8 @@ public class CreativeMotorBlockEntity extends GeneratingKineticBlockEntity {
 				return;
 			if (getSide() != Direction.UP)
 				return;
-			TransformStack.cast(ms)
-				.rotateZ(-AngleHelper.horizontalAngle(facing) + 180);
+			TransformStack.of(ms)
+				.rotateZDegrees(-AngleHelper.horizontalAngle(facing) + 180);
 		}
 
 		@Override

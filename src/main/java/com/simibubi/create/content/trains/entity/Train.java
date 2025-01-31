@@ -95,6 +95,7 @@ public class Train {
 	public Navigation navigation;
 	public ScheduleRuntime runtime;
 	public TrainIconType icon;
+	public int mapColorIndex;
 	public Component name;
 	public TrainStatus status;
 
@@ -619,7 +620,7 @@ public class Train {
 	public Pair<Train, Vec3> findCollidingTrain(Level level, Vec3 start, Vec3 end, ResourceKey<Level> dimension) {
 		Vec3 diff = end.subtract(start);
 		double maxDistanceSqr = Math.pow(AllConfigs.server().trains.maxAssemblyLength.get(), 2.0);
-		
+
 		Trains: for (Train train : Create.RAILWAYS.sided(level).trains.values()) {
 			if (train == this)
 				continue;
@@ -932,6 +933,8 @@ public class Train {
 
 	@Nullable
 	public LivingEntity getOwner(Level level) {
+		if (level.getServer() == null)
+			return null;
 		try {
 			UUID uuid = owner;
 			return uuid == null ? null
@@ -962,6 +965,9 @@ public class Train {
 		TrackNode node1 = trailingPoint.node1;
 		TrackNode node2 = trailingPoint.node2;
 		TrackEdge edge = trailingPoint.edge;
+
+		if (edge == null) return;
+
 		double position = trailingPoint.position;
 		EdgeData signalData = edge.getEdgeData();
 
@@ -1127,6 +1133,7 @@ public class Train {
 		tag.putInt("Fuel", fuelTicks);
 		tag.putDouble("TargetSpeed", targetSpeed);
 		tag.putString("IconType", icon.id.toString());
+		tag.putInt("MapColorIndex", mapColorIndex);
 		tag.putString("Name", Component.Serializer.toJson(name));
 		if (currentStation != null)
 			tag.putUUID("Station", currentStation);
@@ -1179,6 +1186,7 @@ public class Train {
 			train.speedBeforeStall = tag.getDouble("SpeedBeforeStall");
 		train.targetSpeed = tag.getDouble("TargetSpeed");
 		train.icon = TrainIconType.byId(new ResourceLocation(tag.getString("IconType")));
+		train.mapColorIndex = tag.getInt("MapColorIndex");
 		train.name = Component.Serializer.fromJson(tag.getString("Name"));
 		train.currentStation = tag.contains("Station") ? tag.getUUID("Station") : null;
 		train.currentlyBackwards = tag.getBoolean("Backwards");
@@ -1219,20 +1227,19 @@ public class Train {
 	public void determineHonk(Level level) {
 		if (lowHonk != null)
 			return;
-		for (int index = 0; index < carriages.size(); index++) {
-			Carriage carriage = carriages.get(index);
-			DimensionalCarriageEntity dimensional = carriage.getDimensionalIfPresent(level.dimension());
-			if (dimensional == null)
-				return;
-			CarriageContraptionEntity entity = dimensional.entity.get();
-			if (entity == null || !(entity.getContraption()instanceof CarriageContraption otherCC))
-				break;
-			Pair<Boolean, Integer> first = otherCC.soundQueue.getFirstWhistle(entity);
-			if (first != null) {
-				lowHonk = first.getFirst();
-				honkPitch = first.getSecond();
-			}
-		}
+        for (Carriage carriage : carriages) {
+            DimensionalCarriageEntity dimensional = carriage.getDimensionalIfPresent(level.dimension());
+            if (dimensional == null)
+                return;
+            CarriageContraptionEntity entity = dimensional.entity.get();
+            if (entity == null || !(entity.getContraption() instanceof CarriageContraption otherCC))
+                break;
+            Pair<Boolean, Integer> first = otherCC.soundQueue.getFirstWhistle(entity);
+            if (first != null) {
+                lowHonk = first.getFirst();
+                honkPitch = first.getSecond();
+            }
+        }
 	}
 
 	public float distanceToLocationSqr(Level level, Vec3 location) {

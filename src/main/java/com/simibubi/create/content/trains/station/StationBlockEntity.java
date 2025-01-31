@@ -13,8 +13,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
-import com.simibubi.create.content.trains.graph.DiscoveredPath;
-
 import org.jetbrains.annotations.NotNull;
 
 import com.simibubi.create.AllBlocks;
@@ -38,6 +36,7 @@ import com.simibubi.create.content.trains.entity.CarriageContraption;
 import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.entity.TrainPacket;
 import com.simibubi.create.content.trains.entity.TravellingPoint;
+import com.simibubi.create.content.trains.graph.DiscoveredPath;
 import com.simibubi.create.content.trains.graph.EdgePointType;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackGraph;
@@ -288,7 +287,7 @@ public class StationBlockEntity extends SmartBlockEntity implements ITransformab
 		BlockPos up = BlockPos.containing(track.getUpNormal(level, pos, state));
 		BlockPos down = BlockPos.containing(track.getUpNormal(level, pos, state).scale(-1));
 		int bogeyOffset = pos.distManhattan(edgePoint.getGlobalPosition()) - 1;
-		
+
 		if (!isValidBogeyOffset(bogeyOffset)) {
 			for (boolean upsideDown : Iterate.falseAndTrue) {
 				for (int i = -1; i <= 1; i++) {
@@ -363,6 +362,10 @@ public class StationBlockEntity extends SmartBlockEntity implements ITransformab
 		tryDisassembleTrain(sender);
 		if (!tryEnterAssemblyMode())
 			return false;
+
+		//Check the station wasn't destroyed
+		if (!(level.getBlockState(worldPosition).getBlock() instanceof StationBlock))
+			return true;
 
 		BlockState newState = getBlockState().setValue(StationBlock.ASSEMBLING, true);
 		level.setBlock(getBlockPos(), newState, 3);
@@ -462,6 +465,18 @@ public class StationBlockEntity extends SmartBlockEntity implements ITransformab
 		ItemEntity itemEntity = new ItemEntity(getLevel(), v.x, v.y, v.z, schedule);
 		itemEntity.setDeltaMovement(Vec3.ZERO);
 		getLevel().addFreshEntity(itemEntity);
+	}
+	
+	public void updateMapColor(int color) {
+		GlobalStation station = getStation();
+		if (station == null)
+			return;
+
+		Train train = station.getPresentTrain();
+		if (train == null)
+			return;
+
+		train.mapColorIndex = color;
 	}
 
 	private boolean updateStationState(Consumer<GlobalStation> updateState) {
@@ -619,13 +634,13 @@ public class StationBlockEntity extends SmartBlockEntity implements ITransformab
 		BlockPos bogeyOffset = BlockPos.containing(track.getUpNormal(level, trackPosition, trackState));
 
 		TrackNodeLocation location = null;
-		Vec3 centre = Vec3.atBottomCenterOf(trackPosition)
+		Vec3 center = Vec3.atBottomCenterOf(trackPosition)
 			.add(0, track.getElevationAtCenter(level, trackPosition, trackState), 0);
 		Collection<DiscoveredLocation> ends = track.getConnected(level, trackPosition, trackState, true, null);
 		Vec3 targetOffset = Vec3.atLowerCornerOf(assemblyDirection.getNormal());
 		for (DiscoveredLocation end : ends)
 			if (Mth.equal(0, targetOffset.distanceToSqr(end.getLocation()
-				.subtract(centre)
+				.subtract(center)
 				.normalize())))
 				location = end;
 		if (location == null)

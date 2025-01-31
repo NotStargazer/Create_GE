@@ -102,7 +102,7 @@ public abstract class CapManipulationBehaviourBase<T, S extends CapManipulationB
 			amount = filter.getAmount();
 		return amount;
 	}
-	
+
 	public ExtractionCountMode getModeFromFilter() {
 		ExtractionCountMode mode = ExtractionCountMode.UPTO;
 		FilteringBehaviour filter = blockEntity.getBehaviour(FilteringBehaviour.TYPE);
@@ -127,8 +127,6 @@ public abstract class CapManipulationBehaviourBase<T, S extends CapManipulationB
 		Capability<T> capability = capability();
 		targetCapability =
 			bypassSided ? invBE.getCapability(capability) : invBE.getCapability(capability, targetBlockFace.getFace());
-		if (targetCapability.isPresent())
-			targetCapability.addListener(this::onHandlerInvalidated);
 	}
 
 	@FunctionalInterface

@@ -59,6 +59,8 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 
+import org.jetbrains.annotations.NotNull;
+
 @SuppressWarnings("unused")
 public class StandardRecipeGen extends CreateRecipeProvider {
 
@@ -83,10 +85,10 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("CCC")),
 
 		COPPER_NUGGET = create(AllItems.COPPER_NUGGET).returns(9)
-			.unlockedBy(() -> Items.COPPER_INGOT)
+			.unlockedByTag(I::copper)
 			.viaShapeless(b -> b.requires(I.copper())),
 
-		COPPER_INGOT = create(() -> Items.COPPER_INGOT).unlockedBy(AllItems.COPPER_NUGGET::get)
+		COPPER_INGOT = create(() -> Items.COPPER_INGOT).unlockedByTag(I::copperNugget)
 			.viaShaped(b -> b.define('C', I.copperNugget())
 				.pattern("CCC")
 				.pattern("CCC")
@@ -94,11 +96,11 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 		ANDESITE_ALLOY_FROM_BLOCK = create(AllItems.ANDESITE_ALLOY).withSuffix("_from_block")
 			.returns(9)
-			.unlockedBy(I::andesite)
+			.unlockedBy(I::andesiteAlloy)
 			.viaShapeless(b -> b.requires(AllBlocks.ANDESITE_ALLOY_BLOCK.get())),
 
-		ANDESITE_ALLOY_BLOCK = create(AllBlocks.ANDESITE_ALLOY_BLOCK).unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('C', I.andesite())
+		ANDESITE_ALLOY_BLOCK = create(AllBlocks.ANDESITE_ALLOY_BLOCK).unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('C', I.andesiteAlloy())
 				.pattern("CCC")
 				.pattern("CCC")
 				.pattern("CCC")),
@@ -173,8 +175,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 		TOOLBOX_DYEING = createSpecial(AllRecipeTypes.TOOLBOX_DYEING::getSerializer, "crafting", "toolbox_dyeing"),
 
-		MINECART_COUPLING = create(AllItems.MINECART_COUPLING).unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('E', I.andesite())
+		MINECART_COUPLING = create(AllItems.MINECART_COUPLING).unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('E', I.andesiteAlloy())
 				.define('O', I.ironSheet())
 				.pattern("  E")
 				.pattern(" O ")
@@ -199,19 +201,19 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 	private Marker KINETICS = enterFolder("kinetics");
 
-	GeneratedRecipe BASIN = create(AllBlocks.BASIN).unlockedBy(I::andesite)
-		.viaShaped(b -> b.define('A', I.andesite())
+	GeneratedRecipe BASIN = create(AllBlocks.BASIN).unlockedBy(I::andesiteAlloy)
+		.viaShaped(b -> b.define('A', I.andesiteAlloy())
 			.pattern("A A")
 			.pattern("AAA")),
 
-		GOGGLES = create(AllItems.GOGGLES).unlockedBy(I::andesite)
+		GOGGLES = create(AllItems.GOGGLES).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('G', Tags.Items.GLASS)
 				.define('P', I.goldSheet())
 				.define('S', Tags.Items.STRING)
 				.pattern(" S ")
 				.pattern("GPG")),
 
-		WRENCH = create(AllItems.WRENCH).unlockedBy(I::andesite)
+		WRENCH = create(AllItems.WRENCH).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('G', I.goldSheet())
 				.define('P', I.cog())
 				.define('S', Tags.Items.RODS_WOODEN)
@@ -219,7 +221,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("GP")
 				.pattern(" S")),
 
-		FILTER = create(AllItems.FILTER).unlockedBy(I::andesite)
+		FILTER = create(AllItems.FILTER).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', ItemTags.WOOL)
 				.define('A', Tags.Items.NUGGETS_IRON)
 				.pattern("ASA")),
@@ -230,7 +232,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("ASA")),
 
 		BRASS_HAND = create(AllItems.BRASS_HAND).unlockedByTag(I::brass)
-			.viaShaped(b -> b.define('A', I.andesite())
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.define('B', I.brassSheet())
 				.pattern(" A ")
 				.pattern("BBB")
@@ -247,21 +249,21 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.viaShaped(b -> b.define('A', I.brassNugget())
 				.pattern("AAA")),
 
-		COGWHEEL = create(AllBlocks.COGWHEELS[0]).unlockedBy(I::andesite)
+		COGWHEEL = create(AllBlocks.COGWHEEL).unlockedBy(I::andesiteAlloy)
 			.viaShapeless(b -> b.requires(I.shaft())
 				.requires(I.planks())),
 
-		LARGE_COGWHEEL = create(AllBlocks.LARGE_COGWHEELS[0]).unlockedBy(I::andesite)
+		LARGE_COGWHEEL = create(AllBlocks.LARGE_COGWHEEL).unlockedBy(I::andesiteAlloy)
 			.viaShapeless(b -> b.requires(I.shaft())
 				.requires(I.planks())
 				.requires(I.planks())),
 
-		LARGE_COGWHEEL_FROM_LITTLE = create(AllBlocks.LARGE_COGWHEELS[0]).withSuffix("_from_little")
-			.unlockedBy(I::andesite)
+		LARGE_COGWHEEL_FROM_LITTLE = create(AllBlocks.LARGE_COGWHEEL).withSuffix("_from_little")
+			.unlockedBy(I::andesiteAlloy)
 			.viaShapeless(b -> b.requires(I.cog())
 				.requires(I.planks())),
 
-		WATER_WHEEL = create(AllBlocks.WATER_WHEEL).unlockedBy(I::andesite)
+		WATER_WHEEL = create(AllBlocks.WATER_WHEEL).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', I.planks())
 				.define('C', I.shaft())
 				.pattern("SSS")
@@ -275,9 +277,9 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("SCS")
 				.pattern("SSS")),
 
-		SHAFT = create(AllBlocks.SHAFTS[0]).returns(8)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('A', I.andesite())
+		SHAFT = create(AllBlocks.SHAFT).returns(8)
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.pattern("A")
 				.pattern("A")),
 
@@ -305,21 +307,21 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("C")
 				.pattern("I")),
 
-		STICKY_MECHANICAL_PISTON = create(AllBlocks.STICKY_MECHANICAL_PISTON).unlockedBy(I::andesite)
+		STICKY_MECHANICAL_PISTON = create(AllBlocks.STICKY_MECHANICAL_PISTON).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', Tags.Items.SLIMEBALLS)
 				.define('P', AllBlocks.MECHANICAL_PISTON.get())
 				.pattern("S")
 				.pattern("P")),
 
-		TURNTABLE = create(AllBlocks.TURNTABLE).unlockedBy(I::andesite)
+		TURNTABLE = create(AllBlocks.TURNTABLE).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', I.shaft())
 				.define('P', ItemTags.WOODEN_SLABS)
 				.pattern("P")
 				.pattern("S")),
 
 		PISTON_EXTENSION_POLE = create(AllBlocks.PISTON_EXTENSION_POLE).returns(8)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('A', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.define('P', ItemTags.PLANKS)
 				.pattern("P")
 				.pattern("A")
@@ -334,8 +336,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("I")),
 
 		GANTRY_SHAFT = create(AllBlocks.GANTRY_SHAFT).returns(8)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('A', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.define('R', I.redstone())
 				.pattern("A")
 				.pattern("R")
@@ -381,7 +383,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.viaShapeless(b -> b.requires(ItemTags.WOODEN_TRAPDOORS)
 				.requires(AllPaletteBlocks.FRAMED_GLASS.get())),
 
-		ANALOG_LEVER = create(AllBlocks.ANALOG_LEVER).unlockedBy(I::andesite)
+		ANALOG_LEVER = create(AllBlocks.ANALOG_LEVER).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', I.andesiteCasing())
 				.define('P', Tags.Items.RODS_WOODEN)
 				.pattern("P")
@@ -392,19 +394,19 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.requires(I.redstone())
 				.requires(I.zinc())),
 
-		BELT_CONNECTOR = create(AllItems.BELT_CONNECTOR).unlockedBy(I::andesite)
+		BELT_CONNECTOR = create(AllItems.BELT_CONNECTOR).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('D', Items.DRIED_KELP)
 				.pattern("DDD")
 				.pattern("DDD")),
 
-		ADJUSTABLE_PULLEY = create(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFTS[0]).unlockedBy(I::electronTube)
-			.viaShapeless(b -> b.requires(AllBlocks.ENCASED_CHAIN_DRIVES[0].get())
+		ADJUSTABLE_PULLEY = create(AllBlocks.ADJUSTABLE_CHAIN_GEARSHIFT).unlockedBy(I::electronTube)
+			.viaShapeless(b -> b.requires(AllBlocks.ENCASED_CHAIN_DRIVE.get())
 				.requires(I.electronTube())),
 
-		CART_ASSEMBLER = create(AllBlocks.CART_ASSEMBLER).unlockedBy(I::andesite)
+		CART_ASSEMBLER = create(AllBlocks.CART_ASSEMBLER).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('L', ItemTags.LOGS)
 				.define('R', I.redstone())
-				.define('C', I.andesite())
+				.define('C', I.andesiteAlloy())
 				.pattern("CRC")
 				.pattern("L L")),
 
@@ -417,24 +419,24 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("ASA")
 				.pattern("AEA")),
 
-		HAND_CRANK = create(AllBlocks.HAND_CRANK).unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('A', I.andesite())
+		HAND_CRANK = create(AllBlocks.HAND_CRANK).unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.define('C', ItemTags.PLANKS)
 				.pattern("CCC")
 				.pattern("  A")),
 
-		COPPER_VALVE_HANDLE = create(AllBlocks.COPPER_VALVE_HANDLE).unlockedBy(I::copper)
-			.viaShaped(b -> b.define('S', I.andesite())
+		COPPER_VALVE_HANDLE = create(AllBlocks.COPPER_VALVE_HANDLE).unlockedByTag(I::copper)
+			.viaShaped(b -> b.define('S', I.andesiteAlloy())
 				.define('C', I.copperSheet())
 				.pattern("CCC")
 				.pattern(" S ")),
 
 		COPPER_VALVE_HANDLE_FROM_OTHER_HANDLES = create(AllBlocks.COPPER_VALVE_HANDLE).withSuffix("_from_others")
-			.unlockedBy(I::copper)
+			.unlockedByTag(I::copper)
 			.viaShapeless(b -> b.requires(AllItemTags.VALVE_HANDLES.tag)),
 
 		NOZZLE = create(AllBlocks.NOZZLE).unlockedBy(AllBlocks.ENCASED_FAN::get)
-			.viaShaped(b -> b.define('S', I.andesite())
+			.viaShaped(b -> b.define('S', I.andesiteAlloy())
 				.define('C', ItemTags.WOOL)
 				.pattern(" S ")
 				.pattern(" C ")
@@ -442,14 +444,14 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 		PROPELLER = create(AllItems.PROPELLER).unlockedByTag(I::ironSheet)
 			.viaShaped(b -> b.define('S', I.ironSheet())
-				.define('C', I.andesite())
+				.define('C', I.andesiteAlloy())
 				.pattern(" S ")
 				.pattern("SCS")
 				.pattern(" S ")),
 
 		WHISK = create(AllItems.WHISK).unlockedByTag(I::ironSheet)
 			.viaShaped(b -> b.define('S', I.ironSheet())
-				.define('C', I.andesite())
+				.define('C', I.andesiteAlloy())
 				.pattern(" C ")
 				.pattern("SCS")
 				.pattern("SSS")),
@@ -462,7 +464,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("A")
 				.pattern("P")),
 
-		CUCKOO_CLOCK = create(AllBlocks.CUCKOO_CLOCK).unlockedBy(I::andesite)
+		CUCKOO_CLOCK = create(AllBlocks.CUCKOO_CLOCK).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', ItemTags.PLANKS)
 				.define('A', Items.CLOCK)
 				.define('C', I.andesiteCasing())
@@ -479,7 +481,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("C")
 				.pattern("R")),
 
-		WINDMILL_BEARING = create(AllBlocks.WINDMILL_BEARING).unlockedBy(I::andesite)
+		WINDMILL_BEARING = create(AllBlocks.WINDMILL_BEARING).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('B', ItemTags.WOODEN_SLABS)
 				.define('C', I.stone())
 				.define('I', I.shaft())
@@ -504,68 +506,68 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("S")),
 
 		WOODEN_BRACKET = create(AllBlocks.WOODEN_BRACKET).returns(4)
-			.unlockedBy(I::andesite)
+			.unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', Tags.Items.RODS_WOODEN)
 				.define('P', I.planks())
-				.define('C', I.andesite())
+				.define('C', I.andesiteAlloy())
 				.pattern("SSS")
 				.pattern("PCP")),
 
 		METAL_BRACKET = create(AllBlocks.METAL_BRACKET).returns(4)
-			.unlockedBy(I::andesite)
+			.unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('S', Tags.Items.NUGGETS_IRON)
 				.define('P', I.iron())
-				.define('C', I.andesite())
+				.define('C', I.andesiteAlloy())
 				.pattern("SSS")
 				.pattern("PCP")),
 
 		METAL_GIRDER = create(AllBlocks.METAL_GIRDER).returns(8)
-			.unlockedBy(I::andesite)
+			.unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('P', I.ironSheet())
-				.define('C', I.andesite())
+				.define('C', I.andesiteAlloy())
 				.pattern("PPP")
 				.pattern("CCC")),
 
 		DISPLAY_BOARD = create(AllBlocks.DISPLAY_BOARD).returns(2)
-			.unlockedBy(I::andesite)
+			.unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('A', I.electronTube())
-				.define('P', I.andesite())
+				.define('P', I.andesiteAlloy())
 				.pattern("PAP")),
 
-		STEAM_WHISTLE = create(AllBlocks.STEAM_WHISTLE).unlockedBy(I::copper)
+		STEAM_WHISTLE = create(AllBlocks.STEAM_WHISTLE).unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('P', I.goldSheet())
 				.define('C', I.copper())
 				.pattern("P")
 				.pattern("C")),
 
-		STEAM_ENGINE = create(AllBlocks.STEAM_ENGINE).unlockedBy(I::copper)
+		STEAM_ENGINE = create(AllBlocks.STEAM_ENGINE).unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('P', I.goldSheet())
 				.define('C', I.copperBlock())
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.pattern("P")
 				.pattern("A")
 				.pattern("C")),
 
 		FLUID_PIPE = create(AllBlocks.FLUID_PIPE).returns(4)
-			.unlockedBy(I::copper)
+			.unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('S', I.copperSheet())
 				.define('C', I.copper())
 				.pattern("SCS")),
 
 		FLUID_PIPE_2 = create(AllBlocks.FLUID_PIPE).withSuffix("_vertical")
 			.returns(4)
-			.unlockedBy(I::copper)
+			.unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('S', I.copperSheet())
 				.define('C', I.copper())
 				.pattern("S")
 				.pattern("C")
 				.pattern("S")),
 
-		MECHANICAL_PUMP = create(AllBlocks.MECHANICAL_PUMP).unlockedBy(I::copper)
+		MECHANICAL_PUMP = create(AllBlocks.MECHANICAL_PUMP).unlockedByTag(I::copper)
 			.viaShapeless(b -> b.requires(I.cog())
 				.requires(AllBlocks.FLUID_PIPE.get())),
 
-		SMART_FLUID_PIPE = create(AllBlocks.SMART_FLUID_PIPE).unlockedBy(I::copper)
+		SMART_FLUID_PIPE = create(AllBlocks.SMART_FLUID_PIPE).unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('P', I.electronTube())
 				.define('S', AllBlocks.FLUID_PIPE.get())
 				.define('I', I.brassSheet())
@@ -573,7 +575,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("S")
 				.pattern("P")),
 
-		FLUID_VALVE = create(AllBlocks.FLUID_VALVE).unlockedBy(I::copper)
+		FLUID_VALVE = create(AllBlocks.FLUID_VALVE).unlockedByTag(I::copper)
 			.viaShapeless(b -> b.requires(I.ironSheet())
 				.requires(AllBlocks.FLUID_PIPE.get())),
 
@@ -654,7 +656,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.viaShapeless(b -> b.requires(I.copperCasing())
 				.requires(AllBlocks.CHUTE.get())),
 
-		ROPE_PULLEY = create(AllBlocks.ROPE_PULLEY).unlockedBy(I::andesite)
+		ROPE_PULLEY = create(AllBlocks.ROPE_PULLEY).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('B', I.andesiteCasing())
 				.define('C', ItemTags.WOOL)
 				.define('I', I.ironSheet())
@@ -662,7 +664,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("C")
 				.pattern("I")),
 
-		HOSE_PULLEY = create(AllBlocks.HOSE_PULLEY).unlockedBy(I::copper)
+		HOSE_PULLEY = create(AllBlocks.HOSE_PULLEY).unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('B', I.copperCasing())
 				.define('C', Items.DRIED_KELP_BLOCK)
 				.define('I', I.copperSheet())
@@ -678,7 +680,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("C")
 				.pattern("I")),
 
-		CONTRAPTION_CONTROLS = create(AllBlocks.CONTRAPTION_CONTROLS).unlockedBy(I::andesite)
+		CONTRAPTION_CONTROLS = create(AllBlocks.CONTRAPTION_CONTROLS).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('B', ItemTags.BUTTONS)
 				.define('C', I.andesiteCasing())
 				.define('I', I.electronTube())
@@ -693,7 +695,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("IAI")
 				.pattern(" I ")),
 
-		CHUTE = create(AllBlocks.CHUTE).unlockedBy(I::andesite)
+		CHUTE = create(AllBlocks.CHUTE).unlockedBy(I::andesiteAlloy)
 			.returns(4)
 			.viaShaped(b -> b.define('A', I.ironSheet())
 				.define('I', I.iron())
@@ -710,7 +712,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("P")),
 
 		DEPOT = create(AllBlocks.DEPOT).unlockedBy(I::andesiteCasing)
-			.viaShapeless(b -> b.requires(I.andesite())
+			.viaShapeless(b -> b.requires(I.andesiteAlloy())
 				.requires(I.andesiteCasing())),
 
 		WEIGHTED_EJECTOR = create(AllBlocks.WEIGHTED_EJECTOR).unlockedBy(I::andesiteCasing)
@@ -725,13 +727,13 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.returns(1)
 			.viaShaped(b -> b.define('L', I.brassSheet())
 				.define('I', I.precisionMechanism())
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.define('C', I.brassCasing())
 				.pattern("LLA")
 				.pattern("L  ")
 				.pattern("IC ")),
 
-		MECHANICAL_MIXER = create(AllBlocks.MECHANICAL_MIXER).unlockedBy(I::andesite)
+		MECHANICAL_MIXER = create(AllBlocks.MECHANICAL_MIXER).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('C', I.andesiteCasing())
 				.define('S', I.cog())
 				.define('I', AllItems.WHISK.get())
@@ -739,37 +741,37 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("C")
 				.pattern("I")),
 
-		CLUTCH = create(AllBlocks.CLUTCHES[0]).unlockedBy(I::andesiteCasing)
+		CLUTCH = create(AllBlocks.CLUTCH).unlockedBy(I::andesiteCasing)
 			.viaShapeless(b -> b.requires(I.andesiteCasing())
 				.requires(I.shaft())
 				.requires(I.redstone())),
 
-		GEARSHIFT = create(AllBlocks.GEARSHIFTS[0]).unlockedBy(I::andesiteCasing)
+		GEARSHIFT = create(AllBlocks.GEARSHIFT).unlockedBy(I::andesiteCasing)
 			.viaShapeless(b -> b.requires(I.andesiteCasing())
 				.requires(I.cog())
 				.requires(I.redstone())),
 
 		SAIL = create(AllBlocks.SAIL).returns(2)
-			.unlockedBy(I::andesite)
+			.unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('W', ItemTags.WOOL)
 				.define('S', Tags.Items.RODS_WOODEN)
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.pattern("WS")
 				.pattern("SA")),
 
 		SAIL_CYCLE = conversionCycle(ImmutableList.of(AllBlocks.SAIL_FRAME, AllBlocks.SAIL)),
 
 		RADIAL_CHASIS = create(AllBlocks.RADIAL_CHASSIS).returns(3)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('P', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('P', I.andesiteAlloy())
 				.define('L', ItemTags.LOGS)
 				.pattern(" L ")
 				.pattern("PLP")
 				.pattern(" L ")),
 
 		LINEAR_CHASIS = create(AllBlocks.LINEAR_CHASSIS).returns(3)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('P', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('P', I.andesiteAlloy())
 				.define('L', ItemTags.LOGS)
 				.pattern(" P ")
 				.pattern("LLL")
@@ -779,8 +781,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			conversionCycle(ImmutableList.of(AllBlocks.LINEAR_CHASSIS, AllBlocks.SECONDARY_LINEAR_CHASSIS)),
 
 		STICKER = create(AllBlocks.STICKER).returns(1)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('I', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('I', I.andesiteAlloy())
 				.define('C', Tags.Items.COBBLESTONE)
 				.define('R', I.redstone())
 				.define('S', Tags.Items.SLIMEBALLS)
@@ -795,14 +797,21 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.unlockedBy(AllBlocks.CART_ASSEMBLER::get)
 			.viaShapeless(b -> b.requires(AllItems.FURNACE_MINECART_CONTRAPTION.get())),
 
-		GEARBOX = create(AllBlocks.GEARBOXES[0]).unlockedBy(I::cog)
+		GEARBOX = create(AllBlocks.GEARBOX).unlockedBy(I::cog)
 			.viaShaped(b -> b.define('C', I.cog())
 				.define('B', I.andesiteCasing())
 				.pattern(" C ")
 				.pattern("CBC")
 				.pattern(" C ")),
 
-		GEARBOX_CYCLE = conversionCycle(ImmutableList.of(AllBlocks.GEARBOXES[0], AllItems.VERTICAL_GEARBOXES[0])),
+		VERTICAL_GEARBOX = create(AllItems.VERTICAL_GEARBOX).unlockedBy(I::cog)
+			.viaShaped(b -> b.define('C', I.cog())
+					.define('B', I.andesiteCasing())
+					.pattern("C C")
+					.pattern(" B ")
+					.pattern("C C")),
+
+		GEARBOX_CYCLE = conversionCycle(ImmutableList.of(AllBlocks.GEARBOX, AllItems.VERTICAL_GEARBOX)),
 
 		MYSTERIOUS_CUCKOO_CLOCK = create(AllBlocks.MYSTERIOUS_CUCKOO_CLOCK).unlockedBy(AllBlocks.CUCKOO_CLOCK::get)
 			.viaShaped(b -> b.define('C', Tags.Items.GUNPOWDER)
@@ -811,7 +820,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("CBC")
 				.pattern(" C ")),
 
-		ENCASED_CHAIN_DRIVE = create(AllBlocks.ENCASED_CHAIN_DRIVES[0]).unlockedBy(I::andesiteCasing)
+		ENCASED_CHAIN_DRIVE = create(AllBlocks.ENCASED_CHAIN_DRIVE).unlockedBy(I::andesiteCasing)
 			.viaShapeless(b -> b.requires(I.andesiteCasing())
 				.requires(I.ironNugget())
 				.requires(I.ironNugget())
@@ -824,7 +833,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("CAC")
 				.pattern("CCC")),
 
-		SPEEDOMETER = create(AllBlocks.SPEEDOMETER).unlockedBy(I::andesite)
+		SPEEDOMETER = create(AllBlocks.SPEEDOMETER).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('C', Items.COMPASS)
 				.define('A', I.andesiteCasing())
 				.pattern("C")
@@ -853,7 +862,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 		MECHANICAL_HARVESTER = create(AllBlocks.MECHANICAL_HARVESTER).unlockedBy(I::andesiteCasing)
 			.viaShaped(b -> b.define('C', I.andesiteCasing())
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.define('I', I.ironSheet())
 				.pattern("AIA")
 				.pattern("AIA")
@@ -861,7 +870,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 		MECHANICAL_PLOUGH = create(AllBlocks.MECHANICAL_PLOUGH).unlockedBy(I::andesiteCasing)
 			.viaShaped(b -> b.define('C', I.andesiteCasing())
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.define('I', I.ironSheet())
 				.pattern("III")
 				.pattern("AAA")
@@ -877,7 +886,7 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 
 		MECHANICAL_DRILL = create(AllBlocks.MECHANICAL_DRILL).unlockedBy(I::andesiteCasing)
 			.viaShaped(b -> b.define('C', I.andesiteCasing())
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.define('I', I.iron())
 				.pattern(" A ")
 				.pattern("AIA")
@@ -904,8 +913,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.pattern("CCC")),
 
 		ANDESITE_FUNNEL = create(AllBlocks.ANDESITE_FUNNEL).returns(2)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('A', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.define('K', Items.DRIED_KELP)
 				.pattern("A")
 				.pattern("K")),
@@ -920,8 +929,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				.pattern("K")),
 
 		ANDESITE_TUNNEL = create(AllBlocks.ANDESITE_TUNNEL).returns(2)
-			.unlockedBy(I::andesite)
-			.viaShaped(b -> b.define('A', I.andesite())
+			.unlockedBy(I::andesiteAlloy)
+			.viaShaped(b -> b.define('A', I.andesiteAlloy())
 				.define('K', Items.DRIED_KELP)
 				.pattern("AA")
 				.pattern("KK")),
@@ -1055,10 +1064,10 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 		.viaShapeless(b -> b.requires(I.wheatFlour())
 			.requires(Items.WATER_BUCKET)),
 
-		CLIPBOARD = create(AllBlocks.CLIPBOARD).unlockedBy(I::andesite)
+		CLIPBOARD = create(AllBlocks.CLIPBOARD).unlockedBy(I::andesiteAlloy)
 			.viaShaped(b -> b.define('G', I.planks())
 				.define('P', Items.PAPER)
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.pattern("A")
 				.pattern("P")
 				.pattern("G")),
@@ -1066,23 +1075,23 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 		CLIPBOARD_CLEAR = clearData(AllBlocks.CLIPBOARD), SCHEDULE_CLEAR = clearData(AllItems.SCHEDULE),
 		FILTER_CLEAR = clearData(AllItems.FILTER), ATTRIBUTE_FILTER_CLEAR = clearData(AllItems.ATTRIBUTE_FILTER),
 
-		DIVING_HELMET = create(AllItems.COPPER_DIVING_HELMET).unlockedBy(I::copper)
+		DIVING_HELMET = create(AllItems.COPPER_DIVING_HELMET).unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('G', Tags.Items.GLASS)
 				.define('P', I.copper())
 				.pattern("PPP")
 				.pattern("PGP")),
 
-		COPPER_BACKTANK = create(AllItems.COPPER_BACKTANK).unlockedBy(I::copper)
+		COPPER_BACKTANK = create(AllItems.COPPER_BACKTANK).unlockedByTag(I::copper)
 			.viaShaped(b -> b.define('G', I.shaft())
-				.define('A', I.andesite())
+				.define('A', I.andesiteAlloy())
 				.define('B', I.copperBlock())
 				.define('P', I.copper())
 				.pattern("AGA")
 				.pattern("PBP")
 				.pattern(" P ")),
 
-		DIVING_BOOTS = create(AllItems.COPPER_DIVING_BOOTS).unlockedBy(I::copper)
-			.viaShaped(b -> b.define('G', I.andesite())
+		DIVING_BOOTS = create(AllItems.COPPER_DIVING_BOOTS).unlockedByTag(I::copper)
+			.viaShaped(b -> b.define('G', I.andesiteAlloy())
 				.define('P', I.copper())
 				.pattern("P P")
 				.pattern("P P")
@@ -1166,9 +1175,15 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 			.inBlastFurnace(),
 
 		RAW_ZINC_ORE = create(AllItems.ZINC_INGOT::get).withSuffix("_from_raw_ore")
-			.viaCooking(AllItems.RAW_ZINC::get)
+			.viaCookingTag(() -> AllTags.forgeItemTag("raw_materials/zinc"))
 			.rewardXP(.7f)
-			.inBlastFurnace()
+			.inBlastFurnace(),
+
+		UA_TREE_FERTILIZER = create(AllItems.TREE_FERTILIZER::get).returns(2)
+			.unlockedBy(() -> Items.BONE_MEAL)
+			.whenModLoaded(Mods.UA.getId())
+			.viaShapeless(b -> b.requires(Ingredient.of(ItemTags.SMALL_FLOWERS), 2)
+					.requires(AllItemTags.UA_CORAL.tag).requires(Items.BONE_MEAL))
 
 	;
 
@@ -1212,8 +1227,8 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 	}
 
 	GeneratedRecipe blastModdedCrushedMetal(ItemEntry<? extends Item> ingredient, CompatMetals metal) {
-		String metalName = metal.getName();
 		for (Mods mod : metal.getMods()) {
+			String metalName = metal.getName(mod);
 			ResourceLocation ingot = mod.ingotOf(metalName);
 			String modId = mod.getId();
 			create(ingot).withSuffix("_compat_" + modId)
@@ -1363,7 +1378,12 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 				ShapelessRecipeBuilder b = builder.apply(ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result.get(), amount));
 				if (unlockedBy != null)
 					b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
-				b.save(consumer, createLocation("crafting"));
+
+				b.save(result -> {
+					consumer.accept(
+							!recipeConditions.isEmpty() ? new ConditionSupportingShapelessRecipeResult(result, recipeConditions)
+									: result);
+				}, createLocation("crafting"));
 			});
 		}
 
@@ -1466,10 +1486,10 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 					SimpleCookingRecipeBuilder b = builder.apply(SimpleCookingRecipeBuilder.generic(ingredient.get(),
 						RecipeCategory.MISC, isOtherMod ? Items.DIRT : result.get(), exp,
 						(int) (cookingTime * cookingTimeModifier), serializer));
-					
+
 					if (unlockedBy != null)
 						b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
-					
+
 					b.save(result -> {
 						consumer.accept(
 							isOtherMod ? new ModdedCookingRecipeResult(result, compatDatagenOutput, recipeConditions)
@@ -1490,19 +1510,39 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 		super(p_i48262_1_);
 	}
 
-	private static class ModdedCookingRecipeResult implements FinishedRecipe {
+	private record ModdedCookingRecipeResult(FinishedRecipe wrapped, ResourceLocation outputOverride, List<ICondition> conditions) implements FinishedRecipe {
+			@Override
+			public ResourceLocation getId() {
+				return wrapped.getId();
+			}
 
-		private FinishedRecipe wrapped;
-		private ResourceLocation outputOverride;
-		private List<ICondition> conditions;
+			@Override
+			public RecipeSerializer<?> getType() {
+				return wrapped.getType();
+			}
 
-		public ModdedCookingRecipeResult(FinishedRecipe wrapped, ResourceLocation outputOverride,
-			List<ICondition> conditions) {
-			this.wrapped = wrapped;
-			this.outputOverride = outputOverride;
-			this.conditions = conditions;
+			@Override
+			public JsonObject serializeAdvancement() {
+				return wrapped.serializeAdvancement();
+			}
+
+			@Override
+			public ResourceLocation getAdvancementId() {
+				return wrapped.getAdvancementId();
+			}
+
+			@Override
+			public void serializeRecipeData(JsonObject object) {
+				wrapped.serializeRecipeData(object);
+				object.addProperty("result", outputOverride.toString());
+
+				JsonArray conds = new JsonArray();
+				conditions.forEach(c -> conds.add(CraftingHelper.serialize(c)));
+				object.add("conditions", conds);
+			}
 		}
 
+	private record ConditionSupportingShapelessRecipeResult(FinishedRecipe wrapped, List<ICondition> conditions) implements FinishedRecipe {
 		@Override
 		public ResourceLocation getId() {
 			return wrapped.getId();
@@ -1524,15 +1564,12 @@ public class StandardRecipeGen extends CreateRecipeProvider {
 		}
 
 		@Override
-		public void serializeRecipeData(JsonObject object) {
-			wrapped.serializeRecipeData(object);
-			object.addProperty("result", outputOverride.toString());
+		public void serializeRecipeData(@NotNull JsonObject pJson) {
+			wrapped.serializeRecipeData(pJson);
 
 			JsonArray conds = new JsonArray();
 			conditions.forEach(c -> conds.add(CraftingHelper.serialize(c)));
-			object.add("conditions", conds);
+			pJson.add("conditions", conds);
 		}
-
 	}
-
 }

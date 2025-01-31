@@ -124,7 +124,7 @@ public abstract class FluidIngredient implements Predicate<FluidStack> {
 
 	public static FluidIngredient deserialize(@Nullable JsonElement je) {
 		if (!isFluidIngredient(je))
-			throw new JsonSyntaxException("Invalid fluid ingredient: " + Objects.toString(je));
+			throw new JsonSyntaxException("Invalid fluid ingredient: " + je);
 
 		JsonObject json = je.getAsJsonObject();
 		FluidIngredient ingredient = json.has("fluidTag") ? new FluidTagIngredient() : new FluidStackIngredient();
@@ -152,8 +152,7 @@ public abstract class FluidIngredient implements Predicate<FluidStack> {
 
 		@Override
 		protected boolean testInternal(FluidStack t) {
-			if (!t.getFluid()
-				.isSame(fluid))
+			if (!FluidHelper.isSame(t, fluid))
 				return false;
 			if (tagToMatch.isEmpty())
 				return true;
@@ -201,17 +200,14 @@ public abstract class FluidIngredient implements Predicate<FluidStack> {
 
 		protected TagKey<Fluid> tag;
 
-		@SuppressWarnings("deprecation")
 		@Override
 		protected boolean testInternal(FluidStack t) {
-			if (tag == null) {
-				for (FluidStack accepted : getMatchingFluidStacks())
-					if (accepted.getFluid()
-						.isSame(t.getFluid()))
-						return true;
-				return false;
-			}
-			return t.getFluid().is(tag);
+			if (tag != null)
+				return FluidHelper.isTag(t, tag);
+			for (FluidStack accepted : getMatchingFluidStacks())
+				if (FluidHelper.isSame(accepted, t))
+					return true;
+			return false;
 		}
 
 		@Override

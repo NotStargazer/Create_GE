@@ -53,17 +53,39 @@ public class MixingRecipeGen extends ProcessingRecipeGen {
 
 		ANDESITE_ALLOY = create("andesite_alloy", b -> b.require(Blocks.ANDESITE)
 			.require(I.ironNugget())
-			.output(I.andesite(), 1)),
+			.output(I.andesiteAlloy(), 1)),
 
 		ANDESITE_ALLOY_FROM_ZINC = create("andesite_alloy_from_zinc", b -> b.require(Blocks.ANDESITE)
 			.require(I.zincNugget())
-			.output(I.andesite(), 1)),
+			.output(I.andesiteAlloy(), 1)),
 
 		MUD = create("mud_by_mixing", b -> b.require(BlockTagIngredient.create(BlockTags.CONVERTABLE_TO_MUD))
 			.require(Fluids.WATER, 250)
-			.output(Blocks.MUD, 1))
+			.output(Blocks.MUD, 1)),
+
+		// AE2
+
+		AE2_FLUIX = create(Mods.AE2.recipeId("fluix_crystal"), b -> b.require(Tags.Items.DUSTS_REDSTONE)
+				.require(Fluids.WATER, 250)
+				.require(Mods.AE2, "charged_certus_quartz_crystal")
+				.require(Tags.Items.GEMS_QUARTZ)
+				.output(1f, Mods.AE2, "fluix_crystal", 2)
+				.whenModLoaded(Mods.AE2.getId())),
+
+		// Regions Unexplored
+
+		RU_PEAT_MUD = moddedMud(Mods.RU, "peat"),
+		RU_SILT_MUD = moddedMud(Mods.RU, "silt")
 
 	;
+
+	public GeneratedRecipe moddedMud(Mods mod, String name) {
+		String mud = name + "_mud";
+		return create(mod.recipeId(mud), b -> b.require(Fluids.WATER, 250)
+				.require(mod, name + "_dirt")
+				.output(mod, mud)
+				.whenModLoaded(mod.getId()));
+	}
 
 	public MixingRecipeGen(PackOutput output) {
 		super(output);

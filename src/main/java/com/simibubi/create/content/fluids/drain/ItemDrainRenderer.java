@@ -2,7 +2,6 @@ package com.simibubi.create.content.fluids.drain;
 
 import java.util.Random;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.simibubi.create.content.fluids.transfer.GenericItemEmptying;
@@ -14,10 +13,12 @@ import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRende
 import com.simibubi.create.foundation.fluid.FluidRenderer;
 import com.simibubi.create.foundation.utility.VecHelper;
 
+import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -47,7 +48,7 @@ public class ItemDrainRenderer extends SmartBlockEntityRenderer<ItemDrainBlockEn
 		if (transported == null)
 			return;
 
-		TransformStack msr = TransformStack.cast(ms);
+		var msr = TransformStack.of(ms);
 		Vec3 itemPosition = VecHelper.getCenterOf(be.getBlockPos());
 
 		Direction insertedFrom = transported.insertedFrom;
@@ -77,8 +78,8 @@ public class ItemDrainRenderer extends SmartBlockEntityRenderer<ItemDrainBlockEn
 			.getItemRenderer();
 		int count = (int) (Mth.log2((int) (itemStack.getCount()))) / 2;
 		boolean renderUpright = BeltHelper.isItemUpright(itemStack);
-		boolean blockItem = itemRenderer.getModel(itemStack, null, null, 0)
-			.isGui3d();
+		BakedModel bakedModel = itemRenderer.getModel(itemStack, null, null, 0);
+		boolean blockItem = bakedModel.isGui3d();
 
 		if (renderUpright)
 			ms.translate(0, 3 / 32d, 0);
@@ -87,9 +88,9 @@ public class ItemDrainRenderer extends SmartBlockEntityRenderer<ItemDrainBlockEn
 			.getStep();
 		float verticalAngle = positive * offset * 360;
 		if (insertedFrom.getAxis() != Direction.Axis.X)
-			msr.rotateX(verticalAngle);
+			msr.rotateXDegrees(verticalAngle);
 		if (insertedFrom.getAxis() != Direction.Axis.Z)
-			msr.rotateZ(-verticalAngle);
+			msr.rotateZDegrees(-verticalAngle);
 
 		if (renderUpright) {
 			Entity renderViewEntity = Minecraft.getInstance().cameraEntity;
@@ -115,13 +116,13 @@ public class ItemDrainRenderer extends SmartBlockEntityRenderer<ItemDrainBlockEn
 				ms.translate(r.nextFloat() * .0625f * i, 0, r.nextFloat() * .0625f * i);
 			ms.scale(.5f, .5f, .5f);
 			if (!blockItem && !renderUpright)
-				msr.rotateX(90);
-			itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, overlay, ms, buffer, be.getLevel(), 0);
+				msr.rotateXDegrees(90);
+			itemRenderer.render(itemStack, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, bakedModel);
 			ms.popPose();
 
 			if (!renderUpright) {
 				if (!blockItem)
-					msr.rotateY(10);
+					msr.rotateYDegrees(10);
 				ms.translate(0, blockItem ? 1 / 64d : 1 / 16d, 0);
 			} else
 				ms.translate(0, 0, -1 / 16f);

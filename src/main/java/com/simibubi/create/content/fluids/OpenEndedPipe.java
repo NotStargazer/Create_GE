@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -186,10 +187,12 @@ public class OpenEndedPipe extends FlowSource {
 			return false;
 		if (fluid.isEmpty())
 			return false;
+		if (!(fluid.getFluid() instanceof FlowingFluid))
+			return false;
 		if (!FluidHelper.hasBlockState(fluid.getFluid()))
 			return true;
 
-		if (!fluidState.isEmpty() && fluidState.getType() != fluid.getFluid()) {
+		if (!fluidState.isEmpty() && FluidHelper.convertToStill(fluidState.getType()) != fluid.getFluid()) {
 			FluidReactions.handlePipeSpillCollision(world, outputPos, fluid.getFluid(), fluidState);
 			return false;
 		}

@@ -1,5 +1,7 @@
 package com.simibubi.create.content.kinetics.belt.transport;
 
+import com.simibubi.create.foundation.item.ItemHelper;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -29,6 +31,7 @@ public class ItemHandlerBeltSegment implements IItemHandler {
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		if (this.beltInventory.canInsertAt(offset)) {
+			ItemStack remainder = ItemHelper.limitCountToMaxStackSize(stack, simulate);
 			if (!simulate) {
 				TransportedItemStack newStack = new TransportedItemStack(stack);
 				newStack.insertedAt = offset;
@@ -38,7 +41,7 @@ public class ItemHandlerBeltSegment implements IItemHandler {
 				this.beltInventory.belt.setChanged();
 				this.beltInventory.belt.sendData();
 			}
-			return ItemStack.EMPTY;
+			return remainder;
 		}
 		return stack;
 	}
@@ -50,13 +53,15 @@ public class ItemHandlerBeltSegment implements IItemHandler {
 			return ItemStack.EMPTY;
 
 		amount = Math.min(amount, transported.stack.getCount());
-		ItemStack extracted = simulate ? transported.stack.copy().split(amount) : transported.stack.split(amount);
+		ItemStack extracted = simulate ? transported.stack.copy()
+			.split(amount) : transported.stack.split(amount);
 		if (!simulate) {
 			if (transported.stack.isEmpty())
-				this.beltInventory.toRemove.add(transported);
-			this.beltInventory.belt.setChanged();
-			this.beltInventory.belt.sendData();
+				beltInventory.toRemove.add(transported);
+			else
+				beltInventory.belt.notifyUpdate();
 		}
+
 		return extracted;
 	}
 

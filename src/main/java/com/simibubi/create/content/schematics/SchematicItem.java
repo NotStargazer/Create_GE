@@ -172,6 +172,8 @@ public class SchematicItem extends Item {
 		if (!player.getItemInHand(hand)
 			.hasTag())
 			return false;
+		if (!player.level().isClientSide())
+			return true;
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::displayBlueprintScreen);
 		return true;
 	}

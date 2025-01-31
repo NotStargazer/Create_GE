@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-import com.jozufozu.flywheel.Flywheel;
-import com.jozufozu.flywheel.backend.Backend;
 import com.mojang.blaze3d.platform.GlUtil;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.mixin.accessor.SystemReportAccessor;
@@ -18,6 +16,9 @@ import com.simibubi.create.infrastructure.debugInfo.element.DebugInfoSection;
 import com.simibubi.create.infrastructure.debugInfo.element.InfoElement;
 import com.simibubi.create.infrastructure.debugInfo.element.InfoEntry;
 
+import dev.engine_room.flywheel.api.Flywheel;
+import dev.engine_room.flywheel.api.backend.Backend;
+import dev.engine_room.flywheel.api.backend.BackendManager;
 import net.minecraft.SharedConstants;
 import net.minecraft.SystemReport;
 import net.minecraft.Util;
@@ -26,6 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.IModInfo;
+import oshi.SystemInfo;
 
 /**
  * Allows for providing easily accessible debugging information.
@@ -73,11 +75,16 @@ public class DebugInformation {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			DebugInfoSection.builder("Graphics")
-					.put("Flywheel Version", Flywheel.getVersion().toString())
-					.put("Flywheel Backend", () -> Backend.getBackendType().toString())
+					.put("Flywheel Version", ModList.get()
+							.getModContainerById(Flywheel.ID)
+							.map(c -> c.getModInfo()
+									.getVersion()
+									.toString())
+							.orElse("None"))
+					.put("Flywheel Backend", () -> Backend.REGISTRY.getIdOrThrow(BackendManager.currentBackend()).toString())
 					.put("OpenGL Renderer", GlUtil::getRenderer)
 					.put("OpenGL Version", GlUtil::getOpenGLVersion)
-					.put("Graphics Mode", () -> Minecraft.getInstance().options.graphicsMode().toString())
+					.put("Graphics Mode", () -> Minecraft.getInstance().options.graphicsMode().get().getKey())
 					.buildTo(DebugInformation::registerClientInfo);
 		});
 
@@ -86,6 +93,7 @@ public class DebugInformation {
 				.put("Java Version", SystemReportAccessor.getJAVA_VERSION())
 				.put("JVM Flags", getMcSystemInfo("JVM Flags"))
 				.put("Memory", () -> getMcSystemInfo("Memory"))
+				.put("Total Memory", getTotalRam())
 				.put("CPU", getCpuInfo())
 				.putAll(listAllGraphicsCards())
 				.buildTo(DebugInformation::registerBothInfo);
@@ -127,6 +135,13 @@ public class DebugInformation {
 			cards.add(new InfoEntry(key, value));
 		}
 		return cards.isEmpty() ? List.of(new InfoEntry("Graphics cards", "none")) : cards;
+	}
+
+	public static String getTotalRam() {
+		long availableMemory = new SystemInfo().getHardware().getMemory().getAvailable();
+		long totalMemory = new SystemInfo().getHardware().getMemory().getTotal();
+		long usedMemory = totalMemory - availableMemory;
+		return String.format("%s bytes (%s MiB) / %s bytes (%s MiB)", usedMemory, usedMemory / 1049000, totalMemory, totalMemory / 1049000);
 	}
 
 	public static String getCpuInfo() {

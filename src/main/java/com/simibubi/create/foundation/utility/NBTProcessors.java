@@ -2,6 +2,7 @@ package com.simibubi.create.foundation.utility;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
@@ -11,13 +12,16 @@ import com.simibubi.create.AllBlockEntityTypes;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class NBTProcessors {
 
@@ -34,13 +38,6 @@ public final class NBTProcessors {
 	}
 
 	static {
-		addProcessor(BlockEntityType.SIGN, data -> {
-			for (int i = 0; i < 4; ++i) {
-				if (textComponentHasClickEvent(data.getString("Text" + (i + 1))))
-					return null;
-			}
-			return data;
-		});
 		addProcessor(BlockEntityType.LECTERN, data -> {
 			if (!data.contains("Book", Tag.TAG_COMPOUND))
 				return data;
@@ -62,7 +59,41 @@ public final class NBTProcessors {
 		});
 		addProcessor(AllBlockEntityTypes.CREATIVE_CRATE.get(), itemProcessor("Filter"));
 		addProcessor(AllBlockEntityTypes.PLACARD.get(), itemProcessor("Item"));
+		addProcessor(AllBlockEntityTypes.CLIPBOARD.get(), data -> {
+			if (!data.contains("Item", Tag.TAG_COMPOUND))
+				return data;
+			CompoundTag book = data.getCompound("Item");
+
+			if (!book.contains("tag", Tag.TAG_COMPOUND))
+				return data;
+			CompoundTag itemData = book.getCompound("tag");
+			
+			for (List<String> entries : NBTHelper.readCompoundList(itemData.getList("Pages", Tag.TAG_COMPOUND),
+				pageTag -> NBTHelper.readCompoundList(pageTag.getList("Entries", Tag.TAG_COMPOUND),
+					tag -> tag.getString("Text")))) {
+				for (String entry : entries)
+					if (textComponentHasClickEvent(entry))
+						return null;
+			}
+			return data;
+		});
 	}
+
+	// Triggered by block tag, not BE type
+	private static final UnaryOperator<CompoundTag> signProcessor = data -> {
+		for (String key : List.of("front_text", "back_text")) {
+			CompoundTag textTag = data.getCompound(key);
+			if (!textTag.contains("messages", Tag.TAG_LIST))
+				continue;
+			for (Tag tag : textTag.getList("messages", Tag.TAG_STRING))
+				if (tag instanceof StringTag stringTag)
+					if (textComponentHasClickEvent(stringTag.getAsString()))
+						return null;
+		}
+		if (data.contains("front_item") || data.contains("back_item"))
+			return null; // "Amendments" compat: sign data contains itemstacks
+		return data;
+	};
 
 	public static UnaryOperator<CompoundTag> itemProcessor(String tagKey) {
 		return data -> {
@@ -83,14 +114,22 @@ public final class NBTProcessors {
 	}
 
 	public static ItemStack withUnsafeNBTDiscarded(ItemStack stack) {
-		if (stack.getTag() == null)
+		CompoundTag tag = stack.getTag();
+		if (tag == null)
 			return stack;
 		ItemStack copy = stack.copy();
-		stack.getTag()
-			.getAllKeys()
+		copy.setTag(withUnsafeNBTDiscarded(tag));
+		return copy;
+	}
+
+	public static CompoundTag withUnsafeNBTDiscarded(CompoundTag tag) {
+		if (tag == null)
+			return null;
+		CompoundTag copy = tag.copy();
+		tag.getAllKeys()
 			.stream()
 			.filter(NBTProcessors::isUnsafeItemNBTKey)
-			.forEach(copy::removeTagKey);
+			.forEach(copy::remove);
 		return copy;
 	}
 
@@ -109,7 +148,13 @@ public final class NBTProcessors {
 	}
 
 	public static boolean textComponentHasClickEvent(String json) {
-		Component component = Component.Serializer.fromJson(json.isEmpty() ? "\"\"" : json);
+		return textComponentHasClickEvent(Component.Serializer.fromJson(json.isEmpty() ? "\"\"" : json));
+	}
+
+	public static boolean textComponentHasClickEvent(Component component) {
+		for (Component sibling : component.getSiblings())
+			if (textComponentHasClickEvent(sibling))
+				return true;
 		return component != null && component.getStyle() != null && component.getStyle()
 			.getClickEvent() != null;
 	}
@@ -117,7 +162,7 @@ public final class NBTProcessors {
 	private NBTProcessors() {}
 
 	@Nullable
-	public static CompoundTag process(BlockEntity blockEntity, CompoundTag compound, boolean survival) {
+	public static CompoundTag process(BlockState blockState, BlockEntity blockEntity, CompoundTag compound, boolean survival) {
 		if (compound == null)
 			return null;
 		BlockEntityType<?> type = blockEntity.getType();
@@ -129,6 +174,8 @@ public final class NBTProcessors {
 				.apply(compound);
 		if (blockEntity instanceof SpawnerBlockEntity)
 			return compound;
+		if (blockState.is(BlockTags.ALL_SIGNS))
+			return signProcessor.apply(compound);
 		if (blockEntity.onlyOpCanSetNbt())
 			return null;
 		return compound;

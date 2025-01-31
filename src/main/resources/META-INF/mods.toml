@@ -10,7 +10,7 @@ version="${file.jarVersion}"
 displayName="Create"
 #updateJSONURL=""
 displayURL="https://www.curseforge.com/minecraft/mc-mods/create"
-logoFile="logo.png"
+logoFile="icon.png"
 #credits=""
 authors="simibubi"
 description='''
@@ -20,7 +20,7 @@ Modified for Create Grand Expance'''
 [[dependencies.create]]
     modId="forge"
     mandatory=true
-    versionRange="[47.0.0,)"
+    versionRange="[47.1.3,)"
     ordering="NONE"
     side="BOTH"
 
@@ -34,6 +34,13 @@ Modified for Create Grand Expance'''
 [[dependencies.create]]
     modId="flywheel"
     mandatory=true
-    versionRange="[0.6.10,0.6.11)"
+    versionRange="[1.0.0-alpha,2.0)"
     ordering="AFTER"
+    side="CLIENT"
+
+[[dependencies.create]]
+    modId="jei"
+    mandatory=false
+    versionRange="[15.19.0,)"
+    ordering="NONE"
     side="CLIENT"

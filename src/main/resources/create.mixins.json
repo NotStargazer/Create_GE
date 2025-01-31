@@ -5,7 +5,9 @@
   "package": "com.simibubi.create.foundation.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "create.refmap.json",
+  "plugin": "com.simibubi.create.foundation.mixin.CreateMixinPlugin",
   "mixins": [
+    "BlockItemMixin",
     "ClientboundMapItemDataPacketMixin",
     "ContraptionDriverInteractMixin",
     "CustomItemUseEffectsMixin",
@@ -13,6 +15,7 @@
     "LavaSwimmingMixin",
     "MainMixin",
     "MapItemSavedDataMixin",
+    "SmithingMenuMixin",
     "TestCommandMixin",
     "WaterWheelFluidSpreadMixin",
     "accessor.AbstractProjectileDispenseBehaviorAccessor",
@@ -23,13 +26,18 @@
     "accessor.LivingEntityAccessor",
     "accessor.NbtAccounterAccessor",
     "accessor.ServerLevelAccessor",
-    "accessor.SystemReportAccessor"
+    "accessor.SystemReportAccessor",
+    "accessor.UseOnContextAccessor"
   ],
   "client": [
     "accessor.AgeableListModelAccessor",
+    "accessor.BufferBuilderAccessor",
+    "accessor.FontAccessor",
     "accessor.GameRendererAccessor",
     "accessor.HumanoidArmorLayerAccessor",
+    "accessor.MouseHandlerAccessor",
     "accessor.ParticleEngineAccessor",
+    "accessor.RenderSystemAccessor",
     "client.BlockDestructionProgressMixin",
     "client.CameraMixin",
     "client.EntityContraptionInteractionMixin",
@@ -39,7 +47,8 @@
     "client.LevelRendererMixin",
     "client.MapRendererMapInstanceMixin",
     "client.PlayerRendererMixin",
-    "client.WindowResizeMixin"
+    "client.WindowResizeMixin",
+    "compat.JourneyFullscreenMapMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -2,6 +2,7 @@ package com.simibubi.create.foundation.data;
 
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -56,7 +57,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.RegistryObject;
 
 public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
-	private static final Map<RegistryEntry<?>, RegistryObject<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+	private static final Map<RegistryEntry<?>, RegistryObject<CreativeModeTab>> TAB_LOOKUP = Collections.synchronizedMap(new IdentityHashMap<>());
 
 	@Nullable
 	protected Function<Item, TooltipModifier> currentTooltipModifierFactory;
@@ -175,29 +176,30 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 	/* Fluids */
 
 	public <T extends ForgeFlowingFluid> FluidBuilder<T, CreateRegistrate> virtualFluid(String name,
-		FluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> factory) {
+		FluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> sourceFactory,
+		NonNullFunction<ForgeFlowingFluid.Properties, T> flowingFactory) {
 		return entry(name,
 			c -> new VirtualFluidBuilder<>(self(), self(), name, c, new ResourceLocation(getModid(), "fluid/" + name + "_still"),
-				new ResourceLocation(getModid(), "fluid/" + name + "_flow"), typeFactory, factory));
+				new ResourceLocation(getModid(), "fluid/" + name + "_flow"), typeFactory, sourceFactory, flowingFactory));
 	}
 
 	public <T extends ForgeFlowingFluid> FluidBuilder<T, CreateRegistrate> virtualFluid(String name,
 		ResourceLocation still, ResourceLocation flow, FluidBuilder.FluidTypeFactory typeFactory,
-		NonNullFunction<ForgeFlowingFluid.Properties, T> factory) {
-		return entry(name, c -> new VirtualFluidBuilder<>(self(), self(), name, c, still, flow, typeFactory, factory));
+		NonNullFunction<ForgeFlowingFluid.Properties, T> sourceFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> flowingFactory) {
+		return entry(name, c -> new VirtualFluidBuilder<>(self(), self(), name, c, still, flow, typeFactory, sourceFactory, flowingFactory));
 	}
 
 	public FluidBuilder<VirtualFluid, CreateRegistrate> virtualFluid(String name) {
 		return entry(name,
 			c -> new VirtualFluidBuilder<VirtualFluid, CreateRegistrate>(self(), self(), name, c,
 				new ResourceLocation(getModid(), "fluid/" + name + "_still"), new ResourceLocation(getModid(), "fluid/" + name + "_flow"),
-				CreateRegistrate::defaultFluidType, VirtualFluid::new));
+				CreateRegistrate::defaultFluidType, VirtualFluid::createSource, VirtualFluid::createFlowing));
 	}
 
 	public FluidBuilder<VirtualFluid, CreateRegistrate> virtualFluid(String name, ResourceLocation still,
 		ResourceLocation flow) {
 		return entry(name, c -> new VirtualFluidBuilder<>(self(), self(), name, c, still, flow,
-			CreateRegistrate::defaultFluidType, VirtualFluid::new));
+			CreateRegistrate::defaultFluidType, VirtualFluid::createSource, VirtualFluid::createFlowing));
 	}
 
 	public FluidBuilder<ForgeFlowingFluid.Flowing, CreateRegistrate> standardFluid(String name) {
